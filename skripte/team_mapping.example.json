@@ -1,0 +1,11 @@
+[
+  {
+    "local_folder": "team-beispiel",
+    "gitlab_path": "<deine-gruppe>/student_projects/team-beispiel",
+    "gitlab_id": 0000,
+    "name": "team-beispiel",
+    "http_url": "https://gitlab.example.com/<deine-gruppe>/student_projects/team-beispiel.git",
+    "ssh_url": "git@gitlab.example.com:<deine-gruppe>/student_projects/team-beispiel.git",
+    "web_url": "https://gitlab.example.com/<deine-gruppe>/student_projects/team-beispiel"
+  }
+]

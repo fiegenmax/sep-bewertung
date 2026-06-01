@@ -1,0 +1,42 @@
+# Geheimnisse - NIE ins Git!
+.env
+.env.local
+.env.*.local
+.gitlab-config
+git_token.txt
+*.token
+*-token.txt
+
+# Backups
+*.bak
+Bewertung_*.xlsx.bak
+
+# Studentendaten - NIE ins Git (Repo ist oeffentlich)!
+# Alle Team-Ordner inkl. Original-Vorlagen, ausgefuellte Pruefungs-PDFs,
+# generierte Bewertungen und die Uebersicht. Lokal bleiben sie erhalten,
+# sie werden nur nicht versioniert.
+teams/team-*/
+teams/Uebersicht_alle_Teams.xlsx
+
+# Echtes Team->GitLab-Mapping (zeigt auf Studi-Repos). Vorlage: team_mapping.example.json
+skripte/team_mapping.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.Python
+*.egg-info/
+
+# Caches (sind in /tmp, sollten eh nicht hier sein)
+gitlab_api_cache/
+llm_cache/
+gitlab_data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/

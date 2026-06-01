@@ -1,0 +1,714 @@
+{
+  "version": 1,
+  "bugs": [
+    {
+      "id": "bug-001",
+      "timestamp": "2026-05-29",
+      "error_message": "build_overview.py read_team_xlsx reads wrong columns for the 9-column layout: auto=col3 OK, but max_p=col4 (=LLM-Score) and manual=col5 (=Max). Overview shows wrong/empty values.",
+      "file": "skripte/build_overview.py",
+      "root_cause": "Reader still uses the old 7-column layout indices; build_xlsx.py writes 9 columns (C=Heur, D=LLM, E=Max, F=Deine Bewertung, G=Anmerkungen).",
+      "fix": "Read max from column 5 and manual ('Deine Bewertung') from column 6: max_p=ws.cell(row, 5).value, manual=ws.cell(row, 6).value.",
+      "tags": [
+        "excel",
+        "column-index",
+        "overview",
+        "layout-drift"
+      ],
+      "related_bugs": [
+        "bug-002"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-05-29"
+    },
+    {
+      "id": "bug-002",
+      "timestamp": "2026-05-29",
+      "error_message": "fill_pdf.py read_xlsx_scores reads score from column 5 (=Max) and note from column 6 (=Deine Bewertung). PDF checkboxes get filled from Max points and notes from the score column.",
+      "file": "skripte/fill_pdf.py",
+      "root_cause": "Reader uses old 7-column layout (E=Bewertung, F=Anmerkungen); current layout is F=Deine Bewertung (col 6), G=Anmerkungen (col 7).",
+      "fix": "score=ws.cell(row, 6).value, note=ws.cell(row, 7).value.",
+      "tags": [
+        "pdf",
+        "column-index",
+        "layout-drift"
+      ],
+      "related_bugs": [
+        "bug-001"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-05-29"
+    },
+    {
+      "id": "bug-003",
+      "timestamp": "2026-05-29",
+      "error_message": "Manual-criteria Zwischensumme sums column E (Max) instead of column F (Deine Bewertung). manual_score_refs uses E{r} but scores are written to F (column 6).",
+      "file": "skripte/build_xlsx.py",
+      "root_cause": "Line 288 builds refs as E{r}; manual scores are written to column 6 (F) at line 274, column E holds Max points.",
+      "fix": "manual_score_refs = [f\"F{r}\" for r in range(first_row, row)]",
+      "tags": [
+        "excel",
+        "formula",
+        "column-index",
+        "manual-criteria"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29"
+    },
+    {
+      "id": "bug-004",
+      "timestamp": "2026-05-29T13:30:16.720Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 18→43 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T13:30:16.720Z"
+    },
+    {
+      "id": "bug-005",
+      "timestamp": "2026-05-29T13:30:23.019Z",
+      "error_message": "Incorrect value in code",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "Had \"/tmp/gitlab_api_cache\"",
+      "fix": "Changed to \"sep_gitlab_api_cache\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-29T13:31:05.655Z"
+    },
+    {
+      "id": "bug-006",
+      "timestamp": "2026-05-29T13:33:16.079Z",
+      "error_message": "Incorrect value in code",
+      "file": "skripte/build_xlsx.py",
+      "root_cause": "Had 'IF(D{r}=\"",
+      "fix": "Changed to 'IF({L_LLM}{r}=\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T13:33:16.079Z"
+    },
+    {
+      "id": "bug-007",
+      "timestamp": "2026-05-29T13:35:08.680Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/fill_pdf.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 3→3 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T13:35:08.680Z"
+    },
+    {
+      "id": "bug-008",
+      "timestamp": "2026-05-29T13:39:44.883Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 8→10 lines (3 removed) | Also: if len(text_only.strip()) >= 150:; if len(substantive_pages) >= 2 or (len(meeting_pag | Also: if total_test_files >= 5: score += 1; if total_test_files >= 15: score += 1 | Also: if len(commits) < 20 and loc < 1000:; elif len(commits) < 60 or loc < 3000: | Also: if label_ratio >= 0.85 and assign_ratio >= 0.7 and; elif label_ratio >= 0.5: | Also: if approval_ratio >= 0.5 or signal_ratio >= 0.7:; elif signal_ratio >= 0.4: | Also: \"\"\"Klont das Repo nach /tmp/repos/<name> (Token wi; Fail-Fast: prueft hinterher ob das Repo tatsaechli | Also: def api_get_paginated(path, token, max_pages=10, u; \"\"\"GET with simple pagination, with per-page disk ",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 8,
+      "last_seen": "2026-05-29T13:47:43.086Z"
+    },
+    {
+      "id": "bug-009",
+      "timestamp": "2026-05-29T13:40:09.309Z",
+      "error_message": "Incorrect value in code",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "Had \"Durchgeführt\"",
+      "fix": "Changed to \"epics.min_epics\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 8,
+      "last_seen": "2026-05-29T13:47:08.821Z"
+    },
+    {
+      "id": "bug-010",
+      "timestamp": "2026-05-29T13:42:59.735Z",
+      "error_message": "Wrong return value",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "Was returning: json.loads(r.read())",
+      "fix": "Now returns: min(60, int(ra))",
+      "tags": [
+        "auto-detected",
+        "return-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T13:42:59.735Z"
+    },
+    {
+      "id": "bug-011",
+      "timestamp": "2026-05-29T13:43:26.481Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/llm.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 42→61 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T13:43:26.481Z"
+    },
+    {
+      "id": "bug-012",
+      "timestamp": "2026-05-29T13:50:00.086Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/llm.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 12→16 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T13:50:00.086Z"
+    },
+    {
+      "id": "bug-013",
+      "timestamp": "2026-05-29T13:50:15.516Z",
+      "error_message": "Wrong reference: self should be m",
+      "file": "skripte/llm.py",
+      "root_cause": "Used \"self\" instead of \"m\"",
+      "fix": "Changed self → m",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T13:50:15.516Z"
+    },
+    {
+      "id": "bug-014",
+      "timestamp": "2026-05-29T13:51:36.317Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/run_all.py",
+      "root_cause": "49 lines replaced/restructured",
+      "fix": "Rewrote 57→7 lines (49 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T13:51:36.317Z"
+    },
+    {
+      "id": "bug-015",
+      "timestamp": "2026-05-29T13:51:57.417Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/build_xlsx.py",
+      "root_cause": "48 lines replaced/restructured",
+      "fix": "Rewrote 53→3 lines (48 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T13:51:57.417Z"
+    },
+    {
+      "id": "bug-016",
+      "timestamp": "2026-05-29T14:36:08.506Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 6→8 lines (3 removed) | Also: issues_referencing_epic = 0; issues_referencing_epic += 1",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-29T14:36:16.907Z"
+    },
+    {
+      "id": "bug-017",
+      "timestamp": "2026-05-29T14:36:39.545Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/build_xlsx.py",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 7→25 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T14:36:39.545Z"
+    },
+    {
+      "id": "bug-018",
+      "timestamp": "2026-05-29T14:46:43.315Z",
+      "error_message": "Significant refactor of ",
+      "file": "CLAUDE.md",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 6→9 lines (4 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T14:46:43.315Z"
+    },
+    {
+      "id": "bug-019",
+      "timestamp": "2026-05-29T14:47:39.155Z",
+      "error_message": "Incorrect value in code",
+      "file": "docs/funktionsweise.md",
+      "root_cause": "Had `/tmp/gitlab_api_cache/`",
+      "fix": "Changed to `<temp>/sep_gitlab_api_cache/`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-29T14:47:48.961Z"
+    },
+    {
+      "id": "bug-020",
+      "timestamp": "2026-05-29T14:47:59.659Z",
+      "error_message": "Incorrect value in code",
+      "file": "docs/nutzung.md",
+      "root_cause": "Had `/tmp/gitlab_api_cache/`",
+      "fix": "Changed to `<temp>/sep_gitlab_api_cache/`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T14:47:59.659Z"
+    },
+    {
+      "id": "bug-021",
+      "timestamp": "2026-05-29T14:48:07.073Z",
+      "error_message": "Incorrect value in code",
+      "file": "docs/troubleshooting.md",
+      "root_cause": "Had `rm -rf /tmp/gitlab_api_cache`",
+      "fix": "Changed to `sep_gitlab_api_cache`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-29T14:48:18.821Z"
+    },
+    {
+      "id": "bug-022",
+      "timestamp": "2026-05-29T14:48:28.037Z",
+      "error_message": "Incorrect value in code",
+      "file": "docs/llm-integration.md",
+      "root_cause": "Had `/tmp/llm_cache/`",
+      "fix": "Changed to `<temp>/sep_llm_cache/`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29T14:48:28.037Z"
+    },
+    {
+      "id": "bug-023",
+      "timestamp": "2026-05-29",
+      "error_message": "analyze_work_scope: LOC immer 0 auf Windows -> Arbeitsumfang-Score (0-15) systematisch zu niedrig.",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "LOC wurde via run(['bash','-c','find ... | xargs wc -l']) gezaehlt; bash/find/xargs/wc fehlen auf Windows, der Fehler wurde vom try/except still als loc=0 geschluckt.",
+      "fix": "LOC in reinem Python ueber repo.rglob('*.java/*.ts/*.html/*.css') zaehlen, node_modules/.git ausgeschlossen.",
+      "tags": [
+        "cross-platform",
+        "windows",
+        "score",
+        "work-scope",
+        "loc"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29"
+    },
+    {
+      "id": "bug-024",
+      "timestamp": "2026-05-29",
+      "error_message": "analyze_branching wirft IndexError bei einer Commit-Message ohne Leerzeichen.",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "List-Comprehension-Guards falsch geordnet: line.split(' ',1)[1] lief vor dem Guard 'if \" \" in line'.",
+      "fix": "Guard zuerst: [line for line in fp if ' ' in line and not line.split(' ',1)[1].startswith('Merge ')].",
+      "tags": [
+        "correctness",
+        "indexerror",
+        "branching"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29"
+    },
+    {
+      "id": "bug-025",
+      "timestamp": "2026-05-29",
+      "error_message": "GITLAB_TOKEN landet im Klartext in <repo>/.git/config.",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "clone_or_update injizierte den Token in die Remote-URL (https://oauth2:<token>@...), die git in .git/config persistiert.",
+      "fix": "Klon/Fetch mit neutraler URL + fluechtigem 'git -c http.extraHeader=Authorization: Basic <base64(oauth2:token)>'; Fehlertexte via _scrub_secrets token-scrubben.",
+      "tags": [
+        "security",
+        "secrets",
+        "git",
+        "token"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29"
+    },
+    {
+      "id": "bug-026",
+      "timestamp": "2026-05-29",
+      "error_message": "config.yaml thresholds: war toter Code - keine analyze_*-Funktion las die Schwellen.",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "Alle Schwellen waren als Literale hartcodiert; nur der llm:-Block der config wurde gelesen. Doku versprach Konfigurierbarkeit, die nicht existierte.",
+      "fix": "Modulweiter thr('pfad.key', default)-Accessor (gecacht aus config.yaml thresholds:); alle Literale ersetzt, Defaults == bisherige Werte (verhaltensneutral).",
+      "tags": [
+        "config",
+        "dead-code",
+        "thresholds"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-29"
+    },
+    {
+      "id": "bug-027",
+      "timestamp": "2026-05-30T16:57:12.636Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "10 lines replaced/restructured",
+      "fix": "Rewrote 25→31 lines (10 removed) | Also: \"\"\"Commit-Verteilung pro Autor - kein Score, nur I; out = run([\"git\", \"shortlog\", \"-sn\", \"--all\", \"--n",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-30T17:00:04.578Z"
+    },
+    {
+      "id": "bug-028",
+      "timestamp": "2026-05-30T16:58:54.620Z",
+      "error_message": "Incorrect value in code",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "Had \"vogelsang\"",
+      "fix": "Changed to \"username\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-30T16:58:54.620Z"
+    },
+    {
+      "id": "bug-029",
+      "timestamp": "2026-05-30T17:02:14.849Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/llm.py",
+      "root_cause": "30 lines replaced/restructured",
+      "fix": "Rewrote 31→5 lines (30 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-30T17:02:14.849Z"
+    },
+    {
+      "id": "bug-030",
+      "timestamp": "2026-05-30T17:06:33.478Z",
+      "error_message": "Incorrect value in code",
+      "file": "skripte/build_xlsx.py",
+      "root_cause": "Had \"Summen aktualisieren sich automatisch. Begründung",
+      "fix": "Changed to \"Orange in Spalte D: Heuristik und LLM weichen >1 ",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-30T17:06:33.478Z"
+    },
+    {
+      "id": "bug-031",
+      "timestamp": "2026-05-30T17:09:54.235Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/run_all.py",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 16→28 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-30T17:09:54.235Z"
+    },
+    {
+      "id": "bug-032",
+      "timestamp": "2026-05-30T17:12:44.804Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 14→19 lines (5 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-30T17:12:44.804Z"
+    },
+    {
+      "id": "bug-033",
+      "timestamp": "2026-05-30",
+      "error_message": "git checkout main schlug fehl mit 'unable to write symref for HEAD: Permission denied' / 'fatal: unable to update HEAD' - ABER der Working Tree + Index wurden schon auf main umgestellt, bevor HEAD geschrieben werden konnte. Dateien zeigten danach den alten Stand (sah aus wie verlorene Arbeit), obwohl HEAD noch auf den Feature-Branch zeigte und alle Commits intakt waren.",
+      "file": ".git/HEAD",
+      "root_cause": "Transienter Datei-Lock auf .git/HEAD unter Windows (vermutlich VS-Code-Git-Integration/Antivirus scannte .git im selben Moment). git checkout aktualisiert erst Index+Working-Tree, dann den HEAD-Symref - schlaegt Letzteres fehl, bleibt ein halber Zustand: HEAD=alter Branch, Working Tree=Ziel-Branch.",
+      "fix": "Nicht in Panik Dateien neu schreiben. Diagnose: 'git rev-parse --abbrev-ref HEAD' (zeigt noch Feature-Branch) + 'git status' (Index = Ziel-Branch). Wiederherstellen mit 'git reset --hard HEAD' (HEAD zeigt noch auf Feature -> kein symref-Write noetig, Working Tree+Index zurueck auf Feature-Tip). Dann checkout erneut versuchen - der Lock ist transient und war beim zweiten Versuch weg.",
+      "tags": [
+        "git",
+        "windows",
+        "checkout",
+        "symref",
+        "permission-denied",
+        "recovery"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-30"
+    },
+    {
+      "id": "bug-034",
+      "timestamp": "2026-06-01T07:30:46.688Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "7 lines replaced/restructured",
+      "fix": "Rewrote 25→45 lines (7 removed) | Also: # auch Konfigfiles; for cfg in list(repo.rglob(\"openapi.y*ml\")) + list | Also: # Inline-Kommentar-Anteil (Java); for f in repo.rglob(\"*.java\"):",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-06-01T07:31:20.297Z"
+    },
+    {
+      "id": "bug-035",
+      "timestamp": "2026-06-01T07:33:06.512Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/bewertungskriterien.md",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 6→7 lines (5 removed) | Also: **Was misst die Heuristik (additiv):**; - OpenAPI/Swagger-Spec im Repo gefunden: +1 | Also: **Was misst die Heuristik (additiv, max 7):**; - ≥5 substantielle Java-Test-Klassen: +1",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-06-01T07:33:43.514Z"
+    },
+    {
+      "id": "bug-036",
+      "timestamp": "2026-06-01",
+      "error_message": "Template-Audit: analyze_code_docs zaehlte Inline-Kommentare/LLM-Sample/OpenAPI nur fuer *.java; 'Datenbankschemata' (PDF-Kriterium) wurde nie erkannt; analyze_user_stories bewertete Teams ohne type::userstory-Label faelschlich mit 0.",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "Beim Multi-Sprach-Paket (2026-05-30) wurden Struktur/Tests/LOC sprach-agnostisch gemacht, analyze_code_docs aber nicht mitgezogen (Java-only). DB-Schema war als Doku-Signal nie implementiert, obwohl das PDF es explizit nennt. User-Story-Fallback pruefte nur den Substring 'user story' im Text statt inhaltlicher Story-Signale.",
+      "fix": "Kommentar-Anteil + LLM-Sample + OpenAPI ueber die Sprach-Registry (comment_markers/source_ext) vereinheitlicht; details-Keys java_comment_ratio->comment_ratio etc. umbenannt. Neue _detect_db_schema() (*.sql/*.prisma/Liquibase/migrations-Dir/ORM-@Entity) als +1-Signal (gedeckelt bei 5). _looks_like_user_story() erkennt unlabelte Stories per Format/Akzeptanzkriterien. 4 neue Tests in test_evaluate.py (TestCodeDocsLanguageAgnostic, TestUserStoryIssueFallback), Suite 46/46 gruen.",
+      "tags": [
+        "template-audit",
+        "multi-language",
+        "code-docs",
+        "db-schema",
+        "user-stories",
+        "scoring"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01"
+    },
+    {
+      "id": "bug-037",
+      "timestamp": "2026-06-01T07:40:21.204Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/run_all.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 15→23 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T07:40:21.204Z"
+    },
+    {
+      "id": "bug-038",
+      "timestamp": "2026-06-01T07:40:38.436Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/nutzung.md",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 5→7 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T07:40:38.436Z"
+    },
+    {
+      "id": "bug-039",
+      "timestamp": "2026-06-01T08:34:30.097Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/funktionsweise.md",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 8→9 lines (6 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T08:34:30.097Z"
+    },
+    {
+      "id": "bug-040",
+      "timestamp": "2026-06-01",
+      "error_message": "Automatisches PDF-Befuellen kaputt: keine Kreuze gesetzt, zufaellige Werte/Kommentare in falschen Feldern, Teamname fehlt.",
+      "file": "skripte/fill_pdf.py",
+      "root_cause": "Fuenf Ursachen: (1) Checkbox-Ja-Wert war '/Ja', echter On-State ist '/Yes' -> nie ein Kreuz. (2) CHECKBOX_MAP fuer alle 14 vertikalen Fragen INVERS (Score 0 -> Max-Punkte-Box); vertikale Listen sind absteigend nummeriert (0-Punkte-Box hat hoechste ID), nur die 3 horizontalen Skalen (14-19,22-29,30-35) aufsteigend. (3) Header falsch: Pruefer->Textfeld2 ist real 'Gesamtpunktzahl', Total->Textfeld3 ist real Sprintdok-Zwischensumme, Teamfeld Textfeld1 nie geschrieben (HEADER_TEAM=None). (4) NOTE_MAP schrieb Anmerkungen in Textfeld4-22 (Nutzer will keine). (5) Template-Pfad zeigte auf Repo-Root statt assets/Templates/. Zusatz: Reader-AcroForm in Writer kopiert -> cross-document refs -> get_fields() des Outputs warf TypeError.",
+      "fix": "CHECKBOX_MAP aus Template-Geometrie neu hergeleitet (vertikal invers, horizontal aufsteigend), abgesichert per test_evaluate.TestCheckboxMapMatchesGeometry. On-State pro Box aus get_fields()['/_States_'] (statt '/Ja'). Header: Textfeld0=Pruefer, Textfeld1=Team, Textfeld2=Gesamtpunktzahl; Zwischensummen Textfeld3/13/17 (Code-Qualitaet hat kein Summenfeld). NOTE_MAP entfernt. Template-Pfad assets/Templates/. PdfWriter(clone_from=reader)+set_need_appearances_writer(True). 5 neue Tests, Suite 51/51 gruen.",
+      "tags": [
+        "pdf",
+        "fill_pdf",
+        "checkbox",
+        "acroform",
+        "pypdf",
+        "field-mapping",
+        "template-geometry"
+      ],
+      "related_bugs": [
+        "bug-002"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-06-01"
+    },
+    {
+      "id": "bug-041",
+      "timestamp": "2026-06-01T08:49:50.597Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/run_all.py",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 34→62 lines (5 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T08:49:50.597Z"
+    },
+    {
+      "id": "bug-042",
+      "timestamp": "2026-06-01T14:56:53.697Z",
+      "error_message": "Significant refactor of ",
+      "file": ".gitignore",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 6→9 lines (5 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "unknown"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T14:56:53.697Z"
+    },
+    {
+      "id": "bug-043",
+      "timestamp": "2026-06-01T14:58:05.947Z",
+      "error_message": "Significant refactor of ",
+      "file": "CLAUDE.md",
+      "root_cause": "10 lines replaced/restructured",
+      "fix": "Rewrote 34→34 lines (10 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T14:58:05.948Z"
+    }
+  ]
+}

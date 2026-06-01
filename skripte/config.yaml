@@ -1,0 +1,157 @@
+# Konfiguration fuer die automatische SEP-Bewertung
+#
+# Schwellen pro Kriterium - hier kannst du die Strenge anpassen, ohne Code zu aendern.
+# Die LLM-Bewertung ist optional. Wenn anthropic_api_key leer ist, wird sie deaktiviert
+# und das Skript faellt auf die rein heuristische Bewertung zurueck.
+
+llm:
+  enabled: true
+  # API-Key in .env: ANTHROPIC_API_KEY=sk-ant-...
+  # (Hier nichts eintragen - kommt aus .env)
+  model: claude-haiku-4-5-20251001
+  max_tokens: 400
+  # Cache-TTL in Tagen - LLM-Antworten werden gecached, um Kosten zu sparen
+  cache_ttl_days: 7
+  # Max Anzahl Samples pro Analyse (z.B. wieviele User Stories der LLM zur Bewertung gegeben werden)
+  sample_size: 5
+  # Sampling-Temperatur fuer reproduzierbare Scores (0 = deterministisch)
+  temperature: 0
+
+# Schwellen pro Kriterium
+thresholds:
+
+  user_stories:
+    # Anteil mit Akzeptanzkriterien und User-Story-Format fuer volle Punktzahl
+    full_score_ratio: 0.85
+    # Anteil fuer 2 Punkte (Maengel)
+    partial_score_ratio: 0.5
+    # Mindestanzahl Stories fuer "Grobe Maengel" (1 Punkt)
+    min_stories_for_one: 5
+
+  commit_messages:
+    min_avg_length: 25
+    max_trivial_ratio: 0.15
+    max_very_short_ratio: 0.10
+
+  meetings:
+    min_substantial_pages: 2
+    min_text_length_for_substantial: 150
+
+  release_changelog:
+    min_description_chars: 200
+
+  epics:
+    min_epics: 3
+    min_linked_stories: 5
+
+  code_docs:
+    min_top_readme_chars: 500
+    min_subreadme_chars: 1000
+    wiki_pages_for_one_point: 3
+    wiki_pages_for_two_points: 8
+    min_inline_comment_ratio: 0.05
+
+  tests:
+    files_for_first_point: 5
+    files_for_second_point: 15
+    substantive_for_third: 5
+    methods_for_fourth: 30
+    substantive_for_fifth: 3
+    big_substantive_for_sixth: 10
+    big_methods_for_seventh: 50
+    big_substantive_for_seventh: 8
+
+  release_executable:
+    min_release_notes_chars: 500
+
+  sprint_goals:
+    min_closed_ratio: 0.5
+    min_must_closed_ratio: 0.6
+
+  work_scope:
+    # Schwellen (Commits, LoC) fuer 0/5/10/15 Punkte
+    zero_commits: 20
+    zero_loc: 1000
+    five_commits: 60
+    five_loc: 3000
+    ten_commits: 120
+    ten_loc: 6000
+
+  gitlab_usage:
+    min_label_ratio_full: 0.85
+    min_assignee_ratio_full: 0.7
+    min_closed_ratio_full: 0.5
+    min_label_ratio_partial: 0.5
+
+  branching:
+    min_merged_mrs: 10
+    min_non_main_branches: 3
+    max_direct_pushes_to_main: 15
+
+  code_reviews:
+    min_approval_ratio_strong: 0.5
+    min_any_signal_ratio_strong: 0.7
+    min_any_signal_ratio_weak: 0.4
+
+  repo_hygiene:
+    max_build_artifacts: 5
+    max_ide_configs: 3
+    large_binary_mb: 5
+    max_todos: 20
+
+# Parallelisierung in run_all (Teams sind unabhaengig)
+run:
+  team_workers: 4
+
+# Tutor-Usernamen (Substring-Match) - werden bei der Team-Groesse nicht mitgezaehlt
+tutors:
+  - vogelsang
+  - metzger
+
+# Verzeichnisse, die bei LOC/Test-Scans ausgeschlossen werden
+vendor_dirs:
+  - node_modules
+  - .git
+  - dist
+  - build
+  - target
+  - out
+  - .gradle
+  - .idea
+  - vendor
+  - venv
+  - .venv
+  - __pycache__
+
+# Sprach-Registry fuer LOC-/Test-/Struktur-Erkennung (Default deckt Java/TS/Python/Go/Kotlin/Web)
+languages:
+  java:
+    source_ext: [".java"]
+    test_globs: ["**/*Test*.java", "**/*Tests.java", "**/*IT.java"]
+    test_markers: ["@Test", "@ParameterizedTest"]
+    comment_markers: ["//", "*", "/*"]
+  typescript:
+    source_ext: [".ts"]
+    test_globs: ["**/*.spec.ts", "**/*.test.ts", "**/*.spec.tsx", "**/*.test.tsx"]
+    test_markers: ["it(", "test(", "expect("]
+    comment_markers: ["//", "*", "/*"]
+  python:
+    source_ext: [".py"]
+    test_globs: ["**/test_*.py", "**/*_test.py"]
+    test_markers: ["def test_", "assert ", "self.assert"]
+    comment_markers: ["#"]
+  go:
+    source_ext: [".go"]
+    test_globs: ["**/*_test.go"]
+    test_markers: ["func Test", "func Benchmark"]
+    comment_markers: ["//"]
+  kotlin:
+    source_ext: [".kt"]
+    test_globs: ["**/*Test.kt", "**/*Tests.kt"]
+    test_markers: ["@Test"]
+    comment_markers: ["//", "*", "/*"]
+  web:
+    source_ext: [".html", ".css"]
+    test_globs: []
+    test_markers: []
+    comment_markers: []
