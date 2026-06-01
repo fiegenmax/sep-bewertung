@@ -557,8 +557,12 @@ def analyze_meeting_docs(wikis, wiki_contents=None, llm=None):
     wiki_contents = wiki_contents or {}
     meeting_pages = []
     substantive_pages = []
-    date_re = re.compile(r"\d{2}[.\-/]\d{2}[.\-/]\d{4}|\d{4}[.\-/]\d{2}[.\-/]\d{2}")
-    keywords = ["meeting", "protokoll", "sprint", "besprechung", "retro", "review", "planning", "standup"]
+    # Datum auch mit 2-stelligem Jahr zulassen (JJ.MM.TT / TT.MM.JJ), nicht nur 4-stellig
+    date_re = re.compile(r"\d{2}[.\-/]\d{2}[.\-/]\d{2,4}|\d{2,4}[.\-/]\d{2}[.\-/]\d{2}")
+    keywords = ["meeting", "protokoll", "protocol", "minutes", "sprint", "besprechung",
+                "retro", "retrospektive", "retrospective", "review", "planning", "plenum",
+                "standup", "stand-up", "daily", "jour fixe", "jourfixe", "sitzung",
+                "weekly", "kickoff", "kick-off", "sync", "abstimmung"]
     for w in wikis:
         title = w.get("title", "")
         slug = w.get("slug", "")

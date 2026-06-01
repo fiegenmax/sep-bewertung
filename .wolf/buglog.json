@@ -1073,6 +1073,25 @@
       "related_bugs": [],
       "occurrences": 2,
       "last_seen": "2026-06-01T17:28:18.746Z"
+    },
+    {
+      "id": "bug-066",
+      "timestamp": "2026-06-01T19:45:00.000Z",
+      "error_message": "Heuristik 'Team-Meetings dokumentiert' zaehlt nur 1 statt 6 Wiki-Protokolle (team-lovelace-poetical); Score 0 statt 1",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "analyze_meeting_docs Titel-Filter: date_re verlangte 4-stelliges Jahr, Seiten heissen aber '26.04.26 Protocol' (JJ.MM.TT, 2-stellig). Zusaetzlich Keyword-Liste hatte nur deutsches 'protokoll', nicht englisches 'protocol'. Nur die Seite mit 'Sprint Review' rutschte ueber sprint/review-Keyword durch.",
+      "fix": "date_re auf \\d{2,4} erweitert (2- und 4-stellige Jahre, JJ.MM.TT und TT.MM.JJ); Keyword-Liste um protocol/minutes/retrospective/daily/weekly/sitzung/jour fixe/sync u.a. erweitert. 82 Tests gruen.",
+      "tags": [
+        "heuristic",
+        "wiki",
+        "meeting-docs",
+        "regex",
+        "i18n",
+        "false-negative"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T19:45:00.000Z"
     }
   ]
 }

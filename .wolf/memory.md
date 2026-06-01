@@ -509,3 +509,16 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 19:29 | Edited skripte/test_evaluate.py | modified test_truncated_json_stays_none() | ~672 |
 | 19:31 | Session end: 22 writes across 9 files (build_xlsx.py, gen_mapping.py, test_gen_mapping.py, teams.example.txt, README.md) | 18 reads | ~23984 tok |
 | 20:15 | LLM-Score-Parse gefixt (bug-061): Anthropic Assistant-Prefill erzwingt JSON + robuster Parser | skripte/llm.py, test_evaluate.py | 82/82 Tests gruen, Pipeline 0 parse-failed, alle US-LLM-Scores gefuellt | ~14k |
+| 19:34 | Session end: 22 writes across 9 files (build_xlsx.py, gen_mapping.py, test_gen_mapping.py, teams.example.txt, README.md) | 18 reads | ~23984 tok |
+
+## Session: 2026-06-01 19:36
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-01 19:42
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:42 | Edited skripte/evaluate_team.py | 2→6 lines | ~147 |
+| 19:45 | Bugfix analyze_meeting_docs: Datum-Regex 2-stellige Jahre + EN-Keyword protocol (lovelace zaehlte 1 statt 6 Protokolle) | evaluate_team.py, buglog, cerebrum | 82 Tests gruen | ~6k |
