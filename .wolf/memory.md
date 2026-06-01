@@ -455,3 +455,5 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 18:02 | Edited skripte/config.yaml | expanded (+8 lines) | ~231 |
 | 18:03 | Edited docs/bewertungskriterien.md | modified Annahme() | ~457 |
 | 18:10 | Arbeitsumfang: alte Heuristik gab immer 15/15 (alle 6 SS26-Teams). Pro-Kopf-Normalisierung auf feste angenommene Teamgroesse (assumed_active_authors=6, Nutzer-Annahme 5-6 aktive Autoren) + neue Schwellen -> Spread 4x10/2x15. count_active_authors() Helper, Tests gruen (54). | evaluate_team.py, config.yaml, test_evaluate.py, docs/bewertungskriterien.md | done | ~9k |
+| 18:09 | Created .git/COMMIT_EDITMSG_FIX | — | ~316 |
+| 18:09 | Session end: 8 writes across 5 files (test_evaluate.py, evaluate_team.py, config.yaml, bewertungskriterien.md, COMMIT_EDITMSG_FIX) | 7 reads | ~31918 tok |

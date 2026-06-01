@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-01T15:46:48.700Z
-> Files: 18 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-01T16:09:00.942Z
+> Files: 22 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../.claude/projects/c--Users-maxfi-Documents-git-sep-bewertung/memory/
 
@@ -22,10 +22,12 @@
 
 ## .git/
 
+- `COMMIT_EDITMSG_FIX` (~316 tok)
 
 ## docs/
 
 - `Bewertungs-Methodik.md` — Automatische Bewertung – Methodik (~2946 tok)
+- `bewertungskriterien.md` — Bewertungskriterien — was wird gemessen und warum (~4137 tok)
 - `funktionsweise.md` — Funktionsweise (~2878 tok)
 - `llm-integration.md` — LLM-Integration (~2021 tok)
 - `nutzung.md` — Nutzung (~2743 tok)
@@ -41,10 +43,12 @@
 
 ## skripte/
 
-- `evaluate_team.py` — load_yaml_config, get_thresholds, thr, test_ (~26590 tok)
+- `config.yaml` — Konfiguration fuer die automatische SEP-Bewertung (~1390 tok)
+- `evaluate_team.py` — load_yaml_config, get_thresholds, thr, test_ (~27472 tok)
 - `gen_mapping.py` — parse_line, read_teams, project_path, entry_from_project (~2194 tok)
 - `team_mapping.example.json` (~128 tok)
 - `teams.example.txt` — Teamliste fuer gen_mapping.py (~255 tok)
+- `test_evaluate.py` — TestUserStories: test_full_score, test_no_userstories, test_full, test_partial + 15 more (~11146 tok)
 - `test_gen_mapping.py` — ParseLineTests: test_plain_short_uses_default_cohort, test_strips_leading_team_prefix, test_strips_s (~1881 tok)
 
 ## team-bit/
