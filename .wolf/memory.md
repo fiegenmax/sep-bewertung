@@ -522,3 +522,21 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 |------|--------|---------|---------|--------|
 | 19:42 | Edited skripte/evaluate_team.py | 2→6 lines | ~147 |
 | 19:45 | Bugfix analyze_meeting_docs: Datum-Regex 2-stellige Jahre + EN-Keyword protocol (lovelace zaehlte 1 statt 6 Protokolle) | evaluate_team.py, buglog, cerebrum | 82 Tests gruen | ~6k |
+| 19:45 | Created .git/COMMIT_EDITMSG_TMP | — | ~155 |
+| 19:46 | Session end: 2 writes across 2 files (evaluate_team.py, COMMIT_EDITMSG_TMP) | 3 reads | ~27877 tok |
+| 19:47 | Session end: 2 writes across 2 files (evaluate_team.py, COMMIT_EDITMSG_TMP) | 3 reads | ~27877 tok |
+| 19:50 | Edited skripte/evaluate_team.py | modified _graphql() | ~1046 |
+| 19:50 | Edited skripte/evaluate_team.py | modified analyze_epics() | ~199 |
+| 19:50 | Edited skripte/evaluate_team.py | modified Items() | ~703 |
+| 19:50 | Edited skripte/evaluate_team.py | 2→7 lines | ~153 |
+| 19:50 | Edited skripte/evaluate_team.py | inline fix | ~18 |
+| 19:51 | Edited skripte/test_evaluate.py | modified test_native_child_links_count_as_linked() | ~814 |
+| 20:00 | Edited skripte/evaluate_team.py | modified fetch_epic_links() | ~819 |
+| 20:00 | Edited skripte/evaluate_team.py | Hierarchie() → Verknuepfungen() | ~196 |
+| 20:00 | Edited skripte/evaluate_team.py | modified Verknuepfungen() | ~689 |
+| 20:01 | Edited skripte/evaluate_team.py | 5→4 lines | ~91 |
+| 20:01 | Edited skripte/evaluate_team.py | inline fix | ~16 |
+| 20:01 | Edited skripte/test_evaluate.py | modified test_native_links_count_as_linked() | ~981 |
+| 20:02 | Edited CLAUDE.md | inline fix | ~116 |
+| 20:02 | Edited docs/bewertungskriterien.md | modified Quellen() | ~302 |
+| 18:10 | Epic-Verlinkung-Bug: analyze_epics sah nur #-Text, native Linked/Child items via GraphQL (fetch_epic_links) ergaenzt | evaluate_team.py, test_evaluate.py, CLAUDE.md, docs/bewertungskriterien.md | alle 6 Teams jetzt 1/1, 87 Tests gruen (bug-070) | ~9k |

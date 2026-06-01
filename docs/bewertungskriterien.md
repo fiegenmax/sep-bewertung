@@ -89,13 +89,17 @@ Die zwei Scores werden gemittelt.
 
 **Was misst die Heuristik:**
 - Issues mit Label `type::epic` müssen existieren
-- Verlinkung zwischen Epics und User Stories: gezählt werden `#123`-Referenzen in den Bodies (in beide Richtungen)
+- Verlinkung zwischen Epics und User Stories aus drei vereinigten Quellen (eine Story zählt nur einmal):
+  1. `#123`-Referenzen in den Bodies (in beide Richtungen),
+  2. native **„Child items"** (GitLab-Work-Item-Hierarchie),
+  3. native **„Linked items"** (`relates_to`/`blocks`).
+  Quellen 2+3 werden via GraphQL geholt (`fetch_epic_links`), weil der REST-`/issues`-Endpoint sie nicht mitliefert.
 
-**Schwellen:** ≥3 Epics UND ≥5 Verlinkungen → 1 Punkt.
+**Schwellen:** ≥3 Epics UND ≥5 verlinkte Stories → 1 Punkt.
 
-**Warum so:** GitLab Free hat keine echten Epics — Teams müssen sich mit Labels behelfen, und die Verlinkung erfolgt durch manuelle Issue-Referenzen.
+**Warum so:** Teams behelfen sich mit dem Label `type::epic`. Die Verlinkung erfolgt in der Praxis meist über das „Linked items"-Widget (`relates_to`) — diese Beziehung steht nicht im Beschreibungstext und wurde früher übersehen, was zu falschen 0/1 führte, obwohl in GitLab sichtbar Stories verknüpft waren.
 
-**Blinde Flecken (groß):** Wenn das Team eine andere Konvention nutzt (z.B. Task-Listen in Epic-Beschreibungen, Sub-Labels), wird das übersehen. Das PDF-Kriterium ist explizit "Epics erstellt UND User Stories mit diesen verlinkt" — bei 0/1 sollte manuell geprüft werden.
+**Blinde Flecken:** Verlinkungs-Konventionen außerhalb der drei Quellen (z.B. Task-Listen mit reinem Text ohne `#`-Referenz, Sub-Labels) werden übersehen. Bei 0/1 lohnt der manuelle Blick. Hinweis: GraphQL-Ausfall (alte GitLab-Version) fällt still auf reine Text-Referenzen zurück.
 
 ---
 

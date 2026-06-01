@@ -351,6 +351,125 @@ def api_get_parallel(paths, token, max_workers=8):
     return out
 
 
+GRAPHQL_URL = f"{GITLAB_HOST}/api/graphql"
+
+
+def _graphql(query, variables, token, use_cache=True):
+    """POST einer GraphQL-Query an GitLab. Gibt das geparste 'data'-Dict zurueck,
+    oder None bei jeglichem Fehler (GraphQL-Errors im Body, HTTP-/Netzfehler,
+    auf der Instanz nicht vorhandenes Feld).
+
+    Bewusst defensiv: Ein GraphQL-Fehler darf die Pipeline NICHT kippen. Die
+    aufrufende Analyse faellt bei None auf ihr bisheriges Verhalten zurueck.
+    Cache teilt sich das GitLab-API-Cache-Verzeichnis (Key aus query+variables).
+    """
+    payload = json.dumps({"query": query, "variables": variables}, sort_keys=True)
+    key = _cache_key("GRAPHQL:" + payload)
+    if use_cache:
+        cached = _cache_read(key)
+        if cached is not None:
+            return cached
+    req = urllib.request.Request(
+        GRAPHQL_URL, data=payload.encode("utf-8"), method="POST",
+        headers={"PRIVATE-TOKEN": token, "Content-Type": "application/json"})
+    body = None
+    for attempt in range(_MAX_RETRIES):
+        try:
+            with urllib.request.urlopen(req, timeout=60, context=_SSL_CONTEXT) as r:
+                body = json.loads(r.read())
+            break
+        except urllib.error.HTTPError as e:
+            if e.code in _RETRY_STATUS and attempt < _MAX_RETRIES - 1:
+                time.sleep(_retry_after_seconds(e, attempt))
+                continue
+            return None
+        except urllib.error.URLError:
+            if attempt < _MAX_RETRIES - 1:
+                time.sleep(min(60, 2 ** attempt))
+                continue
+            return None
+    if not isinstance(body, dict) or body.get("errors"):
+        return None
+    data = body.get("data")
+    if use_cache and data is not None:
+        _cache_write(key, data)
+    return data
+
+
+# Ein batched Call fuer alle Epic-IIDs. GitLab 18.x: Project.workItems (Plural,
+# Connection); das fruehere Project.workItem (Singular) existiert NICHT.
+# Zwei Verlinkungs-Widgets sind relevant und werden vereinigt:
+#   HIERARCHY.children   -> echte "Child items" (Work-Item-Hierarchie)
+#   LINKED_ITEMS         -> "Linked items" (relates_to/blocks) - DAS nutzen die
+#                           SS26-Teams real, um Stories an ihre Epics zu haengen.
+_EPIC_LINKS_QUERY = """
+query($fp: ID!, $iids: [String!]) {
+  project(fullPath: $fp) {
+    workItems(iids: $iids) {
+      nodes {
+        iid
+        widgets {
+          ... on WorkItemWidgetHierarchy { children { nodes { iid } } }
+          ... on WorkItemWidgetLinkedItems { linkedItems { nodes { workItem { iid } } } }
+        }
+      }
+    }
+  }
+}
+"""
+
+
+def fetch_epic_links(full_path, epic_iids, token):
+    """Holt je Epic-Issue die mit ihm verknuepften Stories aus GitLabs Work-Item-
+    Widgets via GraphQL (ein batched Call ueber alle Epic-IIDs).
+
+    Vereinigt zwei Verknuepfungsarten, die BEIDE nicht als #123-Text im Body
+    stehen und daher von der reinen Text-Heuristik uebersehen werden:
+      - HIERARCHY.children  (echte "Child items"),
+      - LINKED_ITEMS        ("Linked items" / relates_to - die real genutzte
+                             Methode der SS26-Teams).
+    Befund, der dazu fuehrte: in GitLab haengen an fast allen Epics verknuepfte
+    Stories, im PDF wurde aber 'nicht sinnvoll verlinkt' angekreuzt.
+
+    Rueckgabe: {epic_iid(int): [story_iid(int), ...]}. Bei GraphQL-/Schema-/
+    Netzfehlern ein leeres Dict - analyze_epics faellt dann auf die Text-
+    Referenzen zurueck (kein Pipeline-Crash).
+    """
+    if not epic_iids:
+        return {}
+    data = _graphql(_EPIC_LINKS_QUERY,
+                    {"fp": full_path, "iids": [str(i) for i in epic_iids]}, token)
+    if not data:
+        return {}
+    try:
+        nodes = ((data.get("project") or {}).get("workItems") or {}).get("nodes") or []
+    except (AttributeError, TypeError):
+        return {}
+    out = {}
+    for node in nodes:
+        try:
+            epic_iid = int(node["iid"])
+        except (KeyError, ValueError, TypeError):
+            continue
+        linked = set()
+        for w in (node.get("widgets") or []):
+            w = w or {}
+            for n in ((w.get("children") or {}).get("nodes") or []):
+                try:
+                    linked.add(int(n["iid"]))
+                except (KeyError, ValueError, TypeError):
+                    pass
+            for n in ((w.get("linkedItems") or {}).get("nodes") or []):
+                wi = (n or {}).get("workItem") or {}
+                try:
+                    linked.add(int(wi["iid"]))
+                except (KeyError, ValueError, TypeError):
+                    pass
+        if linked:
+            out[epic_iid] = sorted(linked)
+    return out
+
+
 def _scrub_secrets(text, *secrets):
     """Entfernt Token/Secrets aus (Fehler-)Texten, bevor sie geloggt/geraised werden."""
     out = text or ""
@@ -660,10 +779,17 @@ def analyze_release_changelog(releases, repo, llm=None):
                         "llm_review": llm_eval}}
 
 
-def analyze_epics(issues):
+def analyze_epics(issues, epic_links=None):
     """Sinnvolle Epics + Verlinkung (0-1).
-    GitLab Free hat keine Epics → Teams nutzen oft Label 'type::epic'.
-    Verlinkung kann über Body-Referenzen (#123) erfolgen.
+    Teams markieren Epics per Label 'type::epic'. Verlinkung wird aus DREI
+    Quellen vereinigt:
+      1. Story-Referenzen (#123) im Epic-Beschreibungstext,
+      2. Epic-Referenzen (#123) im Story-Beschreibungstext,
+      3. native Work-Item-Verknuepfungen (epic_links, via fetch_epic_links):
+         "Child items" (Hierarchie) UND "Linked items" (relates_to) - beides
+         steht NICHT als #-Text im Body und wird sonst uebersehen.
+
+    epic_links: optionales {epic_iid: [story_iid, ...]} aus fetch_epic_links.
     """
     epics = [i for i in issues if "type::epic" in i.get("labels", [])]
     non_epics = [i for i in issues if "type::epic" not in i.get("labels", [])]
@@ -686,29 +812,43 @@ def analyze_epics(issues):
                 issues_referencing_epic_ids.add(i["iid"])
                 break
     issues_referencing_epic = len(issues_referencing_epic_ids)
-    # Set-Vereinigung statt Summe zweier Counts: eine Story, die in einem Epic-Body
-    # referenziert wird UND selbst ein Epic referenziert, zaehlt nur einmal.
-    linked = len(referenced_from_epics | issues_referencing_epic_ids)
+    # Native Work-Item-Verknuepfungen ("Child items" + "Linked items"/relates_to):
+    # strukturell, NICHT im Beschreibungstext -> per GraphQL (fetch_epic_links).
+    native_linked_iids = set()
+    for kids in (epic_links or {}).values():
+        for k in kids:
+            try:
+                native_linked_iids.add(int(k))
+            except (ValueError, TypeError):
+                pass
+    # Set-Vereinigung statt Summe: eine Story, die in einem Epic-Body referenziert
+    # wird, selbst ein Epic referenziert UND nativ verknuepft ist, zaehlt 1x.
+    linked = len(referenced_from_epics | issues_referencing_epic_ids | native_linked_iids)
     if len(epics) >= thr("epics.min_epics", 3) and linked >= thr("epics.min_linked_stories", 5):
         score, label = 1, "Durchgeführt"
     else:
         score, label = 0, "Nicht durchgeführt"
+    src = (f"{len(referenced_from_epics)} Stories in Epic-Bodies referenziert, "
+           f"{issues_referencing_epic} Stories referenzieren ein Epic, "
+           f"{len(native_linked_iids)} nativ verknuepft (Child/Linked items); "
+           f"vereinigt {linked} verlinkte Stories")
     if score == 0:
-        reason = (f"{len(epics)} Epic-Issues vorhanden, aber KEINE Verlinkung zu User Stories erkennbar "
-                  f"({len(referenced_from_epics)} Stories in Epic-Bodies referenziert, "
-                  f"{issues_referencing_epic} Stories referenzieren ein Epic). "
+        reason = (f"{len(epics)} Epic-Issues vorhanden, aber zu wenig/keine Verlinkung zu User Stories "
+                  f"erkennbar ({src}). "
                   f"Das PDF-Kriterium verlangt EXPLIZIT beides: 'Epics erstellt UND verlinkt' - daher 0/1. "
-                  f"Hinweis: GitLab Free unterstuetzt keine echten Epics; Verlinkung muesste ueber "
-                  f"manuelle Issue-Referenzen (#123) oder Task-Listen erfolgen. "
-                  f"PRUEFE MANUELL ob die Stories evtl. anders mit Epics verbunden sind.")
+                  f"Hinweis: Verlinkung erfolgt ueber Issue-Referenzen (#123), Task-Listen ODER die nativen "
+                  f"'Child items'-/'Linked items'-Widgets. "
+                  f"PRUEFE MANUELL ob die Stories evtl. noch anders mit Epics verbunden sind.")
     else:
-        reason = (f"{len(epics)} Epic-Issues vorhanden. {len(referenced_from_epics)} Stories in Epic-Bodies referenziert, "
-                  f"{issues_referencing_epic} Stories referenzieren ein Epic. Hinweis: GitLab Free unterstuetzt keine "
-                  f"echten Epics - Verlinkung erfolgt nur ueber manuelle Issue-Referenzen.")
+        reason = (f"{len(epics)} Epic-Issues vorhanden, sinnvoll mit User Stories verlinkt ({src}). "
+                  f"Verlinkung via Label 'type::epic' + Issue-Referenzen und/oder native "
+                  f"'Child items'-/'Linked items'-Verknuepfungen.")
     return {"criterion": "Sinnvolle Epics + Verlinkung", "max": 1, "score": score,
             "label": label, "reason": reason,
             "details": {"epic_count": len(epics), "linked_from_epics": len(referenced_from_epics),
-                        "referencing_epic": issues_referencing_epic}}
+                        "referencing_epic": issues_referencing_epic,
+                        "native_linked": len(native_linked_iids),
+                        "linked_total": linked}}
 
 
 _BUILD_MARKERS = ["pom.xml", "build.gradle", "build.gradle.kts", "package.json",
@@ -1932,6 +2072,10 @@ def collect_results(entry, token, llm_client=None, yaml_cfg=None):
     prov = build_provenance(repo, pid)
 
     issues = api_get_paginated(f"/projects/{pid}/issues?state=all", token)
+    # Native Epic-Verknuepfungen (Child items + Linked items) zusaetzlich via
+    # GraphQL, weil der /issues-REST-Endpoint diese Verlinkung nicht enthaelt.
+    epic_iids = [i["iid"] for i in issues if "type::epic" in (i.get("labels") or [])]
+    epic_links = fetch_epic_links(entry["gitlab_path"], epic_iids, token)
     mrs = api_get_paginated(f"/projects/{pid}/merge_requests?state=all", token)
     releases = api_get_paginated(f"/projects/{pid}/releases", token)
     milestones = api_get_paginated(f"/projects/{pid}/milestones?state=all", token)
@@ -1956,7 +2100,7 @@ def collect_results(entry, token, llm_client=None, yaml_cfg=None):
         analyze_commit_messages(repo, llm=llm_client),
         analyze_meeting_docs(wikis, wiki_contents, llm=llm_client),
         analyze_release_changelog(releases, repo, llm=llm_client),
-        analyze_epics(issues),
+        analyze_epics(issues, epic_links=epic_links),
         analyze_code_structure(repo),
         analyze_code_docs(repo, wikis, llm=llm_client),
         analyze_code_clean(repo),

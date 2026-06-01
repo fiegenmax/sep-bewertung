@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-05-28T15:43:16.046Z",
   "lifetime": {
-    "total_tokens_estimated": 345655,
-    "total_reads": 261,
-    "total_writes": 358,
-    "total_sessions": 28,
-    "anatomy_hits": 33,
-    "anatomy_misses": 222,
-    "repeated_reads_blocked": 151,
-    "estimated_savings_vs_bare_cli": 546335
+    "total_tokens_estimated": 425393,
+    "total_reads": 286,
+    "total_writes": 384,
+    "total_sessions": 30,
+    "anatomy_hits": 40,
+    "anatomy_misses": 240,
+    "repeated_reads_blocked": 164,
+    "estimated_savings_vs_bare_cli": 593853
   },
   "sessions": [
     {
@@ -3884,6 +3884,353 @@
         "writes_count": 22,
         "repeated_reads_blocked": 5,
         "anatomy_lookups": 5
+      }
+    },
+    {
+      "id": "session-2026-06-01-1901",
+      "started": "2026-06-01T17:01:26.878Z",
+      "ended": "2026-06-01T17:34:45.510Z",
+      "reads": [
+        {
+          "file": "e:/Code/sep-bewertung/.wolf/anatomy.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/teams.txt",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/gen_mapping.py",
+          "tokens_estimated": 2346,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/README.md",
+          "tokens_estimated": 940,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/Admin/AppData/Local/Temp/claude/e--Code-sep-bewertung/0718d488-9e38-4c1e-8095-e37cc13f0cc8/tasks/bntzh3uf0.output",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/run_all.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/fill_pdf.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/.wolf/buglog.json",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/build_xlsx.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/test_gen_mapping.py",
+          "tokens_estimated": 1926,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/teams.example.txt",
+          "tokens_estimated": 255,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/CLAUDE.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/docs/nutzung.md",
+          "tokens_estimated": 2773,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/docs/funktionsweise.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/.wolf/cerebrum.md",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/llm.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 11509,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "e:/Code/sep-bewertung/skripte/build_xlsx.py",
+          "tokens_estimated": 122,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/gen_mapping.py",
+          "tokens_estimated": 202,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/gen_mapping.py",
+          "tokens_estimated": 175,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/test_gen_mapping.py",
+          "tokens_estimated": 52,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/test_gen_mapping.py",
+          "tokens_estimated": 148,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/test_gen_mapping.py",
+          "tokens_estimated": 45,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/gen_mapping.py",
+          "tokens_estimated": 195,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/test_gen_mapping.py",
+          "tokens_estimated": 267,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/gen_mapping.py",
+          "tokens_estimated": 219,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/teams.example.txt",
+          "tokens_estimated": 160,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/README.md",
+          "tokens_estimated": 83,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/CLAUDE.md",
+          "tokens_estimated": 33,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/docs/nutzung.md",
+          "tokens_estimated": 78,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/docs/nutzung.md",
+          "tokens_estimated": 106,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/docs/nutzung.md",
+          "tokens_estimated": 112,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 430,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/llm.py",
+          "tokens_estimated": 459,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/llm.py",
+          "tokens_estimated": 317,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/llm.py",
+          "tokens_estimated": 128,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/llm.py",
+          "tokens_estimated": 124,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/llm.py",
+          "tokens_estimated": 108,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 672,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 19749,
+        "output_tokens_estimated": 4235,
+        "reads_count": 18,
+        "writes_count": 22,
+        "repeated_reads_blocked": 7,
+        "anatomy_lookups": 5
+      }
+    },
+    {
+      "id": "session-2026-06-01-1936",
+      "started": "2026-06-01T17:36:18.512Z",
+      "ended": "2026-06-01T17:41:40.010Z",
+      "reads": [
+        {
+          "file": "e:/Code/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 0,
+        "reads_count": 1,
+        "writes_count": 0,
+        "repeated_reads_blocked": 3,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-06-01-1942",
+      "started": "2026-06-01T17:42:44.607Z",
+      "ended": "2026-06-01T17:46:54.114Z",
+      "reads": [
+        {
+          "file": "e:/Code/sep-bewertung/.wolf/buglog.json",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/.wolf/cerebrum.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 27564,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "e:/Code/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 147,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/.git/COMMIT_EDITMSG_TMP",
+          "tokens_estimated": 166,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 27564,
+        "output_tokens_estimated": 313,
+        "reads_count": 3,
+        "writes_count": 2,
+        "repeated_reads_blocked": 1,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-06-01-1942",
+      "started": "2026-06-01T17:42:44.607Z",
+      "ended": "2026-06-01T17:47:17.257Z",
+      "reads": [
+        {
+          "file": "e:/Code/sep-bewertung/.wolf/buglog.json",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/.wolf/cerebrum.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 27564,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "e:/Code/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 147,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/.git/COMMIT_EDITMSG_TMP",
+          "tokens_estimated": 166,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 27564,
+        "output_tokens_estimated": 313,
+        "reads_count": 3,
+        "writes_count": 2,
+        "repeated_reads_blocked": 2,
+        "anatomy_lookups": 1
       }
     }
   ],

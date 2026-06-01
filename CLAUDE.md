@@ -210,7 +210,7 @@ In einem normalen Filesystem (lokales Git, kein Mount) tritt das nicht auf.
 
 1. **Release ausführbar** prüft nur Strukturindikatoren (Compose/Dockerfile/CI), nicht den tatsächlichen Start. Du musst es selbst hochfahren.
 2. **Issue ↔ Code** funktioniert nur wenn die MRs `Closes #N` in der Description haben. Andere Konventionen werden übersehen.
-3. **GitLab Free** hat keine echten Epics. Das Tool sucht `type::epic`-Labels und Issue-Referenzen, andere Verlinkungs-Methoden werden übersehen.
+3. **Epics** werden über das Label `type::epic` erkannt. Die Verlinkung zu User Stories wird aus drei Quellen vereinigt: Issue-Referenzen (`#N`) im Beschreibungstext **plus** den nativen GitLab-Work-Item-Widgets „Child items" (Hierarchie) und „Linked items" (`relates_to`) — letztere via GraphQL geholt (`fetch_epic_links`), da der REST-`/issues`-Endpoint sie nicht enthält. Verlinkungen außerhalb dieser drei Quellen werden übersehen.
 4. **Heuristik-Schwellen** sind auf das SS26 kalibriert. Bei abweichendem Team-Workflow könnten sie nachjustiert werden müssen.
 
 ## Wenn was nicht klappt

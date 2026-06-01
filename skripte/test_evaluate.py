@@ -98,6 +98,85 @@ class TestEpics(unittest.TestCase):
         self.assertEqual(r["details"]["referencing_epic"], 2)
         self.assertEqual(r["score"], 0)  # waere ohne Dedup faelschlich 1
 
+    def test_native_links_count_as_linked(self):
+        # 3 Epics OHNE jede #-Text-Referenz, aber mit nativen Verknuepfungen
+        # (Child/Linked items). Frueher: 0 erkannte Verlinkungen -> 0/1 (genau
+        # der Befund: GitLab zeigt verknuepfte Stories, PDF kreuzt 'nicht
+        # verlinkt' an). Jetzt: 6 verlinkte Stories -> 1/1.
+        issues = [_issue(i, ["type::epic"], "") for i in (1, 2, 3)]
+        issues += [_issue(i, ["type::userstory"], "") for i in range(10, 16)]
+        epic_links = {1: [10, 11], 2: [12, 13], 3: [14, 15]}
+        r = ev.analyze_epics(issues, epic_links=epic_links)
+        self.assertEqual(r["details"]["native_linked"], 6)
+        self.assertEqual(r["details"]["linked_total"], 6)
+        self.assertEqual(r["score"], 1)
+
+    def test_native_and_text_links_dedup_union(self):
+        # Story 10 ist sowohl per #-Text als auch nativ verlinkt ->
+        # darf nur EINMAL zaehlen (Vereinigung, keine Summe).
+        issues = [
+            _issue(1, ["type::epic"], "#10"),
+            _issue(2, ["type::epic"], ""),
+            _issue(3, ["type::epic"], ""),
+            _issue(10, ["type::userstory"], ""),
+        ]
+        epic_links = {1: [10]}
+        r = ev.analyze_epics(issues, epic_links=epic_links)
+        self.assertEqual(r["details"]["linked_from_epics"], 1)
+        self.assertEqual(r["details"]["native_linked"], 1)
+        self.assertEqual(r["details"]["linked_total"], 1)  # nicht 2
+        self.assertEqual(r["score"], 0)  # 1 < min_linked_stories (5)
+
+
+class TestEpicLinksFetch(unittest.TestCase):
+    def test_parses_hierarchy_and_linked_items(self):
+        captured = {}
+
+        def fake_graphql(query, variables, token, use_cache=True):
+            captured["iids"] = variables["iids"]
+            return {"project": {"workItems": {"nodes": [
+                {"iid": "1", "widgets": [
+                    {},  # Widget ohne relevante Keys (z.B. ASSIGNEES)
+                    {"children": {"nodes": [{"iid": "10"}]}},          # HIERARCHY
+                    {"linkedItems": {"nodes": [                         # LINKED_ITEMS
+                        {"workItem": {"iid": "11"}},
+                        {"workItem": {"iid": "12"}}]}},
+                ]},
+                {"iid": "2", "widgets": [
+                    {"linkedItems": {"nodes": [{"workItem": {"iid": "20"}}]}},
+                ]},
+            ]}}}
+
+        orig = ev._graphql
+        ev._graphql = fake_graphql
+        try:
+            out = ev.fetch_epic_links("grp/team-x", [1, 2], "tok")
+        finally:
+            ev._graphql = orig
+        self.assertEqual(out, {1: [10, 11, 12], 2: [20]})
+        self.assertEqual(captured["iids"], ["1", "2"])  # iids als Strings
+
+    def test_graphql_failure_is_graceful(self):
+        # GraphQL nicht verfuegbar / Fehler -> leeres Dict, kein Crash.
+        orig = ev._graphql
+        ev._graphql = lambda *a, **k: None
+        try:
+            out = ev.fetch_epic_links("grp/team-x", [1, 2], "tok")
+        finally:
+            ev._graphql = orig
+        self.assertEqual(out, {})
+
+    def test_empty_epic_iids_skips_call(self):
+        called = []
+        orig = ev._graphql
+        ev._graphql = lambda *a, **k: called.append(1)
+        try:
+            out = ev.fetch_epic_links("grp/team-x", [], "tok")
+        finally:
+            ev._graphql = orig
+        self.assertEqual(out, {})
+        self.assertEqual(called, [])  # kein GraphQL-Call bei 0 Epics
+
 
 class TestSprintGoals(unittest.TestCase):
     def test_pass(self):
