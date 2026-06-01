@@ -1,7 +1,9 @@
 # Design: Auto-Generierung von `team_mapping.json` aus einer Teamnamen-Liste
 
 Datum: 2026-06-01
-Status: Approved (Design)
+Status: Approved (Design) — Cohort-Mechanik überholt durch
+[`2026-06-01-teams-kombinierter-name-design.md`](2026-06-01-teams-kombinierter-name-design.md)
+(teams.txt nutzt jetzt den kombinierten Namen `cohort-kurz`, kein Cohort-Default/Override mehr).
 
 ## Ziel
 
