@@ -550,6 +550,81 @@ class TestParseScore(unittest.TestCase):
         import llm as llm_mod
         self.assertIsNone(llm_mod._parse_score_response("", 3))
 
+    def test_prose_then_json_fence(self):
+        # Realer Haiku-Fall: lange Prosa, JSON erst am Ende im ```json-Fence.
+        import llm as llm_mod
+        out = ("Ich bewerte die vier User Stories:\n\n"
+               "**US #10:** Backend solide, Frontend fehlt.\n\n"
+               "Insgesamt nur teilweise umgesetzt.\n\n"
+               '```json\n{"score": 1, "reason": "Alle nur teilweise umgesetzt."}\n```')
+        r = llm_mod._parse_score_response(out, 3)
+        self.assertEqual(r["score"], 1)
+        self.assertIn("teilweise", r["reason"])
+
+    def test_json_object_with_trailing_text(self):
+        # Prefill-Fall mit Nachgeplauder hinter dem schliessenden '}'.
+        import llm as llm_mod
+        out = '{"score": 2, "reason": "ok"}\n\nHinweis: fertig bewertet.'
+        self.assertEqual(llm_mod._parse_score_response(out, 3)["score"], 2)
+
+    def test_truncated_json_stays_none(self):
+        # Abgeschnittenes JSON (kein schliessendes '}') ist nicht rettbar -> None.
+        # (Prefill verhindert diesen Fall upstream, indem es Prosa eliminiert.)
+        import llm as llm_mod
+        out = 'Prosa...\n```json\n{"score": 1, "reason": "Text der mitten im Satz'
+        self.assertIsNone(llm_mod._parse_score_response(out, 3))
+
+
+class TestScorePrefill(unittest.TestCase):
+    def test_prefill_in_request_and_prepended_to_response(self):
+        # Mockt die HTTP-Schicht: prueft, dass score() den Assistant-Turn mit '{'
+        # prefillt und die API-Fortsetzung (ohne fuehrendes '{') wieder davorsetzt,
+        # sodass valides JSON entsteht.
+        import json as _json
+        import urllib.request
+        import llm as llm_mod
+
+        captured = {}
+
+        class _Resp:
+            def __init__(self, payload):
+                self._p = payload
+
+            def read(self):
+                return self._p
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *a):
+                return False
+
+        def fake_urlopen(req, timeout=None):
+            captured["body"] = _json.loads(req.data.decode("utf-8"))
+            # Anthropic liefert NUR die Fortsetzung nach dem Prefill '{':
+            api = {"content": [{"type": "text",
+                                "text": '"score": 2, "reason": "ok"}'}],
+                   "stop_reason": "end_turn"}
+            return _Resp(_json.dumps(api).encode("utf-8"))
+
+        with tempfile.TemporaryDirectory() as d:
+            orig_cache = llm_mod.CACHE_DIR
+            orig_open = urllib.request.urlopen
+            llm_mod.CACHE_DIR = Path(d)
+            urllib.request.urlopen = fake_urlopen
+            try:
+                client = llm_mod.LLMClient(api_key="sk-ant-test", enabled=True)
+                res = client.score("bewerte X", scale_max=3, system="sys")
+            finally:
+                llm_mod.CACHE_DIR = orig_cache
+                urllib.request.urlopen = orig_open
+
+        # (1) Letzte Nachricht ist der Assistant-Prefill '{'.
+        self.assertEqual(captured["body"]["messages"][-1],
+                         {"role": "assistant", "content": "{"})
+        # (2) Prefill vorangestellt -> valides JSON -> sauber geparst.
+        self.assertEqual(res, {"score": 2, "reason": "ok"})
+
 
 class TestConventions(unittest.TestCase):
     def test_counts_conventions(self):

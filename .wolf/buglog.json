@@ -994,15 +994,17 @@
       "id": "bug-061",
       "timestamp": "2026-06-01",
       "error_message": "Wiederholte 'LLM score parse failed (got: Ich bewerte die ... User Stories: ...)' Warnungen waehrend des Laufs fuer das User-Stories-Kriterium einiger Teams.",
-      "file": "skripte/evaluate_team.py",
-      "root_cause": "Der User-Stories-LLM-Prompt liefert bei manchen Teams ausfuehrliche Prosa OHNE die erwartete fuehrende Score-Zahl, sodass der Score-Parser keinen numerischen Wert extrahieren kann. Wird graceful behandelt (D-Spalte bleibt leer, GESAMT-LLM-Hybrid faellt auf die Heuristik zurueck) - kein Crash, nur fehlende LLM-Zweitmeinung fuer dieses eine Kriterium.",
-      "fix": "Noch offen/nicht kritisch: nur degradierte LLM-Zweitmeinung, Heuristik unberuehrt. Robuster waere ein strikteres 'Antworte mit Score: N'-Prompt-Format oder ein Fallback-Regex auf eine Zahl im Text.",
+      "file": "skripte/llm.py",
+      "root_cause": "Zwei verkettete Ursachen, per Cache-Inspektion belegt (Antwort 1719 Zeichen): (1) Haiku ignoriert bei Multi-Item-Bewertungen die 'antworte nur als JSON-Objekt'-Anweisung und schreibt erst lange Prosa ('Ich bewerte die vier User Stories... US#10... US#33...'), das JSON kommt zuletzt in einem ```json-Fence -> _parse_score_response macht aber json.loads auf den GANZEN String (out.startswith('```') ist False, weil die Prosa zuerst kommt) und scheitert. (2) Schlimmer: die Prosa frisst das max_tokens=600-Budget auf, sodass das JSON am Ende ABGESCHNITTEN ist (kein schliessendes '}') - selbst ein Embedded-JSON-Extraktor koennte das nicht mehr retten.",
+      "fix": "Root-Cause-Fix per Anthropic Assistant-Prefill: llm.score() ruft call(..., prefill='{') -> es wird eine Assistant-Nachricht mit Inhalt '{' an messages angehaengt, das Modell MUSS ab '{' als JSON fortsetzen (keine Prosa, kein Budget-Verbrauch, keine Truncation). call() stellt den Prefill der API-Fortsetzung wieder voran (vollstaendiger Assistant-Turn) und nimmt prefill in den Cache-Key auf (nur fuer score-Calls -> Free-Text-Cache bleibt gueltig). Defense-in-Depth: neuer _coerce_json()-Helper macht den Parser tolerant gegen ```-Fences, fuehrende Prosa und nachgestelltes Geplauder (erstes vollstaendiges {..}/[..] via json.JSONDecoder().raw_decode). 4 neue Tests (3x Parser, 1x Prefill-Wiring mit gemocktem urlopen). Verifiziert: Pipeline-Lauf 0 parse-failed-Warnungen, alle 6 User-Stories-LLM-Scores gefuellt, frische Cache-Antworten starten sauber mit '{score:...}'.",
       "tags": [
         "llm",
         "user-stories",
         "score-parse",
-        "graceful-degradation",
-        "non-blocking"
+        "anthropic-prefill",
+        "json-output",
+        "max-tokens-truncation",
+        "resolved"
       ],
       "related_bugs": [],
       "occurrences": 1,
@@ -1055,6 +1057,22 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-06-01T17:18:12.850Z"
+    },
+    {
+      "id": "bug-065",
+      "timestamp": "2026-06-01T17:27:53.584Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/llm.py",
+      "root_cause": "8 lines replaced/restructured",
+      "fix": "Rewrote 16→40 lines (8 removed) | Also: def call(self, prompt, system=None, max_tokens=Non; Cached automatisch nach prompt+system+model.",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-01T17:28:18.746Z"
     }
   ]
 }

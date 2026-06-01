@@ -60,21 +60,45 @@ def _is_fresh(cached, ttl_days):
     return (datetime.utcnow() - cached_at) < timedelta(days=ttl_days)
 
 
+def _coerce_json(out):
+    """Gewinnt aus einer LLM-Antwort ein JSON-Objekt/-Liste (oder None).
+
+    Toleriert drei Stoerquellen: (1) ```json-Fences, (2) fuehrende Prosa und
+    (3) nachgestelltes Geplauder hinter dem JSON. Strategie: erst der glatte Fall
+    (ganzer String = JSON), sonst das erste vollstaendig parsebare {..}/[..] per
+    raw_decode aus dem Text schneiden. Abgeschnittenes (unvollstaendiges) JSON ist
+    nicht rettbar und ergibt None."""
+    s = out.strip()
+    if s.startswith("```"):
+        s = s.strip("`")
+        if s.startswith("json"):
+            s = s[4:].strip()
+    # 1) Glatter Fall: der ganze String ist bereits valides JSON.
+    try:
+        return json.loads(s)
+    except (ValueError, TypeError):
+        pass
+    # 2) JSON in Prosa eingebettet: am ersten '{'/'[' raw_decode versuchen.
+    #    raw_decode ignoriert alles NACH dem ersten vollstaendigen Wert.
+    decoder = json.JSONDecoder()
+    for i, ch in enumerate(s):
+        if ch in "{[":
+            try:
+                obj, _ = decoder.raw_decode(s, i)
+                return obj
+            except ValueError:
+                continue
+    return None
+
+
 def _parse_score_response(out, scale_max):
     """Parst die LLM-Score-Antwort zu {'score': int, 'reason': str} oder None.
     Reine Funktion (kein Netzwerk) - direkt testbar.
-    Behandelt dict-, Listen- (aggregiert zum Mittel) und ```json-umwickelte Antworten."""
+    Behandelt dict-, Listen- (aggregiert zum Mittel) und ```json-umwickelte
+    Antworten sowie JSON, das in Prosa eingebettet ist (siehe _coerce_json)."""
     if not out or not out.strip():
         return None
-    out = out.strip()
-    if out.startswith("```"):
-        out = out.strip("`")
-        if out.startswith("json"):
-            out = out[4:].strip()
-    try:
-        data = json.loads(out)
-    except (ValueError, json.JSONDecodeError, TypeError):
-        return None
+    data = _coerce_json(out)
     if isinstance(data, list) and data:
         scores = [int(d.get("score", 0)) for d in data if isinstance(d, dict)]
         reasons = [str(d.get("reason", "")).strip() for d in data if isinstance(d, dict)]
@@ -104,13 +128,18 @@ class LLMClient:
             log.info("LLM disabled (no API key or dummy). Heuristik-only Modus.")
         CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
-    def call(self, prompt, system=None, max_tokens=None, model=None):
+    def call(self, prompt, system=None, max_tokens=None, model=None, prefill=None):
         """
         Schickt einen Prompt an die API. Gibt den Text-Output zurueck oder None bei Fehler.
-        Cached automatisch nach prompt+system+model.
+        Cached automatisch nach prompt+system+model(+prefill).
 
         model uebersteuert das Default-Modell pro Aufruf (threadsafe - es wird KEIN
         self.model mutiert, daher auch bei paralleler Nutzung des Clients sicher).
+
+        prefill fuellt den Assistant-Turn vor (Anthropic-Prefill): das Modell setzt
+        zwingend ab diesem Text fort. Mit prefill="{" erzwingt score() reines JSON
+        ohne Prosa-Vorspann. Der zurueckgegebene Text enthaelt den Prefill vorne
+        (= vollstaendiger Assistant-Turn), damit der Parser ein komplettes Objekt sieht.
         """
         if not self.enabled:
             return None
@@ -118,6 +147,8 @@ class LLMClient:
         m = model or self.model
         max_t = max_tokens or self.max_tokens
         cache_input = f"{system or ''}||{prompt}||{max_t}"
+        if prefill:
+            cache_input += f"||prefill={prefill}"
         key = _cache_key(cache_input, m)
         cache_file = CACHE_DIR / key
 
@@ -129,11 +160,15 @@ class LLMClient:
             except Exception:
                 pass
 
+        messages = [{"role": "user", "content": prompt}]
+        if prefill:
+            # Assistant-Prefill: zwingt das Modell, ab diesem Text fortzusetzen.
+            messages.append({"role": "assistant", "content": prefill})
         body = {
             "model": m,
             "max_tokens": max_t,
             "temperature": self.temperature,
-            "messages": [{"role": "user", "content": prompt}],
+            "messages": messages,
         }
         if system:
             body["system"] = system
@@ -164,6 +199,10 @@ class LLMClient:
                 if not text.strip():
                     log.warning("LLM lieferte leere Antwort (model=%s).", m)
                     return None
+                if prefill:
+                    # API liefert nur die Fortsetzung; Prefill voranstellen, damit
+                    # der Parser den kompletten Assistant-Turn (z.B. '{...}') sieht.
+                    text = prefill + text
                 cache_file.write_text(json.dumps({
                     "_cached_at": datetime.utcnow().isoformat(),
                     "response": text,
@@ -213,7 +252,10 @@ class LLMClient:
             f'"reason": "<kurze Begruendung 1-3 Saetze>"}}. '
             f"Bei mehreren Samples: gib EINE zusammenfassende Bewertung, keine Liste pro Item."
         )
-        out = self.call(prompt, system=full_system, max_tokens=600, model=model)
+        # prefill="{" erzwingt, dass das Modell sofort als JSON-Objekt fortsetzt -
+        # kein Prosa-Vorspann, der (a) den Parser bricht und (b) das Token-Budget
+        # frisst, sodass das JSON am Ende abgeschnitten wuerde.
+        out = self.call(prompt, system=full_system, max_tokens=600, model=model, prefill="{")
         result = _parse_score_response(out, scale_max)
         if result is None and out:
             log.warning(f"LLM score parse failed (got: {out[:200]})")

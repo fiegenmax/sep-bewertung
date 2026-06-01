@@ -499,3 +499,13 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 19:18 | Edited docs/nutzung.md | 5→5 lines | ~99 |
 | 19:18 | Edited docs/nutzung.md | 5→5 lines | ~105 |
 | 19:45 | Pfad-Gen geaendert: local_folder = voller Name (cohorte-kurz), Dedup nach vollem Namen | skripte/gen_mapping.py, test_gen_mapping.py, teams.example.txt, README/CLAUDE/docs | 78/78 Tests gruen, Mapping+Pipeline mit Voll-Namen 6/6, alte Kurz-Ordner geloescht | ~9k |
+| 19:23 | Session end: 15 writes across 7 files (build_xlsx.py, gen_mapping.py, test_gen_mapping.py, teams.example.txt, README.md) | 15 reads | ~10237 tok |
+| 19:26 | Edited skripte/test_evaluate.py | modified test_garbage_none() | ~430 |
+| 19:27 | Edited skripte/llm.py | modified _coerce_json() | ~459 |
+| 19:28 | Edited skripte/llm.py | modified call() | ~317 |
+| 19:28 | Edited skripte/llm.py | 8→12 lines | ~128 |
+| 19:28 | Edited skripte/llm.py | modified strip() | ~124 |
+| 19:28 | Edited skripte/llm.py | 2→5 lines | ~108 |
+| 19:29 | Edited skripte/test_evaluate.py | modified test_truncated_json_stays_none() | ~672 |
+| 19:31 | Session end: 22 writes across 9 files (build_xlsx.py, gen_mapping.py, test_gen_mapping.py, teams.example.txt, README.md) | 18 reads | ~23984 tok |
+| 20:15 | LLM-Score-Parse gefixt (bug-061): Anthropic Assistant-Prefill erzwingt JSON + robuster Parser | skripte/llm.py, test_evaluate.py | 82/82 Tests gruen, Pipeline 0 parse-failed, alle US-LLM-Scores gefuellt | ~14k |
