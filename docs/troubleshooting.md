@@ -94,7 +94,7 @@ Alternative: `NeedAppearances` ist im PDF-Schreibcode gesetzt, sollte das fixen 
 
 `build_overview.py` liest die existierenden `Bewertung_team-X.xlsx`-Dateien ein. Wenn die nicht existieren, ist auch die Übersicht leer.
 
-Erst pro Team eine Bewertung generieren, dann `python build_overview.py` (oder `python run_all.py --overview`).
+Erst pro Team eine Bewertung generieren, dann `uv run python skripte/build_overview.py` (oder `uv run sep-bewertung --overview`).
 
 ## `coverage_pct` ist immer None
 
@@ -137,9 +137,13 @@ Häufige Gründe:
 - API-Aufrufe schlagen fehl (Permission auf Projekt fehlt).
 - Cache enthält invalides JSON aus früherem Lauf — `--fresh` lösen das.
 
-## Auf macOS/Linux: `python` statt `python3`
+## `python`/`python3` oder fehlende Pakete
 
-Die README/Doku spricht von `python run_all.py`. Auf macOS/Linux ist das oft `python3`. Anpassen oder einen Alias setzen.
+Mit dem empfohlenen `uv run sep-bewertung` stellt sich diese Frage nicht — uv
+besorgt selbst eine passende Python-Version und installiert die Dependencies ins
+projekteigene `.venv`. Nur beim klassischen Weg (`python run_all.py`) musst du
+selbst auf den richtigen Interpreter (`python` vs. `python3`) und `pip install
+openpyxl pypdf PyYAML tqdm` achten.
 
 ## Was nicht gehen wird
 

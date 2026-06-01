@@ -431,3 +431,13 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 17:42 | Edited docs/nutzung.md | 6→5 lines | ~19 |
 | 17:42 | Edited docs/nutzung.md | "python run_all.py --pdf" → "uv run sep-bewertung --pd" | ~30 |
 | 17:45 | uv-Umbau: pyproject.toml (deps+sep-bewertung-script+hatchling source-remap), .gitignore .venv/, uv sync, Tests 73 grün | pyproject.toml/.gitignore/uv.lock | OK | ~600 |
+| 17:44 | Session end: 26 writes across 11 files (teams.example.txt, .gitignore, nutzung.md, test_gen_mapping.py, gen_mapping.py) | 10 reads | ~11275 tok |
+| 17:45 | Edited README.md | expanded (+21 lines) | ~472 |
+| 17:45 | Edited README.md | "python run_all.py" → "uv run sep-bewertung" | ~64 |
+| 17:45 | Edited docs/nutzung.md | 6→6 lines | ~50 |
+| 17:46 | Edited docs/troubleshooting.md | "python build_overview.py" → "uv run python skripte/bui" | ~35 |
+| 17:46 | Edited docs/troubleshooting.md | 3→7 lines | ~106 |
+| 17:46 | Edited docs/llm-integration.md | "python run_all.py --fresh" → "uv run sep-bewertung --fr" | ~18 |
+| 17:46 | Edited docs/funktionsweise.md | "python run_all.py team-en" → "uv run sep-bewertung team" | ~23 |
+| 17:46 | Edited docs/Bewertungs-Methodik.md | 4→3 lines | ~16 |
+| 18:05 | Docs nach uv-Umbau aktualisiert + README als Kollegen-Einstand (Setup-Schritte inkl. team_mapping erzeugen); reststale Befehle gefixt | README/docs/* | OK | ~400 |

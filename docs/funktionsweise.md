@@ -191,7 +191,7 @@ Aktuell werden die Schwellen noch teilweise hartcodiert in den `analyze_*`-Funkt
 
 Pro Team ein Eintrag mit `local_folder`, `gitlab_path`, `gitlab_id`, URLs. Wird einmalig erzeugt aus der GitLab-Group-API.
 
-## Aufruf-Sequenz im Detail (Beispiel: `python run_all.py team-entropy --fresh`)
+## Aufruf-Sequenz im Detail (Beispiel: `uv run sep-bewertung team-entropy --fresh`)
 
 1. `main()` parsed Args, erkennt `--fresh` und löscht den Cache.
 2. Lädt `.env` (oder Fallback `.gitlab-config`) und `config.yaml`.

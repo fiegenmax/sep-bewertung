@@ -37,8 +37,7 @@ Zwischenprüfung/
 Aufruf für ein Team:
 
 ```bash
-cd skripte
-python3 build_xlsx.py team-entropy
+uv run python skripte/build_xlsx.py team-entropy
 ```
 
 ## Datenquellen

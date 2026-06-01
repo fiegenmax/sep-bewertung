@@ -13,8 +13,8 @@
       "first_read": "2026-06-01T15:21:43.184Z"
     },
     "c:/Users/maxfi/Documents/git/sep-bewertung/docs/nutzung.md": {
-      "count": 4,
-      "tokens": 2741,
+      "count": 5,
+      "tokens": 2740,
       "first_read": "2026-06-01T15:22:18.505Z"
     },
     "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/anatomy.md": {
@@ -38,8 +38,8 @@
       "first_read": "2026-06-01T15:32:27.872Z"
     },
     "c:/Users/maxfi/Documents/git/sep-bewertung/README.md": {
-      "count": 1,
-      "tokens": 0,
+      "count": 2,
+      "tokens": 699,
       "first_read": "2026-06-01T15:36:10.479Z"
     },
     "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/run_all.py": {
@@ -51,6 +51,26 @@
       "count": 1,
       "tokens": 3265,
       "first_read": "2026-06-01T15:41:20.720Z"
+    },
+    "c:/Users/maxfi/Documents/git/sep-bewertung/docs/troubleshooting.md": {
+      "count": 1,
+      "tokens": 1693,
+      "first_read": "2026-06-01T15:45:57.909Z"
+    },
+    "c:/Users/maxfi/Documents/git/sep-bewertung/docs/llm-integration.md": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-06-01T15:46:18.922Z"
+    },
+    "c:/Users/maxfi/Documents/git/sep-bewertung/docs/funktionsweise.md": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-06-01T15:46:19.546Z"
+    },
+    "c:/Users/maxfi/Documents/git/sep-bewertung/docs/Bewertungs-Methodik.md": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-06-01T15:46:41.126Z"
     }
   },
   "files_written": [
@@ -209,24 +229,76 @@
       "action": "edit",
       "tokens": 32,
       "at": "2026-06-01T15:42:31.791Z"
+    },
+    {
+      "file": "c:/Users/maxfi/Documents/git/sep-bewertung/README.md",
+      "action": "edit",
+      "tokens": 505,
+      "at": "2026-06-01T15:45:40.733Z"
+    },
+    {
+      "file": "c:/Users/maxfi/Documents/git/sep-bewertung/README.md",
+      "action": "edit",
+      "tokens": 68,
+      "at": "2026-06-01T15:45:47.280Z"
+    },
+    {
+      "file": "c:/Users/maxfi/Documents/git/sep-bewertung/docs/nutzung.md",
+      "action": "edit",
+      "tokens": 54,
+      "at": "2026-06-01T15:45:53.409Z"
+    },
+    {
+      "file": "c:/Users/maxfi/Documents/git/sep-bewertung/docs/troubleshooting.md",
+      "action": "edit",
+      "tokens": 37,
+      "at": "2026-06-01T15:46:05.911Z"
+    },
+    {
+      "file": "c:/Users/maxfi/Documents/git/sep-bewertung/docs/troubleshooting.md",
+      "action": "edit",
+      "tokens": 114,
+      "at": "2026-06-01T15:46:13.783Z"
+    },
+    {
+      "file": "c:/Users/maxfi/Documents/git/sep-bewertung/docs/llm-integration.md",
+      "action": "edit",
+      "tokens": 20,
+      "at": "2026-06-01T15:46:24.456Z"
+    },
+    {
+      "file": "c:/Users/maxfi/Documents/git/sep-bewertung/docs/funktionsweise.md",
+      "action": "edit",
+      "tokens": 24,
+      "at": "2026-06-01T15:46:31.918Z"
+    },
+    {
+      "file": "c:/Users/maxfi/Documents/git/sep-bewertung/docs/Bewertungs-Methodik.md",
+      "action": "edit",
+      "tokens": 18,
+      "at": "2026-06-01T15:46:48.717Z"
     }
   ],
   "edit_counts": {
     "skripte/teams.example.txt": 2,
     ".gitignore": 2,
-    "docs/nutzung.md": 10,
+    "docs/nutzung.md": 11,
     "skripte/test_gen_mapping.py": 1,
     "skripte/gen_mapping.py": 3,
     "docs/superpowers/specs/2026-06-01-gen-mapping-design.md": 1,
     "skripte/evaluate_team.py": 3,
     "docs/superpowers/specs/2026-06-01-uv-umbau-design.md": 1,
     "pyproject.toml": 1,
-    "README.md": 1,
-    "CLAUDE.md": 1
+    "README.md": 3,
+    "CLAUDE.md": 1,
+    "docs/troubleshooting.md": 2,
+    "docs/llm-integration.md": 1,
+    "docs/funktionsweise.md": 1,
+    "docs/Bewertungs-Methodik.md": 1
   },
-  "anatomy_hits": 3,
-  "anatomy_misses": 7,
-  "repeated_reads_warned": 9,
+  "anatomy_hits": 4,
+  "anatomy_misses": 10,
+  "repeated_reads_warned": 11,
   "cerebrum_warnings": 0,
-  "stop_count": 3
+  "stop_count": 4
 }

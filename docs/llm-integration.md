@@ -88,7 +88,7 @@ TTL aus `config.yaml` → `llm.cache_ttl_days` (default 7 Tage).
 
 Wenn der Cache-Eintrag älter als TTL ist, wird er als nicht-vorhanden behandelt und neu angefragt.
 
-Bei `python run_all.py --fresh` wird der gesamte Cache gelöscht.
+Bei `uv run sep-bewertung --fresh` wird der gesamte Cache gelöscht.
 
 ## Wann LLM-Calls überspringen
 

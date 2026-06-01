@@ -4,28 +4,48 @@ Automatisierte Bewertung studentischer Software-Engineering-Praktikum-Projekte (
 
 ## Quickstart
 
-Voraussetzung ist [uv](https://docs.astral.sh/uv/) — es verwaltet venv und
-Dependencies automatisch, kein manuelles `pip install` mehr nötig.
+Einzige Voraussetzung ist [uv](https://docs.astral.sh/uv/getting-started/installation/)
+— es verwaltet venv und Dependencies automatisch, kein manuelles `pip install`
+nötig.
+
+### Einmalig einrichten
+
+**1. Zugangsdaten** — `.env.example` nach `.env` kopieren und ausfüllen:
 
 ```bash
-# Config anlegen: .env.example kopieren und Werte eintragen
 cp .env.example .env
-# Danach in .env eintragen:
-#   GITLAB_TOKEN=glpat-xxxxx
-#   ANTHROPIC_API_KEY=sk-ant-xxxxx   (optional)
-
-# Alle Teams bewerten (uv legt beim ersten Lauf venv + Deps automatisch an)
-uv run sep-bewertung
-
-# Nur ein Team
-uv run sep-bewertung team-entropy
-
-# Mit PDF-Ausfüllung und Übersicht
-uv run sep-bewertung --pdf --overview
-
-# Cache leeren + frische API-Daten
-uv run sep-bewertung --fresh
 ```
+
+```
+GITLAB_TOKEN=glpat-xxxxx          # Pflicht (Scopes: read_api + read_repository)
+ANTHROPIC_API_KEY=sk-ant-xxxxx    # optional — ohne läuft es rein heuristisch
+GITLAB_GROUP=<deine-gruppe>/...   # Parent-Namespace der Studi-Repos
+GITLAB_COHORT=<tutorium>          # Default-Kohorte (z. B. shannon)
+```
+
+**2. Team-Mapping erzeugen** — legt fest, welche Teams bewertet werden. Es zeigt
+auf echte Studi-Repos und ist daher gitignored, du erzeugst es lokal:
+
+```bash
+cp skripte/teams.example.txt skripte/teams.txt   # dann Team-Kurznamen eintragen
+uv run python skripte/gen_mapping.py             # löst GitLab-IDs/URLs per API auf
+```
+
+> Details, gemischte Kohorten und die manuelle Alternative: siehe
+> [`docs/nutzung.md`](docs/nutzung.md).
+
+### Bewerten
+
+```bash
+uv run sep-bewertung                    # alle Teams
+uv run sep-bewertung team-entropy       # nur ein Team
+uv run sep-bewertung --pdf --overview   # + PDF-Formular + Übersichts-Excel
+uv run sep-bewertung --fresh            # Cache leeren (frische API-Daten)
+```
+
+Beim allerersten Lauf legt uv automatisch das venv an und installiert die
+Dependencies — danach starten die Läufe sofort. Pro Team entsteht eine
+`Bewertung_<team>.xlsx` im jeweiligen Team-Ordner.
 
 <details>
 <summary>Ohne uv (klassischer Weg)</summary>
@@ -33,6 +53,7 @@ uv run sep-bewertung --fresh
 ```bash
 pip install openpyxl pypdf PyYAML tqdm
 cd skripte
+python gen_mapping.py            # einmalig, siehe oben
 python run_all.py --pdf --overview
 ```
 </details>
@@ -69,7 +90,7 @@ Mit zwei Summen am Ende: "GESAMT" (deine Punkte) und "GESAMT (LLM-Hybrid)" (was 
 
 ## Bei Re-Lauf bleiben deine Eintragungen erhalten
 
-Wenn du `python run_all.py` ein zweites Mal laufen lässt nachdem du in F und G manuell editiert hast, werden diese Werte beim Re-Bauen übernommen — und es gibt ein `.xlsx.bak` als Sicherheit. Manuelle Bewertungen gehen nicht verloren.
+Wenn du `uv run sep-bewertung` ein zweites Mal laufen lässt nachdem du in F und G manuell editiert hast, werden diese Werte beim Re-Bauen übernommen — und es gibt ein `.xlsx.bak` als Sicherheit. Manuelle Bewertungen gehen nicht verloren.
 
 ## Kosten
 

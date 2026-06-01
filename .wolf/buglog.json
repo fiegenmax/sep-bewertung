@@ -766,15 +766,15 @@
       "error_message": "Significant refactor of ",
       "file": "README.md",
       "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 19→34 lines (3 removed)",
+      "fix": "Rewrote 19→34 lines (3 removed) | Also: Voraussetzung ist [uv](https://docs.astral.sh/uv/); Dependencies automatisch, kein manuelles `pip inst",
       "tags": [
         "auto-detected",
         "refactor",
         "md"
       ],
       "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-06-01T15:41:06.720Z"
+      "occurrences": 2,
+      "last_seen": "2026-06-01T15:45:40.736Z"
     },
     {
       "id": "bug-048",
@@ -823,6 +823,86 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-06-01T15:42:31.796Z"
+    },
+    {
+      "id": "bug-051",
+      "timestamp": "2026-06-01T15:45:47.287Z",
+      "error_message": "Incorrect value in code",
+      "file": "README.md",
+      "root_cause": "Had `python run_all.py`",
+      "fix": "Changed to `uv run sep-bewertung`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T15:45:47.287Z"
+    },
+    {
+      "id": "bug-052",
+      "timestamp": "2026-06-01T15:46:05.914Z",
+      "error_message": "Incorrect value in code",
+      "file": "docs/troubleshooting.md",
+      "root_cause": "Had `python build_overview.py`",
+      "fix": "Changed to `uv run python skripte/build_overview.py`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T15:46:05.914Z"
+    },
+    {
+      "id": "bug-053",
+      "timestamp": "2026-06-01T15:46:13.787Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/troubleshooting.md",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 3→7 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T15:46:13.787Z"
+    },
+    {
+      "id": "bug-054",
+      "timestamp": "2026-06-01T15:46:24.459Z",
+      "error_message": "Incorrect value in code",
+      "file": "docs/llm-integration.md",
+      "root_cause": "Had `python run_all.py --fresh`",
+      "fix": "Changed to `uv run sep-bewertung --fresh`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T15:46:24.459Z"
+    },
+    {
+      "id": "bug-055",
+      "timestamp": "2026-06-01T15:46:31.920Z",
+      "error_message": "Incorrect value in code",
+      "file": "docs/funktionsweise.md",
+      "root_cause": "Had `python run_all.py team-entropy --fresh`",
+      "fix": "Changed to `uv run sep-bewertung team-entropy --fresh`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T15:46:31.920Z"
     }
   ]
 }

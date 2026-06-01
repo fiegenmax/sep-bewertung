@@ -69,11 +69,11 @@ nicht von Hand abtippen.
    `team-lovelace-poetical`). So lassen sich Teams aus mehreren Tutorien in
    einer Liste mischen.
 
-3. Generieren (aus `skripte/`):
+3. Generieren:
 
    ```bash
-   python gen_mapping.py            # nutzt skripte/teams.txt
-   python gen_mapping.py <pfad>     # alternative Listendatei
+   uv run python skripte/gen_mapping.py            # nutzt skripte/teams.txt
+   uv run python skripte/gen_mapping.py <pfad>     # alternative Listendatei
    ```
 
    Der Lauf ist idempotent: bestehende Einträge werden aktualisiert, nicht
