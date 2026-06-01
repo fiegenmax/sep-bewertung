@@ -382,3 +382,12 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
 | 17:09 | Created ../../../.claude/projects/c--Users-maxfi-Documents-git-sep-bewertung/memory/repo-is-public.md | — | ~387 |
+| 17:10 | Session end: 1 writes across 1 files (repo-is-public.md) | 5 reads | ~542 tok |
+
+## Session: 2026-06-01 17:14
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:18 | Created docs/superpowers/specs/2026-06-01-gen-mapping-design.md | — | ~1211 |
+
+| --:-- | Brainstorming gen_mapping.py: Design fuer team_mapping-Generierung aus teams.txt | docs/superpowers/specs/2026-06-01-gen-mapping-design.md | spec geschrieben | ~1200 |

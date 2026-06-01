@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-01T15:09:39.959Z
-> Files: 7 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-01T15:18:12.349Z
+> Files: 8 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../.claude/projects/c--Users-maxfi-Documents-git-sep-bewertung/memory/
 
@@ -31,6 +31,9 @@
 
 ## docs/superpowers/specs/
 
+- `2026-06-01-gen-mapping-design.md` — Design: team_mapping.json aus teams.txt via GitLab-API generieren (~900 tok)
+
+- `2026-06-01-gen-mapping-design.md` — Design: Auto-Generierung von `team_mapping.json` aus einer Teamnamen-Liste (~1135 tok)
 
 ## skripte/
 
