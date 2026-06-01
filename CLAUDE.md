@@ -61,8 +61,8 @@ funktionieren die gegenseitigen Imports `import evaluate_team` etc. unverändert
 # Alle Teams als Excel generieren
 uv run sep-bewertung
 
-# Nur ein Team
-uv run sep-bewertung team-entropy
+# Nur ein Team (voller Ordnername = die teams.txt-Zeile mit team-Praefix)
+uv run sep-bewertung team-shannon-alpha
 
 # Cache leeren + frische API-Daten
 uv run sep-bewertung --fresh

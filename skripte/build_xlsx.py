@@ -142,6 +142,11 @@ def backup_existing(xlsx_path):
 
 def build_xlsx(team_name, gitlab_path, web_url, results, output_path,
                keep_manual=True, do_backup=True):
+    # Zielverzeichnis sicherstellen: die Team-Ordner unter teams/ sind gitignored
+    # (Studentendaten) und fehlen auf einem frischen Checkout. Ohne dieses mkdir
+    # crasht wb.save() mit FileNotFoundError, weil teams/team-<name>/ nicht existiert.
+    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+
     by_crit = {r["criterion"]: r for r in results}
     info_results = [r for r in results if r.get("max") == 0]
 

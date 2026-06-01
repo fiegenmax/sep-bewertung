@@ -2,13 +2,13 @@
   "version": 1,
   "created_at": "2026-05-28T15:43:16.046Z",
   "lifetime": {
-    "total_tokens_estimated": 306247,
-    "total_reads": 218,
-    "total_writes": 309,
-    "total_sessions": 27,
+    "total_tokens_estimated": 311434,
+    "total_reads": 228,
+    "total_writes": 321,
+    "total_sessions": 28,
     "anatomy_hits": 23,
-    "anatomy_misses": 189,
-    "repeated_reads_blocked": 141,
+    "anatomy_misses": 199,
+    "repeated_reads_blocked": 142,
     "estimated_savings_vs_bare_cli": 518736
   },
   "sessions": [
@@ -3329,6 +3329,143 @@
         "reads_count": 9,
         "writes_count": 2,
         "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-06-01-1846",
+      "started": "2026-06-01T16:46:44.308Z",
+      "ended": "2026-06-01T16:57:49.855Z",
+      "reads": [
+        {
+          "file": "e:/Code/sep-bewertung/.wolf/anatomy.md",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/gen_mapping.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/teams.example.txt",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/test_gen_mapping.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/team_mapping.example.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/docs/superpowers/specs/2026-06-01-gen-mapping-design.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/.env.example",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/README.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/docs/nutzung.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/.wolf/cerebrum.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "e:/Code/sep-bewertung/docs/superpowers/specs/2026-06-01-teams-kombinierter-name-design.md",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/docs/superpowers/specs/2026-06-01-gen-mapping-design.md",
+          "tokens_estimated": 77,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/test_gen_mapping.py",
+          "tokens_estimated": 1911,
+          "action": "create"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/gen_mapping.py",
+          "tokens_estimated": 185,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/gen_mapping.py",
+          "tokens_estimated": 496,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/gen_mapping.py",
+          "tokens_estimated": 60,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/gen_mapping.py",
+          "tokens_estimated": 328,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/teams.example.txt",
+          "tokens_estimated": 292,
+          "action": "create"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/README.md",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/README.md",
+          "tokens_estimated": 92,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/docs/nutzung.md",
+          "tokens_estimated": 221,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/docs/nutzung.md",
+          "tokens_estimated": 42,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 5187,
+        "reads_count": 10,
+        "writes_count": 12,
+        "repeated_reads_blocked": 1,
         "anatomy_lookups": 0
       }
     }

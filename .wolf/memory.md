@@ -476,3 +476,26 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 18:55 | Edited docs/nutzung.md | modified eintragen() | ~206 |
 | 18:55 | Edited docs/nutzung.md | 3→2 lines | ~39 |
 | 18:56 | teams.txt: kombinierter Name statt Cohort-Default/Override (TDD) | gen_mapping.py, test_gen_mapping.py, docs, .env.example | 77 Tests gruen | ~1200 |
+| 18:57 | Session end: 12 writes across 7 files (2026-06-01-teams-kombinierter-name-design.md, 2026-06-01-gen-mapping-design.md, test_gen_mapping.py, gen_mapping.py, teams.example.txt) | 10 reads | ~5187 tok |
+
+## Session: 2026-06-01 19:01
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:08 | Edited skripte/build_xlsx.py | 2→7 lines | ~122 |
+| 19:20 | Voller Lauf: gen_mapping + Pipeline (--pdf --overview), 6/6 OK | skripte/build_xlsx.py, .wolf/buglog.json | bug-060 gefixt (mkdir Zielordner), 77/77 Tests gruen, 6 xlsx+pdf+Uebersicht erzeugt | ~12k |
+| 19:13 | Edited skripte/gen_mapping.py | Projektnamen() → Projekt() | ~202 |
+| 19:13 | Edited skripte/gen_mapping.py | 15→14 lines | ~175 |
+| 19:13 | Edited skripte/test_gen_mapping.py | test_local_folder_has_no_cohort_token() → test_local_folder_is_full_combined_name() | ~52 |
+| 19:13 | Edited skripte/test_gen_mapping.py | modified _entry() | ~148 |
+| 19:13 | Edited skripte/test_gen_mapping.py | 3→3 lines | ~45 |
+| 19:15 | Edited skripte/gen_mapping.py | modified read_teams() | ~195 |
+| 19:15 | Edited skripte/test_gen_mapping.py | modified test_reads_dedupes_by_full_name_and_strips_prefix() | ~267 |
+| 19:16 | Edited skripte/gen_mapping.py | modified txt() | ~219 |
+| 19:16 | Edited skripte/teams.example.txt | 12→12 lines | ~149 |
+| 19:17 | Edited README.md | 4→4 lines | ~78 |
+| 19:18 | Edited CLAUDE.md | 2→2 lines | ~31 |
+| 19:18 | Edited docs/nutzung.md | 5→7 lines | ~73 |
+| 19:18 | Edited docs/nutzung.md | 5→5 lines | ~99 |
+| 19:18 | Edited docs/nutzung.md | 5→5 lines | ~105 |
+| 19:45 | Pfad-Gen geaendert: local_folder = voller Name (cohorte-kurz), Dedup nach vollem Namen | skripte/gen_mapping.py, test_gen_mapping.py, teams.example.txt, README/CLAUDE/docs | 78/78 Tests gruen, Mapping+Pipeline mit Voll-Namen 6/6, alte Kurz-Ordner geloescht | ~9k |

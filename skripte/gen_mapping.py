@@ -6,14 +6,16 @@ Eingaben:
 - skripte/teams.txt (gitignored): eine Zeile pro Team = der kombinierte
   GitLab-Name "cohort-kurzname" (z.B. "shannon-bit"), mit oder ohne fuehrendes
   "team-". '#' leitet einen Kommentar ein, Leerzeilen werden ignoriert. Vorlage:
-  skripte/teams.example.txt. Der Kurzname (Teil nach dem ersten "-") ist
-  eindeutig und wird zum lokalen Ordnernamen.
+  skripte/teams.example.txt. Der volle kombinierte Name (inkl. Kohorte) wird zum
+  lokalen Ordnernamen "team-<combined>" (z.B. team-shannon-bit) und muss
+  eindeutig sein.
 - .env (gitignored): GITLAB_TOKEN und GITLAB_GROUP (Parent-Namespace).
 
 Pro Team wird der GitLab-Projektpfad gebaut
     {GITLAB_GROUP}/team-{combined}
 (combined = die teams.txt-Zeile, z.B. "shannon-bit") und ueber die GitLab-API
-(GET /projects/<urlencoded path>) zu ID/URLs aufgeloest.
+(GET /projects/<urlencoded path>) zu ID/URLs aufgeloest. Der lokale Ordner heiszt
+genauso wie das GitLab-Projekt (team-<combined>).
 Das Ergebnis wird idempotent in team_mapping.json gemerged (bestehende Eintraege
 werden aktualisiert, nicht gelistete bleiben erhalten). Vor dem Schreiben wird
 ein .bak angelegt.
@@ -88,15 +90,17 @@ def short_of(combined):
 def read_teams(path):
     """Teamliste lesen -> deduplizierte kombinierte Namen in Datei-Reihenfolge.
 
-    Dedupliziert nach Kurzname (der lokale Ordnername muss eindeutig sein); das
-    erste Vorkommen gewinnt.
+    Dedupliziert nach dem vollen kombinierten Namen (der zugleich der lokale
+    Ordnername 'team-<combined>' ist und eindeutig sein muss); das erste
+    Vorkommen gewinnt. Zwei Teams mit gleichem Kurznamen aber unterschiedlicher
+    Kohorte (z.B. shannon-bit und lovelace-bit) bleiben damit beide erhalten.
     """
     teams = []
     seen = set()
     for raw in Path(path).read_text(encoding="utf-8").splitlines():
         combined = parse_line(raw)
-        if combined and short_of(combined) not in seen:
-            seen.add(short_of(combined))
+        if combined and combined not in seen:
+            seen.add(combined)
             teams.append(combined)
     return teams
 
@@ -106,19 +110,21 @@ def project_path(group, combined):
     return f"{group}/team-{combined}"
 
 
-def entry_from_project(proj, short):
-    """API-Projektantwort + Kurzname -> Mapping-Eintrag.
+def entry_from_project(proj):
+    """API-Projektantwort -> Mapping-Eintrag.
 
-    local_folder traegt den lokalen Ordnernamen ('team-bit'), name den vollen
-    GitLab-Projektnamen ('team-shannon-bit'). gitlab_path/URLs kommen direkt aus
-    der API (maszgeblich).
+    local_folder UND name tragen den vollen GitLab-Ordnernamen
+    ('team-shannon-bit') -- der lokale Ordner unter teams/ heiszt damit genauso
+    wie das GitLab-Projekt (kombinierter Name 'cohort-kurz', wie in teams.txt).
+    gitlab_path/URLs kommen direkt aus der API (maszgeblich).
     """
     pwn = proj["path_with_namespace"]
+    folder = pwn.rsplit("/", 1)[-1]
     return {
-        "local_folder": f"team-{short}",
+        "local_folder": folder,
         "gitlab_path": pwn,
         "gitlab_id": proj["id"],
-        "name": pwn.rsplit("/", 1)[-1],
+        "name": folder,
         "http_url": proj["http_url_to_repo"],
         "ssh_url": proj["ssh_url_to_repo"],
         "web_url": proj["web_url"],
@@ -193,7 +199,6 @@ def main(argv):
     resolved = []
     failures = []
     for combined in teams:
-        short = short_of(combined)
         if "-" not in combined:
             msg = (
                 "kein Cohort-Segment; bitte den kombinierten Namen 'cohort-kurz' "
@@ -204,9 +209,9 @@ def main(argv):
             continue
         try:
             proj = fetch_project(group, combined, token)
-            entry = entry_from_project(proj, short)
+            entry = entry_from_project(proj)
             resolved.append(entry)
-            print(f"  OK  team-{short:<14} -> {entry['gitlab_path']} (id {entry['gitlab_id']})")
+            print(f"  OK  {entry['local_folder']:<22} -> {entry['gitlab_path']} (id {entry['gitlab_id']})")
         except Exception as e:  # noqa: BLE001 - pro Team weitermachen
             failures.append((combined, e))
             print(f"  XX  {combined:<18} -> {e}", file=sys.stderr)

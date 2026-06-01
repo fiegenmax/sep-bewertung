@@ -36,10 +36,10 @@ uv run python skripte/gen_mapping.py             # löst GitLab-IDs/URLs per API
 ### Bewerten
 
 ```bash
-uv run sep-bewertung                    # alle Teams
-uv run sep-bewertung team-entropy       # nur ein Team
-uv run sep-bewertung --pdf --overview   # + PDF-Formular + Übersichts-Excel
-uv run sep-bewertung --fresh            # Cache leeren (frische API-Daten)
+uv run sep-bewertung                       # alle Teams
+uv run sep-bewertung team-shannon-alpha    # nur ein Team (voller Ordnername)
+uv run sep-bewertung --pdf --overview      # + PDF-Formular + Übersichts-Excel
+uv run sep-bewertung --fresh               # Cache leeren (frische API-Daten)
 ```
 
 Beim allerersten Lauf legt uv automatisch das venv an und installiert die

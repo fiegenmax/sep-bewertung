@@ -191,12 +191,12 @@ Aktuell werden die Schwellen noch teilweise hartcodiert in den `analyze_*`-Funkt
 
 Pro Team ein Eintrag mit `local_folder`, `gitlab_path`, `gitlab_id`, URLs. Wird einmalig erzeugt aus der GitLab-Group-API.
 
-## Aufruf-Sequenz im Detail (Beispiel: `uv run sep-bewertung team-entropy --fresh`)
+## Aufruf-Sequenz im Detail (Beispiel: `uv run sep-bewertung team-shannon-alpha --fresh`)
 
 1. `main()` parsed Args, erkennt `--fresh` und löscht den Cache.
 2. Lädt `.env` (oder Fallback `.gitlab-config`) und `config.yaml`.
 3. Erzeugt LLM-Client (mit Schalter `enabled`).
-4. Lädt `team_mapping.json`, filtert auf `team-entropy`.
+4. Lädt `team_mapping.json`, filtert auf `team-shannon-alpha`.
 5. Ruft `process(entry, token, llm_client)`:
    1. `clone_or_update` — git fetch oder clone.
    2. `api_get_paginated` für issues, mrs, releases, milestones, members.
@@ -206,7 +206,7 @@ Pro Team ein Eintrag mit `local_folder`, `gitlab_path`, `gitlab_id`, URLs. Wird 
    6. 20× `analyze_*` mit dem LLM-Client.
    7. `analyze_sanity_check`.
    8. `build_xlsx(...)` schreibt die Excel.
-6. (optional) `fill_pdf.main_for("team-entropy")`.
+6. (optional) `fill_pdf.main_for("team-shannon-alpha")`.
 7. (optional, am Ende) `build_overview.main()`.
 
 Bei `--fresh`-Lauf für 1 Team: ~1-2 min (LLM-Calls dominieren). Bei warmem Cache: ~5 Sekunden.

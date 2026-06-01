@@ -76,7 +76,7 @@ class ShortOfTests(unittest.TestCase):
 
 
 class ReadTeamsTests(unittest.TestCase):
-    def test_reads_dedupes_by_short_and_strips_prefix(self):
+    def test_reads_dedupes_by_full_name_and_strips_prefix(self):
         import tempfile
         from pathlib import Path
 
@@ -91,6 +91,15 @@ class ReadTeamsTests(unittest.TestCase):
                 gm.read_teams(p),
                 ["shannon-bit", "shannon-entropy", "lovelace-poetical"],
             )
+
+    def test_same_short_different_cohort_both_kept(self):
+        import tempfile
+        from pathlib import Path
+
+        with tempfile.TemporaryDirectory() as d:
+            p = Path(d) / "teams.txt"
+            p.write_text("shannon-bit\nlovelace-bit\n", encoding="utf-8")
+            self.assertEqual(gm.read_teams(p), ["shannon-bit", "lovelace-bit"])
 
 
 class ProjectPathTests(unittest.TestCase):
@@ -108,10 +117,10 @@ class EntryFromProjectTests(unittest.TestCase):
         self.proj = _project(
             "ude-sse/sep-summer-2026/student_projects/team-shannon-bit", 3492
         )
-        self.entry = gm.entry_from_project(self.proj, "bit")
+        self.entry = gm.entry_from_project(self.proj)
 
-    def test_local_folder_has_no_cohort_token(self):
-        self.assertEqual(self.entry["local_folder"], "team-bit")
+    def test_local_folder_is_full_combined_name(self):
+        self.assertEqual(self.entry["local_folder"], "team-shannon-bit")
 
     def test_name_is_full_gitlab_project_name(self):
         self.assertEqual(self.entry["name"], "team-shannon-bit")
@@ -161,12 +170,14 @@ class MergeEntriesTests(unittest.TestCase):
                 f"ude-sse/sep-summer-2026/student_projects/team-shannon-{short}",
                 pid,
             ),
-            short,
         )
 
     def test_adds_new_entries_sorted_by_local_folder(self):
         merged = gm.merge_entries([], [self._entry("entropy", 1), self._entry("bit", 2)])
-        self.assertEqual([e["local_folder"] for e in merged], ["team-bit", "team-entropy"])
+        self.assertEqual(
+            [e["local_folder"] for e in merged],
+            ["team-shannon-bit", "team-shannon-entropy"],
+        )
 
     def test_updates_existing_entry_in_place(self):
         old = self._entry("bit", 999)
@@ -179,8 +190,8 @@ class MergeEntriesTests(unittest.TestCase):
         existing = [self._entry("noisy", 7)]
         merged = gm.merge_entries(existing, [self._entry("bit", 2)])
         folders = [e["local_folder"] for e in merged]
-        self.assertIn("team-noisy", folders)
-        self.assertIn("team-bit", folders)
+        self.assertIn("team-shannon-noisy", folders)
+        self.assertIn("team-shannon-bit", folders)
 
     def test_idempotent_running_twice_changes_nothing(self):
         new = [self._entry("bit", 2), self._entry("entropy", 1)]

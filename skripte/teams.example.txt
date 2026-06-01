@@ -6,17 +6,17 @@
 # Format pro Zeile ('#' = Kommentar, Leerzeilen werden ignoriert):
 #
 #   <cohort>-<kurzname>        Der kombinierte GitLab-Name, mit oder ohne
-#                              fuehrendes "team-". Der Kurzname (Teil nach dem
-#                              ersten "-") ist eindeutig und wird zum lokalen
-#                              Ordnernamen.
+#                              fuehrendes "team-". Der volle kombinierte Name
+#                              (inkl. Kohorte) wird zum lokalen Ordnernamen und
+#                              muss eindeutig sein.
 #
 # Daraus entsteht:
 #   GitLab-Projekt: {GITLAB_GROUP}/team-<cohort>-<kurzname>
-#   lokaler Ordner: team-<kurzname>
+#   lokaler Ordner: team-<cohort>-<kurzname>   (genau wie in dieser Liste)
 #
 # Beispiel: "shannon-alpha"
 #   -> GitLab: .../student_projects/team-shannon-alpha
-#   -> lokal:  team-alpha
+#   -> lokal:  team-shannon-alpha
 #
 # Teams aus verschiedenen Tutorien/Kohorten stehen einfach mit ihrem jeweiligen
 # Cohort-Praefix in derselben Liste.

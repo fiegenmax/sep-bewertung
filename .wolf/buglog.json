@@ -959,10 +959,102 @@
       "file": "skripte/evaluate_team.py",
       "root_cause": "analyze_work_scope staffelte nach absoluten Gesamt-Commits/LOC. Jedes reale SEP-Team knackt diese Schwellen muehelos, daher landeten alle in der else->15-Stufe. Rohe Gesamtzahlen sind zudem ein schwaches Proxy fuer 'angemessenen Aufwand'.",
       "fix": "Pro-Kopf-Normalisierung: Gesamt-Commits/LOC geteilt durch eine FESTE angenommene Teamgroesse (work_scope.assumed_active_authors, Default 6 = Annahme '5-6 aktive Autoren'), NICHT durch die gemessene Autorenzahl (GitLab ueberschaetzt; gemessen-teilen wuerde Trittbrettfahrer belohnen). Neue Pro-Kopf-Schwellen (5: <15c/<800loc, 10: <40c/<2000loc) ergeben wieder Spread (SS26: 4x10, 2x15). Helper count_active_authors() aus git shortlog. Gemessene Autorenzahl nur informativ im Reason.",
-      "tags": ["scoring", "work_scope", "arbeitsumfang", "heuristik", "kalibrierung", "config"],
+      "tags": [
+        "scoring",
+        "work_scope",
+        "arbeitsumfang",
+        "heuristik",
+        "kalibrierung",
+        "config"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-06-01"
+    },
+    {
+      "id": "bug-060",
+      "timestamp": "2026-06-01",
+      "error_message": "Pipeline-Lauf: alle 6 Teams scheitern beim Schreiben mit '[Errno 2] No such file or directory: ...teams/team-<name>/Bewertung_team-<name>.xlsx'. Fertig: 0/6, danach 'Keine Team-xlsx gefunden' bei der Uebersicht.",
+      "file": "skripte/build_xlsx.py",
+      "root_cause": "build_xlsx() ruft wb.save(output_path) ohne das Zielverzeichnis anzulegen. Die Team-Ordner teams/team-<name>/ sind gitignored (Studentendaten) und fehlen auf einem frischen Checkout - extract_manual_values/backup_existing sind no-ops weil die Datei fehlt, aber save() crasht am nicht existierenden Parent-Dir.",
+      "fix": "Am Anfang von build_xlsx: Path(output_path).parent.mkdir(parents=True, exist_ok=True). Pipeline danach 6/6 (Excel + PDF + Uebersicht), 77/77 Tests gruen.",
+      "tags": [
+        "pipeline",
+        "build_xlsx",
+        "filenotfound",
+        "fresh-checkout",
+        "mkdir",
+        "output-dir"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01"
+    },
+    {
+      "id": "bug-061",
+      "timestamp": "2026-06-01",
+      "error_message": "Wiederholte 'LLM score parse failed (got: Ich bewerte die ... User Stories: ...)' Warnungen waehrend des Laufs fuer das User-Stories-Kriterium einiger Teams.",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "Der User-Stories-LLM-Prompt liefert bei manchen Teams ausfuehrliche Prosa OHNE die erwartete fuehrende Score-Zahl, sodass der Score-Parser keinen numerischen Wert extrahieren kann. Wird graceful behandelt (D-Spalte bleibt leer, GESAMT-LLM-Hybrid faellt auf die Heuristik zurueck) - kein Crash, nur fehlende LLM-Zweitmeinung fuer dieses eine Kriterium.",
+      "fix": "Noch offen/nicht kritisch: nur degradierte LLM-Zweitmeinung, Heuristik unberuehrt. Robuster waere ein strikteres 'Antworte mit Score: N'-Prompt-Format oder ein Fallback-Regex auf eine Zahl im Text.",
+      "tags": [
+        "llm",
+        "user-stories",
+        "score-parse",
+        "graceful-degradation",
+        "non-blocking"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01"
+    },
+    {
+      "id": "bug-062",
+      "timestamp": "2026-06-01T17:13:50.917Z",
+      "error_message": "Incorrect value in code",
+      "file": "skripte/test_gen_mapping.py",
+      "root_cause": "Had \"team-noisy\"",
+      "fix": "Changed to \"team-shannon-noisy\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T17:13:50.917Z"
+    },
+    {
+      "id": "bug-063",
+      "timestamp": "2026-06-01T17:15:42.835Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/gen_mapping.py",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 14→16 lines (4 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T17:15:42.835Z"
+    },
+    {
+      "id": "bug-064",
+      "timestamp": "2026-06-01T17:18:12.850Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/nutzung.md",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 5→7 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T17:18:12.850Z"
     }
   ]
 }

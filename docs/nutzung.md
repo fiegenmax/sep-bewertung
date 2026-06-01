@@ -62,10 +62,10 @@ nicht von Hand abtippen.
    `teams.txt` ist gitignored.
 
    Daraus wird das GitLab-Projekt `{GITLAB_GROUP}/team-<cohort>-<kurzname>`; der
-   lokale Ordner heißt `team-<kurzname>` (der Kurzname = Teil nach dem ersten
-   `-` ist eindeutig). Teams aus **verschiedenen Tutorien/Kohorten** stehen
-   einfach mit ihrem jeweiligen Cohort-Präfix in derselben Liste, z. B.
-   `lovelace-poetical`.
+   lokale Ordner heißt **genauso** wie das Projekt, also `team-<cohort>-<kurzname>`
+   (z. B. `team-shannon-bit`) — exakt die teams.txt-Zeile mit `team-`-Präfix.
+   Teams aus **verschiedenen Tutorien/Kohorten** stehen einfach mit ihrem
+   jeweiligen Cohort-Präfix in derselben Liste, z. B. `lovelace-poetical`.
 
 3. Generieren:
 
@@ -125,10 +125,12 @@ Was passiert: für jedes Team in `team_mapping.json` wird das Repo aktualisiert,
 ### Nur ein Team
 
 ```bash
-uv run sep-bewertung team-entropy
+uv run sep-bewertung team-shannon-alpha
 ```
 
-Identischer Ablauf, aber nur für eines.
+Identischer Ablauf, aber nur für eines. Das Argument ist der **volle** lokale
+Ordnername (= die teams.txt-Zeile mit `team-`-Präfix, z. B.
+`team-shannon-alpha`), wie er unter `teams/` und in `team_mapping.json` steht.
 
 ### Cache leeren (echte Re-Analyse)
 
@@ -152,11 +154,11 @@ uv run sep-bewertung --pdf --overview
 Wenn die `Bewertung_<team>.xlsx` schon existieren (z. B. nach manueller Bewertung) und du nur die PDF-Formulare (neu) ausfüllen willst — **ohne** git-Fetch, GitLab-API oder LLM:
 
 ```bash
-uv run sep-bewertung --pdf-only            # alle Teams
-uv run sep-bewertung --pdf-only team-bit   # nur ein Team
+uv run sep-bewertung --pdf-only                   # alle Teams
+uv run sep-bewertung --pdf-only team-shannon-alpha  # nur ein Team
 ```
 
-Das liest ausschließlich die jeweilige Excel (Spalte F + die Kriterien-Namen) und braucht weder `GITLAB_TOKEN` noch `ANTHROPIC_API_KEY`. Für ein einzelnes Team geht alternativ direkt `uv run python skripte/fill_pdf.py team-bit`.
+Das liest ausschließlich die jeweilige Excel (Spalte F + die Kriterien-Namen) und braucht weder `GITLAB_TOKEN` noch `ANTHROPIC_API_KEY`. Für ein einzelnes Team geht alternativ direkt `uv run python skripte/fill_pdf.py team-shannon-alpha`.
 
 ## Die Excel verstehen und ausfüllen
 
