@@ -759,6 +759,70 @@
       "related_bugs": [],
       "occurrences": 2,
       "last_seen": "2026-06-01T15:29:36.776Z"
+    },
+    {
+      "id": "bug-047",
+      "timestamp": "2026-06-01T15:41:06.720Z",
+      "error_message": "Significant refactor of ",
+      "file": "README.md",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 19→34 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T15:41:06.720Z"
+    },
+    {
+      "id": "bug-048",
+      "timestamp": "2026-06-01T15:41:28.213Z",
+      "error_message": "Significant refactor of ",
+      "file": "CLAUDE.md",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 19→26 lines (6 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T15:41:28.213Z"
+    },
+    {
+      "id": "bug-049",
+      "timestamp": "2026-06-01T15:41:46.077Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/nutzung.md",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 9→13 lines (6 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T15:41:46.077Z"
+    },
+    {
+      "id": "bug-050",
+      "timestamp": "2026-06-01T15:42:31.796Z",
+      "error_message": "Incorrect value in code",
+      "file": "docs/nutzung.md",
+      "root_cause": "Had `python run_all.py --pdf`",
+      "fix": "Changed to `uv run sep-bewertung --pdf`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T15:42:31.796Z"
     }
   ]
 }

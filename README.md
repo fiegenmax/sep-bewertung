@@ -4,23 +4,38 @@ Automatisierte Bewertung studentischer Software-Engineering-Praktikum-Projekte (
 
 ## Quickstart
 
-```bash
-# Voraussetzungen
-pip install openpyxl pypdf PyYAML tqdm
+Voraussetzung ist [uv](https://docs.astral.sh/uv/) — es verwaltet venv und
+Dependencies automatisch, kein manuelles `pip install` mehr nötig.
 
+```bash
 # Config anlegen: .env.example kopieren und Werte eintragen
 cp .env.example .env
 # Danach in .env eintragen:
 #   GITLAB_TOKEN=glpat-xxxxx
 #   ANTHROPIC_API_KEY=sk-ant-xxxxx   (optional)
 
-# Alle Teams bewerten
-cd skripte
-python run_all.py
+# Alle Teams bewerten (uv legt beim ersten Lauf venv + Deps automatisch an)
+uv run sep-bewertung
+
+# Nur ein Team
+uv run sep-bewertung team-entropy
 
 # Mit PDF-Ausfüllung und Übersicht
+uv run sep-bewertung --pdf --overview
+
+# Cache leeren + frische API-Daten
+uv run sep-bewertung --fresh
+```
+
+<details>
+<summary>Ohne uv (klassischer Weg)</summary>
+
+```bash
+pip install openpyxl pypdf PyYAML tqdm
+cd skripte
 python run_all.py --pdf --overview
 ```
+</details>
 
 ## Doku
 

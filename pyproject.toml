@@ -1,0 +1,32 @@
+[project]
+name = "sep-bewertung"
+version = "0.1.0"
+description = "Automatisierte Bewertungspipeline fuer studentische SEP-Projekte (UDE)"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+dependencies = [
+    "openpyxl",
+    "pypdf",
+    "pyyaml",
+    "tqdm",
+]
+
+[project.scripts]
+sep-bewertung = "run_all:main"
+
+[dependency-groups]
+dev = ["pytest"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# Flache Modul-Struktur in skripte/ beibehalten: die Skripte importieren sich
+# gegenseitig als Top-Level-Module (import evaluate_team, from build_xlsx ...).
+# Der source-Remap installiert skripte/*.py als Top-Level-Module, sodass diese
+# Imports unveraendert funktionieren (kein Repackaging in ein Package noetig).
+[tool.hatch.build.targets.wheel]
+sources = ["skripte"]
+include = ["skripte/*.py"]
+exclude = ["skripte/test_*.py"]

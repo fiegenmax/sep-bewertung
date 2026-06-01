@@ -416,3 +416,18 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 17:32 | Edited skripte/evaluate_team.py | expanded (+10 lines) | ~152 |
 | 17:32 | Edited skripte/evaluate_team.py | 2→2 lines | ~37 |
 | --:-- | Cohort pro Team ueberschreibbar (poetical=lovelace entdeckt); certifi-SSL-Fix; LIVE verifiziert: Mapping reproduziert Original 1:1 (6 Teams, 0 Diff) | skripte/gen_mapping.py, skripte/evaluate_team.py, test_gen_mapping.py | gruen, live-validiert | ~9000 |
+| 17:35 | Session end: 14 writes across 7 files (teams.example.txt, .gitignore, nutzung.md, test_gen_mapping.py, gen_mapping.py) | 7 reads | ~5636 tok |
+| 17:38 | Session end: 14 writes across 7 files (teams.example.txt, .gitignore, nutzung.md, test_gen_mapping.py, gen_mapping.py) | 9 reads | ~5666 tok |
+| 17:39 | Created docs/superpowers/specs/2026-06-01-uv-umbau-design.md | — | ~687 |
+| 17:39 | Created pyproject.toml | — | ~235 |
+| 17:39 | Edited .gitignore | 6→9 lines | ~31 |
+| 17:41 | Edited README.md | expanded (+15 lines) | ~216 |
+| 17:41 | Edited CLAUDE.md | expanded (+7 lines) | ~211 |
+| 17:41 | Edited docs/nutzung.md | 9→13 lines | ~170 |
+| 17:41 | Edited docs/nutzung.md | 6→5 lines | ~23 |
+| 17:42 | Edited docs/nutzung.md | 11→11 lines | ~44 |
+| 17:42 | Edited docs/nutzung.md | 5→5 lines | ~19 |
+| 17:42 | Edited docs/nutzung.md | 8→6 lines | ~95 |
+| 17:42 | Edited docs/nutzung.md | 6→5 lines | ~19 |
+| 17:42 | Edited docs/nutzung.md | "python run_all.py --pdf" → "uv run sep-bewertung --pd" | ~30 |
+| 17:45 | uv-Umbau: pyproject.toml (deps+sep-bewertung-script+hatchling source-remap), .gitignore .venv/, uv sync, Tests 73 grün | pyproject.toml/.gitignore/uv.lock | OK | ~600 |

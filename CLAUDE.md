@@ -51,23 +51,30 @@ Es zieht für jede Studi-Team-Gruppe das GitLab-Repo + Issues/MRs/Wiki/Releases,
 
 ## Schnellstart-Befehle
 
-Alle Pipeline-Skripte liegen in `skripte/`:
+Das Projekt ist ein **uv-Projekt** (`pyproject.toml` im Root). uv verwaltet venv +
+Dependencies automatisch; der Konsolen-Befehl `sep-bewertung` ist auf
+`run_all:main` gemappt. Die Skripte liegen weiterhin flach in `skripte/` (kein
+Package — der hatchling source-Remap installiert sie als Top-Level-Module, daher
+funktionieren die gegenseitigen Imports `import evaluate_team` etc. unverändert).
 
 ```bash
-cd skripte
-
 # Alle Teams als Excel generieren
-python run_all.py
+uv run sep-bewertung
 
 # Nur ein Team
-python run_all.py team-entropy
+uv run sep-bewertung team-entropy
 
 # Cache leeren + frische API-Daten
-python run_all.py --fresh
+uv run sep-bewertung --fresh
 
 # Mit PDF und Übersicht
-python run_all.py --pdf --overview
+uv run sep-bewertung --pdf --overview
+
+# Tests
+uv run python -m pytest skripte
 ```
+
+Klassischer Weg ohne uv funktioniert weiter: `cd skripte && python run_all.py ...`.
 
 ## Wichtige Konzepte (für Claude Code)
 

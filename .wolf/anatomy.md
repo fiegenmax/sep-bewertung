@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-01T15:32:46.009Z
-> Files: 12 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-01T15:42:31.773Z
+> Files: 15 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../.claude/projects/c--Users-maxfi-Documents-git-sep-bewertung/memory/
 
@@ -9,8 +9,10 @@
 
 ## ./
 
-- `.gitignore` — Git ignore rules (~241 tok)
-- `CLAUDE.md` — OpenWolf (~3265 tok)
+- `.gitignore` — Git ignore rules (~258 tok)
+- `CLAUDE.md` — OpenWolf (~3386 tok)
+- `pyproject.toml` — Automatisierte Bewertungspipeline fuer studentische SEP-Projekte (UDE) (~235 tok)
+- `README.md` — Project documentation (~699 tok)
 
 ## .claude/
 
@@ -23,7 +25,7 @@
 
 ## docs/
 
-- `nutzung.md` — Nutzung (~2686 tok)
+- `nutzung.md` — Nutzung (~2740 tok)
 - `troubleshooting.md` — Troubleshooting (~1693 tok)
 
 ## docs/superpowers/plans/
@@ -32,6 +34,7 @@
 ## docs/superpowers/specs/
 
 - `2026-06-01-gen-mapping-design.md` — Design: Auto-Generierung von `team_mapping.json` aus einer Teamnamen-Liste (~1324 tok)
+- `2026-06-01-uv-umbau-design.md` — Design: Umbau auf ein uv-Projekt (Variante „Konsolen-Befehl") (~644 tok)
 
 ## skripte/
 

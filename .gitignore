@@ -31,6 +31,9 @@ __pycache__/
 .Python
 *.egg-info/
 
+# uv / venv (uv.lock wird committet, das venv nicht)
+.venv/
+
 # Caches (sind in /tmp, sollten eh nicht hier sein)
 gitlab_api_cache/
 llm_cache/

@@ -4,15 +4,19 @@ Praktische Anleitung wie du die Pipeline für eine SEP-Bewertung verwendest. Wen
 
 ## Voraussetzungen einmalig einrichten
 
-### 1. Python 3.10+
+### 1. uv installieren
 
-Prüfen mit `python --version`. Installiere `openpyxl`, `pypdf`, `PyYAML` und `tqdm`:
+Das Projekt ist ein [uv](https://docs.astral.sh/uv/)-Projekt. uv verwaltet venv und
+Dependencies automatisch — du musst nichts mehr von Hand mit `pip` installieren.
+Installation von uv siehe https://docs.astral.sh/uv/getting-started/installation/.
 
-```powershell
-pip install openpyxl pypdf PyYAML tqdm
-```
+Beim ersten `uv run sep-bewertung ...` (siehe unten) legt uv automatisch ein
+`.venv` an und installiert `openpyxl`, `pypdf`, `PyYAML` und `tqdm` aus
+`pyproject.toml`. Python ≥ 3.9 genügt; uv besorgt bei Bedarf selbst eine passende
+Version.
 
-`tqdm` ist optional und nur für den Fortschrittsbalken beim Lauf zuständig. Fehlt es, läuft die Pipeline trotzdem (eine Statuszeile pro fertigem Team).
+> Ohne uv geht es auch klassisch: `pip install openpyxl pypdf PyYAML tqdm`, dann
+> `cd skripte && python run_all.py ...`.
 
 ### 2. Git und ein GitLab Personal Access Token
 
@@ -116,8 +120,7 @@ Das sind die offiziellen Vorlagen — wenn du sie nicht hast, einfach die Templa
 ### Alle Teams auf einmal generieren
 
 ```bash
-cd skripte
-python run_all.py
+uv run sep-bewertung
 ```
 
 Was passiert: für jedes Team in `team_mapping.json` wird das Repo aktualisiert, alle API-Daten gezogen, 20 Analysen durchgeführt, das LLM zur Inhaltsprüfung befragt, und eine Excel `Bewertung_team-X.xlsx` im jeweiligen Team-Ordner geschrieben.
@@ -125,7 +128,7 @@ Was passiert: für jedes Team in `team_mapping.json` wird das Repo aktualisiert,
 ### Nur ein Team
 
 ```bash
-python run_all.py team-entropy
+uv run sep-bewertung team-entropy
 ```
 
 Identischer Ablauf, aber nur für eines.
@@ -133,7 +136,7 @@ Identischer Ablauf, aber nur für eines.
 ### Cache leeren (echte Re-Analyse)
 
 ```bash
-python run_all.py --fresh
+uv run sep-bewertung --fresh
 ```
 
 Bei Folgeläufen werden GitLab-API-Antworten aus `<temp>/sep_gitlab_api_cache/` und LLM-Antworten aus `<temp>/sep_llm_cache/` benutzt (`<temp>` = OS-Temp-Verzeichnis, per `SEP_CACHE_DIR` überschreibbar) — was sehr schnell ist, aber bei aktiv weiterentwickelten Repos die alten Daten zeigt. `--fresh` löscht beide Caches.
@@ -141,7 +144,7 @@ Bei Folgeläufen werden GitLab-API-Antworten aus `<temp>/sep_gitlab_api_cache/` 
 ### Mit PDF-Formular und Übersichts-Excel
 
 ```bash
-python run_all.py --pdf --overview
+uv run sep-bewertung --pdf --overview
 ```
 
 - `--pdf` befüllt zusätzlich das offizielle PDF-Formular (`Bewertung_<team>.pdf`): Teamname, angekreuzte Punkte (Checkboxes nach der "Deine Bewertung"-Spalte F), Gesamtpunktzahl und Abschnitts-Zwischensummen. Kommentare/Anmerkungen werden bewusst **nicht** ins PDF geschrieben.
@@ -152,13 +155,11 @@ python run_all.py --pdf --overview
 Wenn die `Bewertung_<team>.xlsx` schon existieren (z. B. nach manueller Bewertung) und du nur die PDF-Formulare (neu) ausfüllen willst — **ohne** git-Fetch, GitLab-API oder LLM:
 
 ```bash
-python run_all.py --pdf-only            # alle Teams
-python run_all.py --pdf-only team-bit   # nur ein Team
+uv run sep-bewertung --pdf-only            # alle Teams
+uv run sep-bewertung --pdf-only team-bit   # nur ein Team
 ```
 
-Das liest ausschließlich die jeweilige Excel (Spalte F + die Kriterien-Namen) und braucht weder `GITLAB_TOKEN` noch `ANTHROPIC_API_KEY`. Für ein einzelnes Team geht alternativ direkt `python fill_pdf.py team-bit`.
-
-> Hinweis: `run_all.py` liegt im Ordner `skripte/` — also vorher `cd skripte` (sonst „can't open file ... run_all.py").
+Das liest ausschließlich die jeweilige Excel (Spalte F + die Kriterien-Namen) und braucht weder `GITLAB_TOKEN` noch `ANTHROPIC_API_KEY`. Für ein einzelnes Team geht alternativ direkt `uv run python skripte/fill_pdf.py team-bit`.
 
 ## Die Excel verstehen und ausfüllen
 
@@ -203,8 +204,7 @@ Hier stehen Daten ohne direkten Score, aber wichtig für die manuellen Bewertung
 Wenn das Team seit dem letzten Lauf Commits gemacht hat und du neu bewerten willst:
 
 ```bash
-cd skripte
-python run_all.py --fresh
+uv run sep-bewertung --fresh
 ```
 
 `--fresh` wischt den Cache, damit garantiert frische Daten kommen. **Deine bereits manuell eingetragenen Werte und Anmerkungen werden automatisch übernommen** — das Skript liest die alte Excel ein, schreibt ein `.bak`-Backup, generiert neu und merged deine manuellen Änderungen zurück.
@@ -220,7 +220,7 @@ Wenn du deine alten Werte komplett wegwerfen willst, lösche vorher die `Bewertu
 ## Was tun nach der Bewertung
 
 1. Excel pro Team füllen (Spalte F + Anmerkungen + die zwei manuellen Kriterien).
-2. (Optional) `python run_all.py --pdf` laufen lassen, dann hast du die offiziellen PDF-Formulare ausgefüllt — Teamname, Checkboxes nach Spalte F, Gesamtpunktzahl und Zwischensummen. Anmerkungen (Spalte G) bleiben in der Excel, sie werden nicht ins PDF übernommen.
+2. (Optional) `uv run sep-bewertung --pdf` laufen lassen, dann hast du die offiziellen PDF-Formulare ausgefüllt — Teamname, Checkboxes nach Spalte F, Gesamtpunktzahl und Zwischensummen. Anmerkungen (Spalte G) bleiben in der Excel, sie werden nicht ins PDF übernommen.
 3. Die PDFs ausdrucken/digital weitergeben wie es die Prüfungsordnung verlangt.
 
 ## Wichtige Backup-Hinweise
