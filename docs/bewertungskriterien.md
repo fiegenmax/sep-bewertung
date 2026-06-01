@@ -196,17 +196,37 @@ Im Excel steht prominent in der Begründung: "WICHTIG - MANUELLE PRÜFUNG ZWINGE
 
 ### Arbeitsumfang angemessen (0/5/10/15)
 
-**Was misst die Heuristik:**
-- Anzahl Commits, LOC (Java/TS/HTML/CSS, ohne node_modules)
-- Schwellen (cumulative):
-  - <20 Commits & <1k LoC → 0
-  - <60 Commits ODER <3k LoC → 5
-  - <120 Commits ODER <6k LoC → 10
-  - sonst → 15
+**Was misst die Heuristik:** Anzahl Commits und LOC (sprachunabhängig über die
+Registry, ohne Vendor-Dirs) — **pro Kopf normalisiert**.
 
-**Warum so:** Über mehrere Sprints im SEP-Kurs sind diese Zahlen kalibriert. Bei einem 6er-Team mit 4 Sprints ist 120+ Commits und 6k+ LoC üblicherweise erreichbar.
+**Annahme (bewusst, dokumentiert):** Ein SEP-Team hat erfahrungsgemäß **5–6
+aktive Autoren**. Die Pro-Kopf-Normalisierung teilt Gesamt-Commits/LOC durch eine
+**feste angenommene Teamgröße** (`config.yaml → work_scope.assumed_active_authors`,
+Default **6** = konservativ am oberen Rand), **nicht** durch die gemessene
+Autorenzahl. Gründe:
+- Die GitLab-Mitgliederzahl überschätzt (zählt Nie-Committer/Tutoren mit; im SS26
+  meldete GitLab 11–12 „Mitglieder" bei real nur 7–8 Commit-Autoren).
+- Durch die *gemessene* Autorenzahl zu teilen würde Trittbrettfahrer belohnen
+  (1 Person macht alles → riesige Pro-Kopf-Werte → 15). Ungleiche Verteilung fängt
+  ohnehin das Info-Kriterium **Commit-Verteilung** (Gini) ab.
 
-**Blinde Flecken:** Quantität ≠ Qualität. Viele kleine Refactoring-Commits zählen genauso wie echte Features. Das LLM könnte hier sekundär helfen (gibt aber aktuell keine LLM-Bewertung für dieses Kriterium).
+Die gemessene Autorenzahl steht nur informativ im Reason-Text; weicht sie stark
+von 5–6 ab, weist der Text auf manuelle Prüfung hin.
+
+**Schwellen (kumulativ, pro Kopf bei 6 angenommenen Autoren):**
+- <20 Commits & <1k LoC (absolut) → 0
+- <15 Commits/Kopf ODER <800 LoC/Kopf → 5
+- <40 Commits/Kopf ODER <2000 LoC/Kopf → 10
+- sonst → 15
+
+**Warum so:** Rohe Gesamtzahlen sind ein schwaches Signal — ein normales
+Semester-SEP knackt jede absolute Schwelle, weshalb die alte Logik faktisch
+**immer 15** gab (alle SS26-Teams: 193–634 Commits, 8k–23k LoC → ausnahmslos
+15/15). Pro Kopf entsteht wieder ein Spread (SS26 schwächstes Team ~35 Commits/Kopf
+& ~1.4k LoC/Kopf → 10, stärkstes ~106 & ~3.9k → 15).
+
+**Blinde Flecken:** Quantität ≠ Qualität. Viele kleine Refactoring-Commits zählen
+genauso wie echte Features. Deshalb bleibt der ⚠-Hinweis zur manuellen Prüfung.
 
 ---
 

@@ -442,6 +442,71 @@ class TestAuthorIdentity(unittest.TestCase):
         self.assertEqual(res["details"]["total_commits"], 3)
 
 
+class TestWorkScopePerDev(unittest.TestCase):
+    """Arbeitsumfang wird auf eine ANGENOMMENE Teamgroesse (5-6 aktive Autoren)
+    normalisiert, NICHT auf die gemessene Autorenzahl. Hoehere angenommene
+    Teamgroesse senkt den Score bei gleichen Gesamtzahlen; die gemessene
+    Autorenzahl steht nur informativ in den Details."""
+
+    # Bewusst winzige Schwellen, damit wenige Commits genuegen (schneller Test).
+    def _thr(self, assumed):
+        return {"work_scope": {
+            "assumed_active_authors": assumed,
+            "zero_commits": 1, "zero_loc": 1,
+            "five_commits_per_dev": 2, "five_loc_per_dev": 100,
+            "ten_commits_per_dev": 4, "ten_loc_per_dev": 300,
+        }}
+
+    def setUp(self):
+        ev._THRESHOLDS_CACHE = None
+        ev._LANG_CACHE = None
+        ev._VENDOR_CACHE = None
+        ev._TUTORS_CACHE = None
+        self.tmp = Path(tempfile.mkdtemp())
+        import subprocess
+        subprocess.run(["git", "init", "-q"], cwd=self.tmp)
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+        ev._THRESHOLDS_CACHE = None
+
+    def _build(self, authors, commits_per_author, loc):
+        import subprocess
+        # big.py liefert die LOC; log.txt (kein Source-Suffix) traegt nur die Commits.
+        (self.tmp / "big.py").write_text("x = 1\n" * loc, encoding="utf-8")
+        for i in range(commits_per_author):
+            for a in authors:
+                env = {**os.environ, "GIT_AUTHOR_NAME": a, "GIT_AUTHOR_EMAIL": f"{a}@x.de",
+                       "GIT_COMMITTER_NAME": a, "GIT_COMMITTER_EMAIL": f"{a}@x.de"}
+                (self.tmp / "log.txt").write_text(f"{a}{i}", encoding="utf-8")
+                subprocess.run(["git", "add", "-A"], cwd=self.tmp, env=env)
+                subprocess.run(["git", "commit", "-q", "-m", f"{a}{i}"], cwd=self.tmp, env=env)
+
+    def test_normalizes_by_assumed_team_size(self):
+        # 8 Commits / 600 LOC, angenommene Teamgroesse 2 -> 4 Commits/Kopf, 300 LOC/Kopf -> 15
+        ev._THRESHOLDS_CACHE = self._thr(2)
+        self._build(["alice", "bob"], 4, 600)
+        res = ev.analyze_work_scope(self.tmp, issues=[], mrs=[], members=[])
+        self.assertEqual(res["details"]["git_authors"], 2)       # gemessen, nur Info
+        self.assertEqual(res["details"]["assumed_team_size"], 2)  # Teiler
+        self.assertEqual(res["score"], 15)
+
+    def test_higher_assumed_size_lowers_score(self):
+        # IDENTISCHE 8 Commits / 600 LOC, aber angenommene Teamgroesse 4
+        # -> 2 Commits/Kopf, 150 LOC/Kopf -> 10. Beweist: der Teiler ist die Annahme.
+        ev._THRESHOLDS_CACHE = self._thr(4)
+        self._build(["alice", "bob"], 4, 600)  # selbe 2 echten Autoren wie oben
+        res = ev.analyze_work_scope(self.tmp, issues=[], mrs=[], members=[])
+        self.assertEqual(res["details"]["assumed_team_size"], 4)
+        self.assertEqual(res["score"], 10)
+
+    def test_near_empty_repo_is_zero(self):
+        ev._THRESHOLDS_CACHE = None  # echte Defaults (zero_commits=20, zero_loc=1000)
+        self._build(["solo"], 1, 5)  # 1 Commit, 5 LOC
+        res = ev.analyze_work_scope(self.tmp, issues=[], mrs=[], members=[])
+        self.assertEqual(res["score"], 0)
+
+
 class TestJobCoverage(unittest.TestCase):
     def test_falls_back_to_job_coverage(self):
         def fake_api_get(path, token):

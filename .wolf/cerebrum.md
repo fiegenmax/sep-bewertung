@@ -7,6 +7,7 @@
 ## User Preferences
 
 <!-- How the user likes things done. Code style, tools, patterns, communication. -->
+- [2026-06-01] **Scoring-Annahme: SEP-Teams haben „immer 5-6 aktive Autoren".** Der Nutzer will, dass sich die Arbeitsumfang-Analyse an dieser festen Annahme ausrichtet (statt an der unzuverlässigen gemessenen Mitglieder-/Autorenzahl). Umgesetzt als `work_scope.assumed_active_authors` (Default 6) als Normalisierungs-Teiler. Bei künftigen team-größen-abhängigen Heuristiken dieselbe Annahme verwenden.
 
 ## Key Learnings
 
@@ -66,4 +67,5 @@
 - [2026-05-30] Beim Test-Scoring **volle Multi-Sprach-Analyse** gewählt (statt nur konfigurierbare Listen): aggregierte sprach-agnostische Kennzahlen. Bewusste Konsequenz: gemischte Stacks können sich gegenüber der alten Java/Angular-Logik leicht verschieben; das ist der beabsichtigte Korrektheits-Fix. Substanz-Definition vereinheitlicht auf ">1 Testfall" (Plan-Entwurf `marker_hits>1` war falsch — hätte Angular-Stub mit it+expect=2 als substanziell gezählt).
 - [2026-06-01] **Repo von privat auf öffentlich umgestellt** (Nutzer-Entscheidung). Nur der Tool-Code soll public sein; Studentendaten + echte GitLab-Pointer bleiben draußen. Methodik-Heuristiken sind damit bewusst öffentlich einsehbar (Trade-off akzeptiert; Alternative wäre privat + Collaborator gewesen). History neu aufgesetzt statt chirurgisch gefiltert (sauberer, da nur 1 Tool-Snapshot relevant), Tarnnamen (`team-entropy` etc.) bleiben als harmlose CLI-Beispiele, nur die echten `student_projects`-Pfade/IDs raus.
 - [2026-05-30] Markdown-Report (4b) NICHT eingeführt — nur der irreführende `evaluate_team`-Docstring korrigiert (Excel via build_xlsx ist das einzige Artefakt).
+- [2026-06-01] **Arbeitsumfang pro Kopf normalisiert** (Nutzer-Befund „gibt immer 15 Punkte"). Alte Heuristik staffelte nach absoluten Gesamt-Commits/LOC → alle 6 SS26-Teams 15/15. Neu: Teiler = FESTE angenommene Teamgröße (`assumed_active_authors`, Default 6), NICHT die gemessene Autorenzahl — denn (a) GitLab-Mitgliederzahl überschätzt (11-12 vs. real 7-8 Commit-Autoren), (b) durch gemessene Autoren teilen würde Trittbrettfahrer belohnen (Verteilung fängt ohnehin das Gini-Kriterium). Pro-Kopf-Schwellen ergeben wieder Spread (4×10, 2×15). Helper `count_active_authors()` (git shortlog). Doku: `docs/bewertungskriterien.md`.
 - [2026-06-01] **Umbau auf uv-Projekt** (Nutzer-Wunsch „Nutzung einfacher gestalten"). Variante „Konsolen-Befehl" gewählt (Minimal + `sep-bewertung`-Entry-Point) statt Minimal-only oder vollem `src/`-Repackaging. Schlüssel-Trade-off: hatchling **source-Remap** statt Package-Umbau, damit die bestehenden flachen Cross-Imports unverändert bleiben (null Code-Churn, geringstes Risiko). Spec: `docs/superpowers/specs/2026-06-01-uv-umbau-design.md`.

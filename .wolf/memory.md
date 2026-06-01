@@ -441,3 +441,17 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 17:46 | Edited docs/funktionsweise.md | "python run_all.py team-en" → "uv run sep-bewertung team" | ~23 |
 | 17:46 | Edited docs/Bewertungs-Methodik.md | 4→3 lines | ~16 |
 | 18:05 | Docs nach uv-Umbau aktualisiert + README als Kollegen-Einstand (Setup-Schritte inkl. team_mapping erzeugen); reststale Befehle gefixt | README/docs/* | OK | ~400 |
+| 17:47 | Session end: 34 writes across 15 files (teams.example.txt, .gitignore, nutzung.md, test_gen_mapping.py, gen_mapping.py) | 14 reads | ~14506 tok |
+
+## Session: 2026-06-01 17:48
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:59 | Edited skripte/test_evaluate.py | modified setUp() | ~791 |
+| 17:59 | Edited skripte/evaluate_team.py | modified run() | ~286 |
+| 18:01 | Edited skripte/evaluate_team.py | added 2 condition(s) | ~1367 |
+| 18:01 | Edited skripte/evaluate_team.py | modified analyze_commit_distribution() | ~12 |
+| 18:02 | Edited skripte/test_evaluate.py | modified _thr() | ~912 |
+| 18:02 | Edited skripte/config.yaml | expanded (+8 lines) | ~231 |
+| 18:03 | Edited docs/bewertungskriterien.md | modified Annahme() | ~457 |
+| 18:10 | Arbeitsumfang: alte Heuristik gab immer 15/15 (alle 6 SS26-Teams). Pro-Kopf-Normalisierung auf feste angenommene Teamgroesse (assumed_active_authors=6, Nutzer-Annahme 5-6 aktive Autoren) + neue Schwellen -> Spread 4x10/2x15. count_active_authors() Helper, Tests gruen (54). | evaluate_team.py, config.yaml, test_evaluate.py, docs/bewertungskriterien.md | done | ~9k |

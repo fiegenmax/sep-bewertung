@@ -69,13 +69,21 @@ thresholds:
     min_must_closed_ratio: 0.6
 
   work_scope:
-    # Schwellen (Commits, LoC) fuer 0/5/10/15 Punkte
+    # Arbeitsumfang wird PRO KOPF bewertet. Annahme: ein SEP-Team hat
+    # erfahrungsgemaess 5-6 aktive Autoren. Die Pro-Kopf-Normalisierung teilt
+    # Gesamt-Commits/LOC durch diese feste angenommene Teamgroesse (NICHT durch
+    # die gemessene Autorenzahl -- die ueberschaetzt via GitLab-Mitglieder bzw.
+    # wuerde Trittbrettfahrer belohnen). 6 = konservativ am oberen Rand.
+    assumed_active_authors: 6
+    # Absoluter Boden: quasi leeres Repo -> 0 (teamgroessen-unabhaengig).
     zero_commits: 20
     zero_loc: 1000
-    five_commits: 60
-    five_loc: 3000
-    ten_commits: 120
-    ten_loc: 6000
+    # Pro-Kopf-Schwellen (bei 6 angenommenen Autoren). Kalibriert auf SS26:
+    # schwaechstes Team ~35 Commits/Kopf & ~1400 LOC/Kopf, staerkstes ~106 & ~3900.
+    five_commits_per_dev: 15
+    five_loc_per_dev: 800
+    ten_commits_per_dev: 40
+    ten_loc_per_dev: 2000
 
   gitlab_usage:
     min_label_ratio_full: 0.85

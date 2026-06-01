@@ -391,6 +391,25 @@ def run(cmd, cwd):
     return subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, check=False)
 
 
+_SHORTLOG_RE = re.compile(r"^\s*(\d+)\s+(.*?)\s+<([^>]*)>\s*$")
+
+
+def count_active_authors(repo):
+    """Anzahl distinkter Commit-Autoren (per E-Mail aggregiert, respektiert .mailmap).
+    Zuverlaessiger als die GitLab-Mitgliederzahl als Mass fuer 'wer hat wirklich
+    gearbeitet', weil Nie-Committer (passive Mitglieder, Tutoren) nicht mitzaehlen.
+    0 wenn kein Git-Repo / keine Commits."""
+    out = run(["git", "shortlog", "-sne", "--all", "--no-merges"], repo).stdout.splitlines()
+    keys = set()
+    for line in out:
+        m = _SHORTLOG_RE.match(line)
+        if not m:
+            continue
+        name, email = m.group(2).strip(), m.group(3).strip().lower()
+        keys.add(email or name.lower())
+    return len(keys)
+
+
 # ============================================================
 # Analysen pro Bewertungs-Kategorie
 # ============================================================
@@ -1211,11 +1230,32 @@ def analyze_sprint_goals(issues, milestones, releases, mrs=None, token=None,
 
 
 def analyze_work_scope(repo, issues, mrs, members):
-    """Arbeitsumfang (0/5/10/15)."""
+    """Arbeitsumfang (0/5/10/15), PRO KOPF normalisiert.
+
+    Rohe Gesamt-Commits/LOC sind als 'angemessen?'-Signal schwach: ein normales
+    Semester-SEP knackt jede absolute Schwelle, daher gab die alte Logik faktisch
+    immer 15 (alle SS26-Teams: 193-634 Commits, 8k-23k LOC -> ausnahmslos 15/15).
+    Wir staffeln deshalb nach Commits/Kopf und LOC/Kopf.
+
+    ANNAHME (bewusst, dokumentiert): Ein SEP-Team hat erfahrungsgemaess
+    *5-6 aktive Autoren*. Die Pro-Kopf-Normalisierung rechnet deshalb mit einer
+    festen angenommenen Teamgroesse (config: work_scope.assumed_active_authors,
+    Default 6 = konservativ am oberen Rand), NICHT mit der real gemessenen
+    Autorenzahl. Gruende:
+      - Die GitLab-Mitgliederzahl ueberschaetzt (zaehlt Nie-Committer/Tutoren mit;
+        SS26: 11-12 'Mitglieder' bei real 7-8 Commit-Autoren).
+      - Durch die *gemessene* Autorenzahl zu teilen wuerde Trittbrettfahrer
+        belohnen (1 Person macht alles -> riesige Pro-Kopf-Werte -> 15). Ungleiche
+        Verteilung faengt ohnehin das Kriterium 'Commit-Verteilung' (Gini) ab.
+    Die gemessene Autorenzahl wird nur zur Transparenz/Plausibilitaet ausgewiesen;
+    weicht sie stark von 5-6 ab, weist der Reason-Text auf manuelle Pruefung hin.
+    """
     tutors = get_tutors()
-    n_devs = sum(1 for m in members if m.get("access_level", 0) <= 40
-                 and not any(t in (m.get("username", "") or "").lower() for t in tutors))
+    n_members = sum(1 for m in members if m.get("access_level", 0) <= 40
+                    and not any(t in (m.get("username", "") or "").lower() for t in tutors))
+    n_authors = count_active_authors(repo)
     commits = run(["git", "log", "--all", "--pretty=format:%H"], repo).stdout.splitlines()
+    n_commits = len(commits)
     merged_mrs = sum(1 for m in mrs if m.get("state") == "merged")
     closed_issues = sum(1 for i in issues if i.get("state") == "closed")
     # LOC in reinem Python zaehlen (plattformneutral; bash/find/xargs/wc fehlen auf
@@ -1234,25 +1274,44 @@ def analyze_work_scope(repo, issues, mrs, members):
         except Exception:
             pass
 
-    # Heuristik
-    # < 50 Commits / sehr wenig Code = stark mangelhaft (5)
-    # < 100 Commits, < 5k LOC = ausreichend (10)
-    # > 150 Commits, > 8k LOC = perfekt/überdurchschnittlich (15)
-    if len(commits) < thr("work_scope.zero_commits", 20) and loc < thr("work_scope.zero_loc", 1000):
+    # Normalisierungsbasis: angenommene Teamgroesse (5-6 aktive Autoren, s.o.).
+    team_size = max(1, thr("work_scope.assumed_active_authors", 6))
+    commits_per_dev = n_commits / team_size
+    loc_per_dev = loc / team_size
+
+    # Heuristik (Schwellen PRO KOPF, kalibriert auf 6 angenommene Autoren):
+    #   0  = quasi leeres Repo (absoluter Boden, teamgroessen-unabhaengig)
+    #   5  = stark mangelhaft   (< ~15 Commits/Kopf ODER < ~800 LOC/Kopf)
+    #   10 = ausreichend        (< ~40 Commits/Kopf ODER < ~2000 LOC/Kopf)
+    #   15 = perfekt/ueberdurchschnittlich (sonst)
+    if n_commits < thr("work_scope.zero_commits", 20) and loc < thr("work_scope.zero_loc", 1000):
         score, label = 0, "Arbeitsumfang gegen 0"
-    elif len(commits) < thr("work_scope.five_commits", 60) or loc < thr("work_scope.five_loc", 3000):
+    elif (commits_per_dev < thr("work_scope.five_commits_per_dev", 15)
+          or loc_per_dev < thr("work_scope.five_loc_per_dev", 800)):
         score, label = 5, "Stark mangelhaft"
-    elif len(commits) < thr("work_scope.ten_commits", 120) or loc < thr("work_scope.ten_loc", 6000):
+    elif (commits_per_dev < thr("work_scope.ten_commits_per_dev", 40)
+          or loc_per_dev < thr("work_scope.ten_loc_per_dev", 2000)):
         score, label = 10, "Ausreichend, sollte etwas mehr sein"
     else:
         score, label = 15, "Perfekt / überdurchschnittlich"
-    reason = (f"{len(commits)} Commits, {merged_mrs} gemergte MRs, {closed_issues} geschlossene Issues, "
-              f"ca. {loc} Lines of Code (Java/TS/HTML/CSS). Geschätzte Team-Größe: {n_devs} Studierende. "
+
+    devnote = f"{n_authors} aktive Commit-Autoren gemessen"
+    if n_members and n_members != n_authors:
+        devnote += f" (GitLab listet {n_members} Mitglieder)"
+    if n_authors and not (5 <= n_authors <= 7):
+        devnote += " — weicht von der 5-6-Annahme ab, Umfang ggf. relativieren"
+    reason = (f"{n_commits} Commits, {merged_mrs} gemergte MRs, {closed_issues} geschlossene Issues, "
+              f"ca. {loc} Lines of Code. {devnote}. "
+              f"Normalisiert auf {team_size} angenommene aktive Autoren: "
+              f"{commits_per_dev:.0f} Commits/Kopf, {loc_per_dev:.0f} LOC/Kopf. "
               f"⚠ Manuell prüfen, ob der Umfang zur tatsächlichen Sprint-Zahl passt.")
     return {"criterion": "Arbeitsumfang angemessen", "max": 15, "score": score,
             "label": label, "reason": reason,
-            "details": {"commits": len(commits), "merged_mrs": merged_mrs, "closed_issues": closed_issues,
-                        "loc": loc, "estimated_devs": n_devs}}
+            "details": {"commits": n_commits, "merged_mrs": merged_mrs, "closed_issues": closed_issues,
+                        "loc": loc, "estimated_devs": n_members, "git_authors": n_authors,
+                        "assumed_team_size": team_size,
+                        "commits_per_dev": round(commits_per_dev, 1),
+                        "loc_per_dev": round(loc_per_dev, 1)}}
 
 
 def analyze_gitlab_usage(issues, board_lists, releases):
@@ -1434,9 +1493,6 @@ def analyze_code_reviews(mrs, token, project_id, llm=None):
                         "with_human_note_by_other": with_human_note,
                         "with_any_review_signal": any_signal,
                         "llm_review": llm_eval}}
-
-
-_SHORTLOG_RE = re.compile(r"^\s*(\d+)\s+(.*?)\s+<([^>]*)>\s*$")
 
 
 def analyze_commit_distribution(repo):

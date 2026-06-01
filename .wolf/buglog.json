@@ -903,6 +903,66 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-06-01T15:46:31.920Z"
+    },
+    {
+      "id": "bug-056",
+      "timestamp": "2026-06-01T16:01:30.524Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "13 lines replaced/restructured",
+      "fix": "Rewrote 42→82 lines (13 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T16:01:30.525Z"
+    },
+    {
+      "id": "bug-057",
+      "timestamp": "2026-06-01T16:02:36.295Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/config.yaml",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 8→16 lines (5 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "yaml"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T16:02:36.295Z"
+    },
+    {
+      "id": "bug-058",
+      "timestamp": "2026-06-01T16:03:39.707Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/bewertungskriterien.md",
+      "root_cause": "8 lines replaced/restructured",
+      "fix": "Rewrote 11→31 lines (8 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T16:03:39.707Z"
+    },
+    {
+      "id": "bug-059",
+      "timestamp": "2026-06-01",
+      "error_message": "Kriterium 'Arbeitsumfang angemessen' gab faktisch IMMER 15/15. Alle 6 SS26-Teams maxed out (193-634 Commits, 8k-23k LOC). Schwellen (120 Commits / 6k LOC fuer Top-Score) viel zu niedrig fuer ein Semester-SEP -> kein Diskriminator.",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "analyze_work_scope staffelte nach absoluten Gesamt-Commits/LOC. Jedes reale SEP-Team knackt diese Schwellen muehelos, daher landeten alle in der else->15-Stufe. Rohe Gesamtzahlen sind zudem ein schwaches Proxy fuer 'angemessenen Aufwand'.",
+      "fix": "Pro-Kopf-Normalisierung: Gesamt-Commits/LOC geteilt durch eine FESTE angenommene Teamgroesse (work_scope.assumed_active_authors, Default 6 = Annahme '5-6 aktive Autoren'), NICHT durch die gemessene Autorenzahl (GitLab ueberschaetzt; gemessen-teilen wuerde Trittbrettfahrer belohnen). Neue Pro-Kopf-Schwellen (5: <15c/<800loc, 10: <40c/<2000loc) ergeben wieder Spread (SS26: 4x10, 2x15). Helper count_active_authors() aus git shortlog. Gemessene Autorenzahl nur informativ im Reason.",
+      "tags": ["scoring", "work_scope", "arbeitsumfang", "heuristik", "kalibrierung", "config"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01"
     }
   ]
 }
