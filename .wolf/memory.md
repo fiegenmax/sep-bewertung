@@ -182,6 +182,17 @@ Alle widerlegten Befunde (excel-layer-4, security-secrets-6) bewusst NICHT geän
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
 
+## Session: 2026-06-01 — Repo öffentlich gemacht
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| —    | History-Audit: Secrets (nur Platzhalter) + Studentendaten in alter History gefunden | git history | sauber bzgl. echter Secrets, Studi-Daten in vielen Commits | ~3k |
+| —    | Backup der Alt-History als Bundle (privat, außerhalb Repo) | ../sep-bewertung-PRIVAT-backup-2026-06-01.bundle | erstellt | ~0.2k |
+| —    | .gitignore gehärtet (teams/team-*/, skripte/team_mapping.json), team_mapping.example.json + teams/README.md angelegt | .gitignore, skripte/, teams/ | Studi-Daten + echtes Mapping nicht mehr getrackt | ~1k |
+| —    | Echte GitLab-Pfade in docs/nutzung.md, docs/troubleshooting.md → Platzhalter; CLAUDE.md Privacy-Abschnitt auf "public" | docs/, CLAUDE.md | keine echten student_projects-Pfade mehr | ~1k |
+| —    | Frische History (orphan, 1 Commit) + reflog expire + gc | .git | alte Commits lokal entsorgt | ~0.5k |
+| —    | Privates GitHub-Repo gelöscht & neu als PUBLIC angelegt, sauberen Commit gepusht | github.com/fiegenmax/sep-bewertung | PUBLIC, 1 Commit, kein teams/team-*, kein team_mapping.json, 0 ude-sse-Treffer | ~1k |
+
 ## Session: 2026-05-30 13:02
 
 | Time | Action | File(s) | Outcome | ~Tokens |
@@ -364,3 +375,10 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 16:57 | Created teams/README.md | — | ~245 |
 | 16:58 | Edited CLAUDE.md | modified werden() | ~375 |
 | 16:58 | Edited CLAUDE.md | expanded (+9 lines) | ~142 |
+| 17:03 | Session end: 7 writes across 6 files (team_mapping.example.json, .gitignore, nutzung.md, troubleshooting.md, README.md) | 4 reads | ~1480 tok |
+
+## Session: 2026-06-01 17:09
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:09 | Created ../../../.claude/projects/c--Users-maxfi-Documents-git-sep-bewertung/memory/repo-is-public.md | — | ~387 |

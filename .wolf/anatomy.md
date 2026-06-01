@@ -1,7 +1,11 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-01T14:58:15.312Z
-> Files: 6 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-01T15:09:39.959Z
+> Files: 7 tracked | Anatomy hits: 0 | Misses: 0
+
+## ../../../.claude/projects/c--Users-maxfi-Documents-git-sep-bewertung/memory/
+
+- `repo-is-public.md` (~363 tok)
 
 ## ./
 
