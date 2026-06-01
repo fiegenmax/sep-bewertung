@@ -3,17 +3,16 @@
 Generiert skripte/team_mapping.json aus einer Liste von Teamnamen.
 
 Eingaben:
-- skripte/teams.txt (gitignored): ein Teamname pro Zeile (Kurzname, mit oder
-  ohne fuehrendes "team-"). '#' leitet einen Kommentar ein, Leerzeilen werden
-  ignoriert. Vorlage: skripte/teams.example.txt.
-- .env (gitignored): GITLAB_TOKEN, GITLAB_GROUP (Parent-Namespace) und
-  GITLAB_COHORT (Default-Kohorten-Token, der im GitLab-Projektnamen steckt, aber
-  nicht im lokalen Ordnernamen). Der Cohort ist pro Team in teams.txt
-  ueberschreibbar (Teams koennen zu verschiedenen Tutorien gehoeren).
+- skripte/teams.txt (gitignored): eine Zeile pro Team = der kombinierte
+  GitLab-Name "cohort-kurzname" (z.B. "shannon-bit"), mit oder ohne fuehrendes
+  "team-". '#' leitet einen Kommentar ein, Leerzeilen werden ignoriert. Vorlage:
+  skripte/teams.example.txt. Der Kurzname (Teil nach dem ersten "-") ist
+  eindeutig und wird zum lokalen Ordnernamen.
+- .env (gitignored): GITLAB_TOKEN und GITLAB_GROUP (Parent-Namespace).
 
 Pro Team wird der GitLab-Projektpfad gebaut
-    {GITLAB_GROUP}/team-{cohort}-{short}
-(cohort = Default aus .env oder pro Zeile in teams.txt) und ueber die GitLab-API
+    {GITLAB_GROUP}/team-{combined}
+(combined = die teams.txt-Zeile, z.B. "shannon-bit") und ueber die GitLab-API
 (GET /projects/<urlencoded path>) zu ID/URLs aufgeloest.
 Das Ergebnis wird idempotent in team_mapping.json gemerged (bestehende Eintraege
 werden aktualisiert, nicht gelistete bleiben erhalten). Vor dem Schreiben wird
@@ -58,51 +57,53 @@ def _strip_team(token):
     return token
 
 
-def parse_line(line, default_cohort):
-    """Eine Zeile der Teamliste zu (short, cohort) parsen.
+def parse_line(line):
+    """Eine Zeile der Teamliste zum kombinierten Namen parsen.
 
-    Unterstuetzte Formen (Inline-'#'-Kommentare und Leerzeilen erlaubt):
-      - '<short>'                -> (short, default_cohort), z.B. 'bit'/'team-bit'
-      - '<short> <cohort>'       -> (short, cohort), z.B. 'poetical lovelace'
-      - 'team-<cohort>-<short>'  -> (short, cohort), voller GitLab-Name
+    Eine Zeile ist der kombinierte GitLab-Name 'cohort-kurz' (z.B. 'shannon-bit'),
+    mit oder ohne fuehrendes 'team-'. Inline-'#'-Kommentare und Leerzeilen sind
+    erlaubt; fuer Leer-/Kommentarzeilen wird None zurueckgegeben.
 
-    Gibt None fuer Leer-/Kommentarzeilen zurueck. Hinweis: bei einem einzelnen
-    Token mit Bindestrich wird die erste Komponente als Cohort gedeutet; Teams
-    mit Bindestrich im Kurznamen daher die Zwei-Token-Form nutzen.
+    Beispiele: 'shannon-bit' -> 'shannon-bit'; 'team-shannon-bit' -> 'shannon-bit'.
+    Eine Zeile ohne '-' (bloszer Kurzname) wird hier durchgereicht; die Validierung
+    (fehlendes Cohort-Segment) erfolgt erst in main.
     """
     line = line.split("#", 1)[0].strip()
     if not line:
         return None
-    parts = line.split()
-    if len(parts) >= 2:
-        short = _strip_team(parts[0])
-        return (short, parts[1]) if short else None
-    token = _strip_team(parts[0])
-    if "-" in token:
-        cohort, short = token.split("-", 1)
-        return (short, cohort)
-    return (token, default_cohort) if token else None
+    token = _strip_team(line.split()[0])
+    return token or None
 
 
-def read_teams(path, default_cohort):
-    """Teamliste lesen -> deduplizierte (short, cohort)-Paare in Datei-Reihenfolge.
+def short_of(combined):
+    """Eindeutigen Kurznamen aus dem kombinierten Namen ableiten.
 
-    Dedupliziert nach short (der lokale Ordnername muss eindeutig sein); das
+    Der Cohort ist immer das fuehrende Segment; der Kurzname ist alles nach dem
+    ersten '-' (interne Bindestriche bleiben erhalten): 'shannon-my-team' ->
+    'my-team'. Ohne '-' wird die Eingabe unveraendert zurueckgegeben.
+    """
+    return combined.split("-", 1)[1] if "-" in combined else combined
+
+
+def read_teams(path):
+    """Teamliste lesen -> deduplizierte kombinierte Namen in Datei-Reihenfolge.
+
+    Dedupliziert nach Kurzname (der lokale Ordnername muss eindeutig sein); das
     erste Vorkommen gewinnt.
     """
     teams = []
     seen = set()
     for raw in Path(path).read_text(encoding="utf-8").splitlines():
-        parsed = parse_line(raw, default_cohort)
-        if parsed and parsed[0] not in seen:
-            seen.add(parsed[0])
-            teams.append(parsed)
+        combined = parse_line(raw)
+        if combined and short_of(combined) not in seen:
+            seen.add(short_of(combined))
+            teams.append(combined)
     return teams
 
 
-def project_path(group, cohort, short):
-    """Vollen GitLab-Projektpfad bauen: {group}/team-{cohort}-{short}."""
-    return f"{group}/team-{cohort}-{short}"
+def project_path(group, combined):
+    """Vollen GitLab-Projektpfad bauen: {group}/team-{combined}."""
+    return f"{group}/team-{combined}"
 
 
 def entry_from_project(proj, short):
@@ -140,9 +141,9 @@ def merge_entries(existing, new_entries):
 # Netz + I/O
 # ============================================================
 
-def fetch_project(group, cohort, short, token):
-    """GitLab-Projekt fuer einen Kurznamen aufloesen (ohne Cache, frische IDs)."""
-    path = project_path(group, cohort, short)
+def fetch_project(group, combined, token):
+    """GitLab-Projekt fuer einen kombinierten Namen aufloesen (ohne Cache)."""
+    path = project_path(group, combined)
     encoded = urllib.parse.quote(path, safe="")
     url = f"{ev.GITLAB_HOST}/api/v4/projects/{encoded}"
     return ev._http_get(url, token)
@@ -184,27 +185,31 @@ def main(argv):
         "Parent-Namespace der Team-Projekte, z.B. "
         "ude-sse/sep-summer-2026/student_projects.",
     )
-    default_cohort = _require(
-        cfg, "GITLAB_COHORT",
-        "Default-Kohorten-Token im GitLab-Projektnamen, z.B. shannon. "
-        "Pro Team in teams.txt ueberschreibbar.",
-    )
 
-    teams = read_teams(list_path, default_cohort)
+    teams = read_teams(list_path)
     if not teams:
         raise SystemExit(f"FEHLER: Keine Teamnamen in {list_path}.")
 
     resolved = []
     failures = []
-    for short, cohort in teams:
+    for combined in teams:
+        short = short_of(combined)
+        if "-" not in combined:
+            msg = (
+                "kein Cohort-Segment; bitte den kombinierten Namen 'cohort-kurz' "
+                "angeben, z.B. shannon-bit"
+            )
+            failures.append((combined, msg))
+            print(f"  XX  {combined:<18} -> {msg}", file=sys.stderr)
+            continue
         try:
-            proj = fetch_project(group, cohort, short, token)
+            proj = fetch_project(group, combined, token)
             entry = entry_from_project(proj, short)
             resolved.append(entry)
             print(f"  OK  team-{short:<14} -> {entry['gitlab_path']} (id {entry['gitlab_id']})")
         except Exception as e:  # noqa: BLE001 - pro Team weitermachen
-            failures.append((short, e))
-            print(f"  XX  team-{short:<14} ({cohort}) -> {e}", file=sys.stderr)
+            failures.append((combined, e))
+            print(f"  XX  {combined:<18} -> {e}", file=sys.stderr)
 
     if resolved:
         existing = []

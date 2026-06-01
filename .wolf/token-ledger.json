@@ -2,12 +2,12 @@
   "version": 1,
   "created_at": "2026-05-28T15:43:16.046Z",
   "lifetime": {
-    "total_tokens_estimated": 304708,
-    "total_reads": 204,
-    "total_writes": 307,
-    "total_sessions": 26,
+    "total_tokens_estimated": 306247,
+    "total_reads": 218,
+    "total_writes": 309,
+    "total_sessions": 27,
     "anatomy_hits": 23,
-    "anatomy_misses": 175,
+    "anatomy_misses": 189,
     "repeated_reads_blocked": 141,
     "estimated_savings_vs_bare_cli": 518736
   },
@@ -3203,6 +3203,133 @@
         "writes_count": 8,
         "repeated_reads_blocked": 12,
         "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-06-01-1846",
+      "started": "2026-06-01T16:46:44.308Z",
+      "ended": "2026-06-01T16:50:24.257Z",
+      "reads": [
+        {
+          "file": "e:/Code/sep-bewertung/.wolf/anatomy.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/gen_mapping.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/teams.example.txt",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/test_gen_mapping.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/team_mapping.example.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 0,
+        "reads_count": 5,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-06-01-1846",
+      "started": "2026-06-01T16:46:44.308Z",
+      "ended": "2026-06-01T16:51:52.495Z",
+      "reads": [
+        {
+          "file": "e:/Code/sep-bewertung/.wolf/anatomy.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/gen_mapping.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/teams.example.txt",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/test_gen_mapping.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/team_mapping.example.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/docs/superpowers/specs/2026-06-01-gen-mapping-design.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/.env.example",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/README.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/docs/nutzung.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "e:/Code/sep-bewertung/docs/superpowers/specs/2026-06-01-teams-kombinierter-name-design.md",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/docs/superpowers/specs/2026-06-01-gen-mapping-design.md",
+          "tokens_estimated": 77,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 1539,
+        "reads_count": 9,
+        "writes_count": 2,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
       }
     }
   ],

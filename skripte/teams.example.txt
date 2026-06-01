@@ -1,29 +1,29 @@
 # Teamliste fuer gen_mapping.py
 #
-# Kopiere diese Datei zu teams.txt und trage die Teamnamen ein (einer pro Zeile).
+# Kopiere diese Datei zu teams.txt und trage die Teams ein (eines pro Zeile).
 # teams.txt ist in .gitignore und wird nicht committet (zeigt auf Studi-Repos).
 #
 # Format pro Zeile ('#' = Kommentar, Leerzeilen werden ignoriert):
 #
-#   <kurzname>             Kurzname, mit oder ohne fuehrendes "team-".
-#                          Nutzt den Default-Cohort aus .env (GITLAB_COHORT).
-#
-#   <kurzname> <cohort>    Cohort pro Team ueberschreiben (zwei Tokens),
-#                          falls das Team zu einem anderen Tutorium gehoert.
-#
-#   team-<cohort>-<kurz>   Voller GitLab-Projektname (Cohort wird daraus gelesen).
+#   <cohort>-<kurzname>        Der kombinierte GitLab-Name, mit oder ohne
+#                              fuehrendes "team-". Der Kurzname (Teil nach dem
+#                              ersten "-") ist eindeutig und wird zum lokalen
+#                              Ordnernamen.
 #
 # Daraus entsteht:
-#   GitLab-Projekt: {GITLAB_GROUP}/team-{cohort}-{kurzname}
-#   lokaler Ordner: team-{kurzname}
+#   GitLab-Projekt: {GITLAB_GROUP}/team-<cohort>-<kurzname>
+#   lokaler Ordner: team-<kurzname>
 #
-# Beispiel: "alpha" + GITLAB_COHORT=musterkohorte
-#   -> GitLab: .../student_projects/team-musterkohorte-alpha
+# Beispiel: "shannon-alpha"
+#   -> GitLab: .../student_projects/team-shannon-alpha
 #   -> lokal:  team-alpha
+#
+# Teams aus verschiedenen Tutorien/Kohorten stehen einfach mit ihrem jeweiligen
+# Cohort-Praefix in derselben Liste.
 
-alpha
-beta
-gamma
+shannon-alpha
+shannon-beta
+team-shannon-gamma
 
-# Ausnahme: Team in einer anderen Kohorte (Cohort explizit angeben)
-delta andere-kohorte
+# Team in einer anderen Kohorte: einfach deren Cohort-Praefix verwenden
+lovelace-delta

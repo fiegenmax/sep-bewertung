@@ -8,6 +8,10 @@ Ausfuehren (aus skripte/):
 Alle Tests sind netzfrei: die GitLab-API wird nicht aufgerufen, stattdessen
 werden API-Antworten als Fixtures uebergeben. Getestet werden die reinen
 Funktionen (Namens-Ableitung, Eintrags-Bau, idempotenter Merge).
+
+Format: eine teams.txt-Zeile = der kombinierte GitLab-Name 'cohort-kurz'
+(z.B. 'shannon-bit'), mit oder ohne fuehrendes 'team-'. Kein Cohort-Default
+und keine Zwei-Token-Form mehr.
 """
 
 import os
@@ -34,68 +38,66 @@ def _project(path_with_namespace, pid):
 
 
 class ParseLineTests(unittest.TestCase):
-    DEF = "shannon"
-
-    def test_plain_short_uses_default_cohort(self):
-        self.assertEqual(gm.parse_line("bit", self.DEF), ("bit", "shannon"))
+    def test_combined_form_passes_through(self):
+        self.assertEqual(gm.parse_line("shannon-bit"), "shannon-bit")
 
     def test_strips_leading_team_prefix(self):
-        self.assertEqual(gm.parse_line("team-bit", self.DEF), ("bit", "shannon"))
+        self.assertEqual(gm.parse_line("team-shannon-bit"), "shannon-bit")
 
     def test_strips_surrounding_whitespace(self):
-        self.assertEqual(gm.parse_line("  entropy  ", self.DEF), ("entropy", "shannon"))
+        self.assertEqual(gm.parse_line("  shannon-entropy  "), "shannon-entropy")
 
     def test_blank_line_returns_none(self):
-        self.assertIsNone(gm.parse_line("   ", self.DEF))
+        self.assertIsNone(gm.parse_line("   "))
 
     def test_comment_line_returns_none(self):
-        self.assertIsNone(gm.parse_line("# ein Kommentar", self.DEF))
+        self.assertIsNone(gm.parse_line("# ein Kommentar"))
 
     def test_inline_comment_is_stripped(self):
-        self.assertEqual(gm.parse_line("bit  # das Bit-Team", self.DEF), ("bit", "shannon"))
+        self.assertEqual(gm.parse_line("shannon-bit  # das Bit-Team"), "shannon-bit")
 
-    def test_two_token_form_overrides_cohort(self):
-        self.assertEqual(gm.parse_line("poetical lovelace", self.DEF), ("poetical", "lovelace"))
+    def test_keeps_internal_hyphens_in_short(self):
+        self.assertEqual(gm.parse_line("shannon-my-team"), "shannon-my-team")
 
-    def test_two_token_form_with_team_prefix(self):
-        self.assertEqual(
-            gm.parse_line("team-poetical lovelace", self.DEF), ("poetical", "lovelace")
-        )
+    def test_bare_short_without_hyphen_passes_through(self):
+        # Validierung (fehlendes '-') passiert spaeter in main, nicht hier.
+        self.assertEqual(gm.parse_line("bit"), "bit")
 
-    def test_full_gitlab_name_yields_cohort_and_short(self):
-        self.assertEqual(
-            gm.parse_line("team-lovelace-poetical", self.DEF), ("poetical", "lovelace")
-        )
 
-    def test_two_token_form_with_inline_comment(self):
-        self.assertEqual(
-            gm.parse_line("poetical lovelace  # ausnahme", self.DEF), ("poetical", "lovelace")
-        )
+class ShortOfTests(unittest.TestCase):
+    def test_short_is_part_after_first_hyphen(self):
+        self.assertEqual(gm.short_of("shannon-bit"), "bit")
+
+    def test_short_keeps_internal_hyphens(self):
+        self.assertEqual(gm.short_of("shannon-my-team"), "my-team")
+
+    def test_no_hyphen_returns_input(self):
+        self.assertEqual(gm.short_of("bit"), "bit")
 
 
 class ReadTeamsTests(unittest.TestCase):
-    def test_reads_dedupes_and_applies_cohorts(self):
+    def test_reads_dedupes_by_short_and_strips_prefix(self):
         import tempfile
         from pathlib import Path
 
         with tempfile.TemporaryDirectory() as d:
             p = Path(d) / "teams.txt"
             p.write_text(
-                "# Liste\nbit\nteam-entropy\n\nbit\n"
-                "poetical lovelace\nteam-lovelace-poetical\n",
+                "# Liste\nshannon-bit\nteam-shannon-entropy\n\nshannon-bit\n"
+                "lovelace-poetical\nteam-lovelace-poetical\n",
                 encoding="utf-8",
             )
             self.assertEqual(
-                gm.read_teams(p, "shannon"),
-                [("bit", "shannon"), ("entropy", "shannon"), ("poetical", "lovelace")],
+                gm.read_teams(p),
+                ["shannon-bit", "shannon-entropy", "lovelace-poetical"],
             )
 
 
 class ProjectPathTests(unittest.TestCase):
-    def test_builds_full_path_with_cohort_token(self):
+    def test_builds_full_path_from_combined_name(self):
         self.assertEqual(
             gm.project_path(
-                "ude-sse/sep-summer-2026/student_projects", "shannon", "bit"
+                "ude-sse/sep-summer-2026/student_projects", "shannon-bit"
             ),
             "ude-sse/sep-summer-2026/student_projects/team-shannon-bit",
         )

@@ -54,20 +54,18 @@ nicht von Hand abtippen.
 
    ```
    GITLAB_GROUP=ude-sse/sep-summer-2026/student_projects   # Parent-Namespace
-   GITLAB_COHORT=shannon                                    # Kohorten-Token
    ```
 
-   Der GitLab-Projektname wird gebaut als `{GITLAB_GROUP}/team-{GITLAB_COHORT}-<kurzname>`,
-   der lokale Ordner heißt `team-<kurzname>`.
+2. `skripte/teams.example.txt` nach `skripte/teams.txt` kopieren und pro Team
+   eine Zeile eintragen: den **kombinierten GitLab-Namen** `cohort-kurzname`
+   (z. B. `shannon-bit`), mit oder ohne führendes `team-` (`#` für Kommentare).
+   `teams.txt` ist gitignored.
 
-2. `skripte/teams.example.txt` nach `skripte/teams.txt` kopieren und die
-   Kurznamen eintragen (einer pro Zeile, mit oder ohne `team-`-Präfix, `#` für
-   Kommentare). `teams.txt` ist gitignored.
-
-   Gehört ein Team zu einer **anderen Kohorte** als dem Default, den Token
-   dahinterschreiben: `poetical lovelace` (oder den vollen GitLab-Namen
-   `team-lovelace-poetical`). So lassen sich Teams aus mehreren Tutorien in
-   einer Liste mischen.
+   Daraus wird das GitLab-Projekt `{GITLAB_GROUP}/team-<cohort>-<kurzname>`; der
+   lokale Ordner heißt `team-<kurzname>` (der Kurzname = Teil nach dem ersten
+   `-` ist eindeutig). Teams aus **verschiedenen Tutorien/Kohorten** stehen
+   einfach mit ihrem jeweiligen Cohort-Präfix in derselben Liste, z. B.
+   `lovelace-poetical`.
 
 3. Generieren:
 
@@ -101,9 +99,8 @@ ausgeschlossen, damit keine Studi-Repo-Pfade ins öffentliche Repo gelangen):
 ]
 ```
 
-Tipp: bei einer neuen Prüfungsrunde reicht es, `teams.txt` und die beiden
-`.env`-Werte (`GITLAB_GROUP`, `GITLAB_COHORT`) anzupassen und Variante A erneut
-laufen zu lassen.
+Tipp: bei einer neuen Prüfungsrunde reicht es, `teams.txt` und den `.env`-Wert
+`GITLAB_GROUP` anzupassen und Variante A erneut laufen zu lassen.
 
 ### 6. Pro Team einen lokalen Ordner anlegen
 

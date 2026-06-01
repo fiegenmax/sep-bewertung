@@ -457,3 +457,22 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 18:10 | Arbeitsumfang: alte Heuristik gab immer 15/15 (alle 6 SS26-Teams). Pro-Kopf-Normalisierung auf feste angenommene Teamgroesse (assumed_active_authors=6, Nutzer-Annahme 5-6 aktive Autoren) + neue Schwellen -> Spread 4x10/2x15. count_active_authors() Helper, Tests gruen (54). | evaluate_team.py, config.yaml, test_evaluate.py, docs/bewertungskriterien.md | done | ~9k |
 | 18:09 | Created .git/COMMIT_EDITMSG_FIX | — | ~316 |
 | 18:09 | Session end: 8 writes across 5 files (test_evaluate.py, evaluate_team.py, config.yaml, bewertungskriterien.md, COMMIT_EDITMSG_FIX) | 7 reads | ~31918 tok |
+
+## Session: 2026-06-01 18:46
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:51 | Created docs/superpowers/specs/2026-06-01-teams-kombinierter-name-design.md | — | ~1364 |
+| 18:51 | Edited docs/superpowers/specs/2026-06-01-gen-mapping-design.md | 2→4 lines | ~72 |
+| 18:51 | Session end: 2 writes across 2 files (2026-06-01-teams-kombinierter-name-design.md, 2026-06-01-gen-mapping-design.md) | 9 reads | ~1539 tok |
+| 18:53 | Created skripte/test_gen_mapping.py | — | ~1911 |
+| 18:53 | Edited skripte/gen_mapping.py | modified txt() | ~185 |
+| 18:53 | Edited skripte/gen_mapping.py | modified parse_line() | ~496 |
+| 18:54 | Edited skripte/gen_mapping.py | modified fetch_project() | ~60 |
+| 18:54 | Edited skripte/gen_mapping.py | 26→30 lines | ~328 |
+| 18:54 | Created skripte/teams.example.txt | — | ~272 |
+| 18:55 | Edited README.md | 3→2 lines | ~20 |
+| 18:55 | Edited README.md | 6→6 lines | ~86 |
+| 18:55 | Edited docs/nutzung.md | modified eintragen() | ~206 |
+| 18:55 | Edited docs/nutzung.md | 3→2 lines | ~39 |
+| 18:56 | teams.txt: kombinierter Name statt Cohort-Default/Override (TDD) | gen_mapping.py, test_gen_mapping.py, docs, .env.example | 77 Tests gruen | ~1200 |

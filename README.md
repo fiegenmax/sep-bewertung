@@ -20,19 +20,18 @@ cp .env.example .env
 GITLAB_TOKEN=glpat-xxxxx          # Pflicht (Scopes: read_api + read_repository)
 ANTHROPIC_API_KEY=sk-ant-xxxxx    # optional — ohne läuft es rein heuristisch
 GITLAB_GROUP=<deine-gruppe>/...   # Parent-Namespace der Studi-Repos
-GITLAB_COHORT=<tutorium>          # Default-Kohorte (z. B. shannon)
 ```
 
 **2. Team-Mapping erzeugen** — legt fest, welche Teams bewertet werden. Es zeigt
 auf echte Studi-Repos und ist daher gitignored, du erzeugst es lokal:
 
 ```bash
-cp skripte/teams.example.txt skripte/teams.txt   # dann Team-Kurznamen eintragen
+cp skripte/teams.example.txt skripte/teams.txt   # je Team "cohort-kurzname" eintragen
 uv run python skripte/gen_mapping.py             # löst GitLab-IDs/URLs per API auf
 ```
 
-> Details, gemischte Kohorten und die manuelle Alternative: siehe
-> [`docs/nutzung.md`](docs/nutzung.md).
+> Pro Zeile der kombinierte GitLab-Name (z. B. `shannon-bit`). Details und die
+> manuelle Alternative: siehe [`docs/nutzung.md`](docs/nutzung.md).
 
 ### Bewerten
 
