@@ -60,6 +60,11 @@ nicht von Hand abtippen.
    Kurznamen eintragen (einer pro Zeile, mit oder ohne `team-`-Präfix, `#` für
    Kommentare). `teams.txt` ist gitignored.
 
+   Gehört ein Team zu einer **anderen Kohorte** als dem Default, den Token
+   dahinterschreiben: `poetical lovelace` (oder den vollen GitLab-Namen
+   `team-lovelace-poetical`). So lassen sich Teams aus mehreren Tutorien in
+   einer Liste mischen.
+
 3. Generieren (aus `skripte/`):
 
    ```bash

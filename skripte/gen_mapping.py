@@ -7,12 +7,14 @@ Eingaben:
   ohne fuehrendes "team-"). '#' leitet einen Kommentar ein, Leerzeilen werden
   ignoriert. Vorlage: skripte/teams.example.txt.
 - .env (gitignored): GITLAB_TOKEN, GITLAB_GROUP (Parent-Namespace) und
-  GITLAB_COHORT (Kohorten-Token, der im GitLab-Projektnamen steckt, aber nicht
-  im lokalen Ordnernamen).
+  GITLAB_COHORT (Default-Kohorten-Token, der im GitLab-Projektnamen steckt, aber
+  nicht im lokalen Ordnernamen). Der Cohort ist pro Team in teams.txt
+  ueberschreibbar (Teams koennen zu verschiedenen Tutorien gehoeren).
 
 Pro Team wird der GitLab-Projektpfad gebaut
-    {GITLAB_GROUP}/team-{GITLAB_COHORT}-{short}
-und ueber die GitLab-API (GET /projects/<urlencoded path>) zu ID/URLs aufgeloest.
+    {GITLAB_GROUP}/team-{cohort}-{short}
+(cohort = Default aus .env oder pro Zeile in teams.txt) und ueber die GitLab-API
+(GET /projects/<urlencoded path>) zu ID/URLs aufgeloest.
 Das Ergebnis wird idempotent in team_mapping.json gemerged (bestehende Eintraege
 werden aktualisiert, nicht gelistete bleiben erhalten). Vor dem Schreiben wird
 ein .bak angelegt.
@@ -49,31 +51,53 @@ ENTRY_KEYS = (
 # Reine Funktionen (netzfrei, unit-getestet)
 # ============================================================
 
-def normalize_short(line):
-    """Eine Zeile der Teamliste zu einem Kurznamen normalisieren.
+def _strip_team(token):
+    """Fuehrendes 'team-' entfernen (case-insensitive)."""
+    if token.lower().startswith("team-"):
+        return token[len("team-"):]
+    return token
 
-    Entfernt Inline-/ganze Kommentare, umgebenden Whitespace und ein fuehrendes
-    'team-'. Gibt None fuer Leer- und Kommentarzeilen zurueck.
+
+def parse_line(line, default_cohort):
+    """Eine Zeile der Teamliste zu (short, cohort) parsen.
+
+    Unterstuetzte Formen (Inline-'#'-Kommentare und Leerzeilen erlaubt):
+      - '<short>'                -> (short, default_cohort), z.B. 'bit'/'team-bit'
+      - '<short> <cohort>'       -> (short, cohort), z.B. 'poetical lovelace'
+      - 'team-<cohort>-<short>'  -> (short, cohort), voller GitLab-Name
+
+    Gibt None fuer Leer-/Kommentarzeilen zurueck. Hinweis: bei einem einzelnen
+    Token mit Bindestrich wird die erste Komponente als Cohort gedeutet; Teams
+    mit Bindestrich im Kurznamen daher die Zwei-Token-Form nutzen.
     """
-    # Inline-Kommentar abschneiden
     line = line.split("#", 1)[0].strip()
     if not line:
         return None
-    if line.lower().startswith("team-"):
-        line = line[len("team-"):]
-    return line or None
+    parts = line.split()
+    if len(parts) >= 2:
+        short = _strip_team(parts[0])
+        return (short, parts[1]) if short else None
+    token = _strip_team(parts[0])
+    if "-" in token:
+        cohort, short = token.split("-", 1)
+        return (short, cohort)
+    return (token, default_cohort) if token else None
 
 
-def read_team_names(path):
-    """Teamliste lesen -> deduplizierte Kurznamen in Datei-Reihenfolge."""
-    shorts = []
+def read_teams(path, default_cohort):
+    """Teamliste lesen -> deduplizierte (short, cohort)-Paare in Datei-Reihenfolge.
+
+    Dedupliziert nach short (der lokale Ordnername muss eindeutig sein); das
+    erste Vorkommen gewinnt.
+    """
+    teams = []
     seen = set()
     for raw in Path(path).read_text(encoding="utf-8").splitlines():
-        short = normalize_short(raw)
-        if short and short not in seen:
-            seen.add(short)
-            shorts.append(short)
-    return shorts
+        parsed = parse_line(raw, default_cohort)
+        if parsed and parsed[0] not in seen:
+            seen.add(parsed[0])
+            teams.append(parsed)
+    return teams
 
 
 def project_path(group, cohort, short):
@@ -160,18 +184,19 @@ def main(argv):
         "Parent-Namespace der Team-Projekte, z.B. "
         "ude-sse/sep-summer-2026/student_projects.",
     )
-    cohort = _require(
+    default_cohort = _require(
         cfg, "GITLAB_COHORT",
-        "Kohorten-Token im GitLab-Projektnamen, z.B. shannon.",
+        "Default-Kohorten-Token im GitLab-Projektnamen, z.B. shannon. "
+        "Pro Team in teams.txt ueberschreibbar.",
     )
 
-    shorts = read_team_names(list_path)
-    if not shorts:
+    teams = read_teams(list_path, default_cohort)
+    if not teams:
         raise SystemExit(f"FEHLER: Keine Teamnamen in {list_path}.")
 
     resolved = []
     failures = []
-    for short in shorts:
+    for short, cohort in teams:
         try:
             proj = fetch_project(group, cohort, short, token)
             entry = entry_from_project(proj, short)
@@ -179,7 +204,7 @@ def main(argv):
             print(f"  OK  team-{short:<14} -> {entry['gitlab_path']} (id {entry['gitlab_id']})")
         except Exception as e:  # noqa: BLE001 - pro Team weitermachen
             failures.append((short, e))
-            print(f"  XX  team-{short:<14} -> {e}", file=sys.stderr)
+            print(f"  XX  team-{short:<14} ({cohort}) -> {e}", file=sys.stderr)
 
     if resolved:
         existing = []

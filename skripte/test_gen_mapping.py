@@ -33,39 +33,61 @@ def _project(path_with_namespace, pid):
     }
 
 
-class NormalizeShortTests(unittest.TestCase):
-    def test_plain_short_name(self):
-        self.assertEqual(gm.normalize_short("bit"), "bit")
+class ParseLineTests(unittest.TestCase):
+    DEF = "shannon"
+
+    def test_plain_short_uses_default_cohort(self):
+        self.assertEqual(gm.parse_line("bit", self.DEF), ("bit", "shannon"))
 
     def test_strips_leading_team_prefix(self):
-        self.assertEqual(gm.normalize_short("team-bit"), "bit")
+        self.assertEqual(gm.parse_line("team-bit", self.DEF), ("bit", "shannon"))
 
     def test_strips_surrounding_whitespace(self):
-        self.assertEqual(gm.normalize_short("  entropy  "), "entropy")
+        self.assertEqual(gm.parse_line("  entropy  ", self.DEF), ("entropy", "shannon"))
 
     def test_blank_line_returns_none(self):
-        self.assertIsNone(gm.normalize_short("   "))
+        self.assertIsNone(gm.parse_line("   ", self.DEF))
 
     def test_comment_line_returns_none(self):
-        self.assertIsNone(gm.normalize_short("# ein Kommentar"))
+        self.assertIsNone(gm.parse_line("# ein Kommentar", self.DEF))
 
     def test_inline_comment_is_stripped(self):
-        self.assertEqual(gm.normalize_short("bit  # das Bit-Team"), "bit")
+        self.assertEqual(gm.parse_line("bit  # das Bit-Team", self.DEF), ("bit", "shannon"))
+
+    def test_two_token_form_overrides_cohort(self):
+        self.assertEqual(gm.parse_line("poetical lovelace", self.DEF), ("poetical", "lovelace"))
+
+    def test_two_token_form_with_team_prefix(self):
+        self.assertEqual(
+            gm.parse_line("team-poetical lovelace", self.DEF), ("poetical", "lovelace")
+        )
+
+    def test_full_gitlab_name_yields_cohort_and_short(self):
+        self.assertEqual(
+            gm.parse_line("team-lovelace-poetical", self.DEF), ("poetical", "lovelace")
+        )
+
+    def test_two_token_form_with_inline_comment(self):
+        self.assertEqual(
+            gm.parse_line("poetical lovelace  # ausnahme", self.DEF), ("poetical", "lovelace")
+        )
 
 
-class ReadTeamNamesTests(unittest.TestCase):
-    def test_reads_and_dedupes_preserving_order(self):
+class ReadTeamsTests(unittest.TestCase):
+    def test_reads_dedupes_and_applies_cohorts(self):
         import tempfile
         from pathlib import Path
 
         with tempfile.TemporaryDirectory() as d:
             p = Path(d) / "teams.txt"
             p.write_text(
-                "# Liste\nbit\nteam-entropy\n\nbit\n  juggler  # noch eins\n",
+                "# Liste\nbit\nteam-entropy\n\nbit\n"
+                "poetical lovelace\nteam-lovelace-poetical\n",
                 encoding="utf-8",
             )
             self.assertEqual(
-                gm.read_team_names(p), ["bit", "entropy", "juggler"]
+                gm.read_teams(p, "shannon"),
+                [("bit", "shannon"), ("entropy", "shannon"), ("poetical", "lovelace")],
             )
 
 

@@ -86,6 +86,22 @@ python gen_mapping.py <pfad>     # alternative Listendatei
 - Fehlende `teams.txt`: Hinweis, `teams.example.txt` zu kopieren.
 - Projekt nicht gefunden (404): pro Team melden, nicht abbrechen.
 
+## Addendum (2026-06-01, bei der Umsetzung entdeckt)
+
+Annahme „ein einziger Cohort-Token für alle Teams" war falsch: im echten
+`team_mapping.json` liegt `team-poetical` unter `team-lovelace-poetical`, während
+die übrigen `team-shannon-*` heißen. Teams gehören also zu verschiedenen
+Tutorien/Kohorten.
+
+Lösung: `GITLAB_COHORT` ist nur noch der **Default**, pro Zeile in `teams.txt`
+überschreibbar. `parse_line(line, default_cohort)` liefert `(short, cohort)` für:
+- `<short>` → `(short, default)`
+- `<short> <cohort>` → `(short, cohort)`
+- `team-<cohort>-<short>` (voller GitLab-Name) → `(short, cohort)`
+
+`read_teams` liefert deduplizierte `(short, cohort)`-Paare; `main` reicht den
+per-Team-Cohort an `project_path` durch. Siehe `buglog.json` bug-044.
+
 ## Bewusst nicht im Scope (YAGNI)
 
 - Automatisches Enumerieren aller Projekte der Parent-Gruppe.

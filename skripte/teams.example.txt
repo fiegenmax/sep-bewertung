@@ -3,17 +3,27 @@
 # Kopiere diese Datei zu teams.txt und trage die Teamnamen ein (einer pro Zeile).
 # teams.txt ist in .gitignore und wird nicht committet (zeigt auf Studi-Repos).
 #
-# Format: Kurzname pro Zeile, mit oder ohne fuehrendes "team-".
-#   - '#' leitet einen Kommentar ein, Leerzeilen werden ignoriert.
-#   - Der GitLab-Projektname wird gebaut als:
-#       {GITLAB_GROUP}/team-{GITLAB_COHORT}-{kurzname}
-#     (GITLAB_GROUP und GITLAB_COHORT stehen in .env)
-#   - Der lokale Ordnername wird: team-{kurzname}
+# Format pro Zeile ('#' = Kommentar, Leerzeilen werden ignoriert):
 #
-# Beispiel: Kurzname "bit" + GITLAB_COHORT=shannon
-#   -> GitLab: .../student_projects/team-shannon-bit
-#   -> lokal:  team-bit
+#   <kurzname>             Kurzname, mit oder ohne fuehrendes "team-".
+#                          Nutzt den Default-Cohort aus .env (GITLAB_COHORT).
+#
+#   <kurzname> <cohort>    Cohort pro Team ueberschreiben (zwei Tokens),
+#                          falls das Team zu einem anderen Tutorium gehoert.
+#
+#   team-<cohort>-<kurz>   Voller GitLab-Projektname (Cohort wird daraus gelesen).
+#
+# Daraus entsteht:
+#   GitLab-Projekt: {GITLAB_GROUP}/team-{cohort}-{kurzname}
+#   lokaler Ordner: team-{kurzname}
+#
+# Beispiel: "alpha" + GITLAB_COHORT=musterkohorte
+#   -> GitLab: .../student_projects/team-musterkohorte-alpha
+#   -> lokal:  team-alpha
 
-bit
-entropy
-juggler
+alpha
+beta
+gamma
+
+# Ausnahme: Team in einer anderen Kohorte (Cohort explizit angeben)
+delta andere-kohorte

@@ -404,3 +404,15 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 17:22 | Edited docs/nutzung.md | modified A() | ~424 |
 | 17:22 | Edited docs/nutzung.md | 1→3 lines | ~46 |
 | --:-- | gen_mapping.py implementiert (TDD, 18 Tests gruen) + teams.example.txt, .env.example/.gitignore/docs/nutzung erweitert | skripte/gen_mapping.py, skripte/test_gen_mapping.py | fertig, netzfrei verifiziert | ~6000 |
+| 17:24 | Session end: 4 writes across 3 files (teams.example.txt, .gitignore, nutzung.md) | 5 reads | ~3278 tok |
+| 17:28 | Edited skripte/test_gen_mapping.py | modified test_plain_short_uses_default_cohort() | ~609 |
+| 17:28 | Edited skripte/gen_mapping.py | modified _strip_team() | ~496 |
+| 17:29 | Edited skripte/gen_mapping.py | read_team_names() → read_teams() | ~242 |
+| 17:29 | Created skripte/teams.example.txt | — | ~272 |
+| 17:29 | Edited skripte/gen_mapping.py | modified env() | ~148 |
+| 17:29 | Edited docs/nutzung.md | 3→8 lines | ~119 |
+| 17:30 | Edited docs/superpowers/specs/2026-06-01-gen-mapping-design.md | expanded (+16 lines) | ~210 |
+| 17:32 | Edited skripte/evaluate_team.py | added 1 import(s) | ~31 |
+| 17:32 | Edited skripte/evaluate_team.py | expanded (+10 lines) | ~152 |
+| 17:32 | Edited skripte/evaluate_team.py | 2→2 lines | ~37 |
+| --:-- | Cohort pro Team ueberschreibbar (poetical=lovelace entdeckt); certifi-SSL-Fix; LIVE verifiziert: Mapping reproduziert Original 1:1 (6 Teams, 0 Diff) | skripte/gen_mapping.py, skripte/evaluate_team.py, test_gen_mapping.py | gruen, live-validiert | ~9000 |

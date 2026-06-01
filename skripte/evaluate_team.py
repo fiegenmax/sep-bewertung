@@ -26,6 +26,7 @@ import base64
 import hashlib
 import tempfile
 import subprocess
+import ssl
 import urllib.request
 import urllib.error
 import urllib.parse
@@ -45,6 +46,16 @@ _TMP = Path(os.environ.get("SEP_CACHE_DIR", tempfile.gettempdir()))
 REPOS = _TMP / "sep_repos"
 DATA = _TMP / "sep_gitlab_data"
 GITLAB_HOST = "https://gitlab.git.nrw"
+
+# SSL-Kontext fuer GitLab-Calls. Manche Python-Installationen (z.B. Windows ohne
+# gepflegten System-CA-Store) kennen den Aussteller von gitlab.git.nrw nicht und
+# scheitern mit CERTIFICATE_VERIFY_FAILED. Wenn certifi installiert ist, dessen
+# CA-Bundle nutzen; sonst None -> unveraendertes Default-Verhalten von urlopen.
+try:
+    import certifi
+    _SSL_CONTEXT = ssl.create_default_context(cafile=certifi.where())
+except Exception:  # noqa: BLE001 - certifi optional
+    _SSL_CONTEXT = None
 
 # ============================================================
 # Excel-Spalten-Layout (zentrale Quelle der Wahrheit)
@@ -264,7 +275,7 @@ def _http_get(url, token):
     req = urllib.request.Request(url, headers={"PRIVATE-TOKEN": token})
     for attempt in range(_MAX_RETRIES):
         try:
-            with urllib.request.urlopen(req, timeout=60) as r:
+            with urllib.request.urlopen(req, timeout=60, context=_SSL_CONTEXT) as r:
                 return json.loads(r.read())
         except urllib.error.HTTPError as e:
             if e.code in _RETRY_STATUS and attempt < _MAX_RETRIES - 1:

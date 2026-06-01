@@ -709,6 +709,56 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-06-01T14:58:05.948Z"
+    },
+    {
+      "id": "bug-044",
+      "timestamp": "2026-06-01",
+      "error_message": "gen_mapping.py Design ging von einem einzigen Kohorten-Token (GITLAB_COHORT=shannon) fuer alle Teams aus. Real liegt team-poetical unter team-lovelace-poetical -> mit shannon waere der Pfad team-shannon-poetical gebaut worden -> 404/falsches Projekt.",
+      "file": "skripte/gen_mapping.py",
+      "root_cause": "Annahme: alle Teams teilen denselben Cohort-Token. Tatsaechlich gehoeren Teams zu verschiedenen Tutorien/Kohorten (shannon, lovelace).",
+      "fix": "parse_line/read_teams: Cohort pro Zeile in teams.txt ueberschreibbar. Formen: \"<short>\" (Default aus .env), \"<short> <cohort>\" (zwei Tokens), voller Name \"team-<cohort>-<short>\". main reicht den per-Team-Cohort an project_path durch.",
+      "tags": [
+        "gen_mapping",
+        "cohort",
+        "gitlab",
+        "team_mapping",
+        "design-assumption"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01"
+    },
+    {
+      "id": "bug-045",
+      "timestamp": "2026-06-01T15:28:30.154Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/test_gen_mapping.py",
+      "root_cause": "12 lines replaced/restructured",
+      "fix": "Rewrote 34→56 lines (12 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T15:28:30.154Z"
+    },
+    {
+      "id": "bug-046",
+      "timestamp": "2026-06-01T15:28:51.227Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/gen_mapping.py",
+      "root_cause": "16 lines replaced/restructured",
+      "fix": "Rewrote 25→47 lines (16 removed) | Also: GITLAB_COHORT (Kohorten-Token, der im GitLab-Proje; im lokalen Ordnernamen).",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-01T15:29:36.776Z"
     }
   ]
 }
