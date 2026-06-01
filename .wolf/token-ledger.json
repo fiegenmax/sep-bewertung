@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-05-28T15:43:16.046Z",
   "lifetime": {
-    "total_tokens_estimated": 425393,
-    "total_reads": 286,
-    "total_writes": 384,
+    "total_tokens_estimated": 474932,
+    "total_reads": 294,
+    "total_writes": 400,
     "total_sessions": 30,
-    "anatomy_hits": 40,
-    "anatomy_misses": 240,
-    "repeated_reads_blocked": 164,
-    "estimated_savings_vs_bare_cli": 593853
+    "anatomy_hits": 43,
+    "anatomy_misses": 245,
+    "repeated_reads_blocked": 175,
+    "estimated_savings_vs_bare_cli": 735676
   },
   "sessions": [
     {
@@ -4231,6 +4231,151 @@
         "writes_count": 2,
         "repeated_reads_blocked": 2,
         "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-06-01-1942",
+      "started": "2026-06-01T17:42:44.607Z",
+      "ended": "2026-06-01T18:07:04.778Z",
+      "reads": [
+        {
+          "file": "e:/Code/sep-bewertung/.wolf/buglog.json",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/.wolf/cerebrum.md",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 27564,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 12085,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/team_mapping.example.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/CLAUDE.md",
+          "tokens_estimated": 3403,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/docs/bewertungskriterien.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/.wolf/anatomy.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "e:/Code/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 147,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/.git/COMMIT_EDITMSG_TMP",
+          "tokens_estimated": 166,
+          "action": "create"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 1046,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 199,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 703,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 153,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 18,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 814,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 819,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 196,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 689,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 91,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 981,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/CLAUDE.md",
+          "tokens_estimated": 125,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/docs/bewertungskriterien.md",
+          "tokens_estimated": 324,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 43052,
+        "output_tokens_estimated": 6487,
+        "reads_count": 8,
+        "writes_count": 16,
+        "repeated_reads_blocked": 11,
+        "anatomy_lookups": 3
       }
     }
   ],

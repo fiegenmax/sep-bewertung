@@ -540,3 +540,4 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 20:02 | Edited CLAUDE.md | inline fix | ~116 |
 | 20:02 | Edited docs/bewertungskriterien.md | modified Quellen() | ~302 |
 | 18:10 | Epic-Verlinkung-Bug: analyze_epics sah nur #-Text, native Linked/Child items via GraphQL (fetch_epic_links) ergaenzt | evaluate_team.py, test_evaluate.py, CLAUDE.md, docs/bewertungskriterien.md | alle 6 Teams jetzt 1/1, 87 Tests gruen (bug-070) | ~9k |
+| 20:07 | Session end: 16 writes across 5 files (evaluate_team.py, COMMIT_EDITMSG_TMP, test_evaluate.py, CLAUDE.md, bewertungskriterien.md) | 8 reads | ~49539 tok |
