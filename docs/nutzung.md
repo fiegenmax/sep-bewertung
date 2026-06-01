@@ -39,7 +39,40 @@ Für Altinstallationen mit `.gitlab-config` greift ein Fallback — neue Setups 
 
 ### 5. `skripte/team_mapping.json` befüllen
 
-Liste der Teams mit Mapping lokaler Ordner → GitLab-Projekt:
+Liste der Teams mit Mapping lokaler Ordner → GitLab-Projekt. Es gibt zwei Wege:
+
+#### Variante A (empfohlen): automatisch aus einer Teamliste erzeugen
+
+`gen_mapping.py` löst pro Team die GitLab-ID/URLs über die API auf, du musst sie
+nicht von Hand abtippen.
+
+1. In `.env` zusätzlich zu `GITLAB_TOKEN` eintragen (Vorlage in `.env.example`):
+
+   ```
+   GITLAB_GROUP=ude-sse/sep-summer-2026/student_projects   # Parent-Namespace
+   GITLAB_COHORT=shannon                                    # Kohorten-Token
+   ```
+
+   Der GitLab-Projektname wird gebaut als `{GITLAB_GROUP}/team-{GITLAB_COHORT}-<kurzname>`,
+   der lokale Ordner heißt `team-<kurzname>`.
+
+2. `skripte/teams.example.txt` nach `skripte/teams.txt` kopieren und die
+   Kurznamen eintragen (einer pro Zeile, mit oder ohne `team-`-Präfix, `#` für
+   Kommentare). `teams.txt` ist gitignored.
+
+3. Generieren (aus `skripte/`):
+
+   ```bash
+   python gen_mapping.py            # nutzt skripte/teams.txt
+   python gen_mapping.py <pfad>     # alternative Listendatei
+   ```
+
+   Der Lauf ist idempotent: bestehende Einträge werden aktualisiert, nicht
+   gelistete bleiben erhalten, vorher wird ein `team_mapping.json.bak` angelegt.
+   Teams, die GitLab nicht findet (z.B. Tippfehler), werden gemeldet, brechen den
+   Lauf aber nicht ab.
+
+#### Variante B: manuell
 
 Kopiere `skripte/team_mapping.example.json` nach `skripte/team_mapping.json` und
 trage deine echten Werte ein (die `team_mapping.json` ist per `.gitignore`
@@ -59,7 +92,9 @@ ausgeschlossen, damit keine Studi-Repo-Pfade ins öffentliche Repo gelangen):
 ]
 ```
 
-Tipp: das Mapping wird einmalig von einem kleinen Skript erzeugt das die GitLab-Group-API durchsucht; bei einer neuen Prüfungsrunde musst du es nur an die neuen Team-Namen anpassen.
+Tipp: bei einer neuen Prüfungsrunde reicht es, `teams.txt` und die beiden
+`.env`-Werte (`GITLAB_GROUP`, `GITLAB_COHORT`) anzupassen und Variante A erneut
+laufen zu lassen.
 
 ### 6. Pro Team einen lokalen Ordner anlegen
 

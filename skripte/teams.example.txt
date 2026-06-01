@@ -1,0 +1,19 @@
+# Teamliste fuer gen_mapping.py
+#
+# Kopiere diese Datei zu teams.txt und trage die Teamnamen ein (einer pro Zeile).
+# teams.txt ist in .gitignore und wird nicht committet (zeigt auf Studi-Repos).
+#
+# Format: Kurzname pro Zeile, mit oder ohne fuehrendes "team-".
+#   - '#' leitet einen Kommentar ein, Leerzeilen werden ignoriert.
+#   - Der GitLab-Projektname wird gebaut als:
+#       {GITLAB_GROUP}/team-{GITLAB_COHORT}-{kurzname}
+#     (GITLAB_GROUP und GITLAB_COHORT stehen in .env)
+#   - Der lokale Ordnername wird: team-{kurzname}
+#
+# Beispiel: Kurzname "bit" + GITLAB_COHORT=shannon
+#   -> GitLab: .../student_projects/team-shannon-bit
+#   -> lokal:  team-bit
+
+bit
+entropy
+juggler

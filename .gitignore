@@ -21,6 +21,9 @@ teams/Uebersicht_alle_Teams.xlsx
 # Echtes Team->GitLab-Mapping (zeigt auf Studi-Repos). Vorlage: team_mapping.example.json
 skripte/team_mapping.json
 
+# Echte Teamliste fuer gen_mapping.py (zeigt auf Studi-Repos). Vorlage: teams.example.txt
+skripte/teams.txt
+
 # Python
 __pycache__/
 *.pyc

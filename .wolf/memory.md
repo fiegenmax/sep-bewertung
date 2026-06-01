@@ -391,3 +391,16 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 17:18 | Created docs/superpowers/specs/2026-06-01-gen-mapping-design.md | — | ~1211 |
 
 | --:-- | Brainstorming gen_mapping.py: Design fuer team_mapping-Generierung aus teams.txt | docs/superpowers/specs/2026-06-01-gen-mapping-design.md | spec geschrieben | ~1200 |
+| 17:18 | Session end: 1 writes across 1 files (2026-06-01-gen-mapping-design.md) | 2 reads | ~1297 tok |
+| 17:20 | Created skripte/test_gen_mapping.py | — | ~1621 |
+| 17:21 | Created skripte/gen_mapping.py | — | ~1859 |
+
+## Session: 2026-06-01 17:21
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:21 | Created skripte/teams.example.txt | — | ~183 |
+| 17:22 | Edited .gitignore | 2→5 lines | ~60 |
+| 17:22 | Edited docs/nutzung.md | modified A() | ~424 |
+| 17:22 | Edited docs/nutzung.md | 1→3 lines | ~46 |
+| --:-- | gen_mapping.py implementiert (TDD, 18 Tests gruen) + teams.example.txt, .env.example/.gitignore/docs/nutzung erweitert | skripte/gen_mapping.py, skripte/test_gen_mapping.py | fertig, netzfrei verifiziert | ~6000 |
