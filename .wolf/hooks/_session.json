@@ -1,167 +1,70 @@
 {
-  "session_id": "session-2026-06-02-1130",
-  "started": "2026-06-02T09:30:15.326Z",
+  "session_id": "session-2026-06-02-1627",
+  "started": "2026-06-02T14:27:41.079Z",
   "files_read": {
-    "c:/Users/maxfi/Documents/git/sep-bewertung/docs/review-fix-plan.md": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-06-02T09:31:17.646Z"
-    },
     "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/anatomy.md": {
       "count": 1,
       "tokens": 0,
-      "first_read": "2026-06-02T09:31:34.647Z"
-    },
-    "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/cerebrum.md": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-06-02T09:31:35.200Z"
-    },
-    "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/buglog.json": {
-      "count": 2,
-      "tokens": 0,
-      "first_read": "2026-06-02T09:31:40.459Z"
-    },
-    "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py": {
-      "count": 5,
-      "tokens": 32680,
-      "first_read": "2026-06-02T09:31:47.126Z"
-    },
-    "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/build_overview.py": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-06-02T09:31:58.146Z"
-    },
-    "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py": {
-      "count": 7,
-      "tokens": 18489,
-      "first_read": "2026-06-02T09:32:11.477Z"
+      "first_read": "2026-06-02T14:28:03.414Z"
     },
     "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml": {
       "count": 1,
-      "tokens": 2635,
-      "first_read": "2026-06-02T09:35:50.382Z"
+      "tokens": 0,
+      "first_read": "2026-06-02T14:28:03.776Z"
     },
     "c:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md": {
-      "count": 2,
-      "tokens": 4406,
-      "first_read": "2026-06-02T09:40:11.132Z"
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-06-02T14:28:10.710Z"
     },
     "c:/Users/maxfi/Documents/git/sep-bewertung/docs/funktionsweise.md": {
       "count": 1,
       "tokens": 0,
-      "first_read": "2026-06-02T09:40:51.304Z"
+      "first_read": "2026-06-02T14:28:40.372Z"
     },
-    "c:/Users/maxfi/Documents/git/sep-bewertung/.gitignore": {
+    "c:/Users/maxfi/Documents/git/sep-bewertung/docs/llm-integration.md": {
       "count": 1,
       "tokens": 0,
-      "first_read": "2026-06-02T09:49:19.997Z"
+      "first_read": "2026-06-02T14:28:40.849Z"
+    },
+    "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-06-02T14:30:05.785Z"
+    },
+    "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/cerebrum.md": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-06-02T14:32:02.691Z"
     }
   },
   "files_written": [
     {
-      "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+      "file": "c:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md",
       "action": "edit",
-      "tokens": 1186,
-      "at": "2026-06-02T09:34:22.516Z"
-    },
-    {
-      "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
-      "action": "edit",
-      "tokens": 374,
-      "at": "2026-06-02T09:34:42.655Z"
-    },
-    {
-      "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
-      "action": "edit",
-      "tokens": 313,
-      "at": "2026-06-02T09:34:59.369Z"
-    },
-    {
-      "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
-      "action": "edit",
-      "tokens": 231,
-      "at": "2026-06-02T09:35:17.811Z"
-    },
-    {
-      "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
-      "action": "edit",
-      "tokens": 166,
-      "at": "2026-06-02T09:35:25.863Z"
-    },
-    {
-      "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
-      "action": "edit",
-      "tokens": 131,
-      "at": "2026-06-02T09:35:34.386Z"
-    },
-    {
-      "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
-      "action": "edit",
-      "tokens": 74,
-      "at": "2026-06-02T09:35:40.383Z"
-    },
-    {
-      "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
-      "action": "edit",
-      "tokens": 24,
-      "at": "2026-06-02T09:35:46.288Z"
-    },
-    {
-      "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
-      "action": "edit",
-      "tokens": 129,
-      "at": "2026-06-02T09:35:57.088Z"
-    },
-    {
-      "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/build_overview.py",
-      "action": "edit",
-      "tokens": 68,
-      "at": "2026-06-02T09:36:12.083Z"
-    },
-    {
-      "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
-      "action": "edit",
-      "tokens": 2573,
-      "at": "2026-06-02T09:39:11.755Z"
+      "tokens": 408,
+      "at": "2026-06-02T14:30:23.670Z"
     },
     {
       "file": "c:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md",
       "action": "edit",
-      "tokens": 102,
-      "at": "2026-06-02T09:40:19.029Z"
-    },
-    {
-      "file": "c:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md",
-      "action": "edit",
-      "tokens": 174,
-      "at": "2026-06-02T09:40:37.869Z"
+      "tokens": 49,
+      "at": "2026-06-02T14:30:30.494Z"
     },
     {
       "file": "c:/Users/maxfi/Documents/git/sep-bewertung/docs/funktionsweise.md",
       "action": "edit",
-      "tokens": 256,
-      "at": "2026-06-02T09:41:02.582Z"
-    },
-    {
-      "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.gitignore",
-      "action": "edit",
-      "tokens": 86,
-      "at": "2026-06-02T09:49:25.820Z"
+      "tokens": 138,
+      "at": "2026-06-02T14:30:38.975Z"
     }
   ],
   "edit_counts": {
-    "skripte/evaluate_team.py": 8,
-    "skripte/config.yaml": 1,
-    "skripte/build_overview.py": 1,
-    "skripte/test_evaluate.py": 1,
     "docs/bewertungskriterien.md": 2,
-    "docs/funktionsweise.md": 1,
-    ".gitignore": 1
+    "docs/funktionsweise.md": 1
   },
-  "anatomy_hits": 4,
+  "anatomy_hits": 0,
   "anatomy_misses": 7,
-  "repeated_reads_warned": 12,
+  "repeated_reads_warned": 0,
   "cerebrum_warnings": 0,
-  "stop_count": 1
+  "stop_count": 2
 }

@@ -1598,8 +1598,17 @@
       "file": "skripte/evaluate_team.py",
       "root_cause": "clone_or_update fetchte nur und setzte den Arbeitsbaum nie auf den neuen Remote-Stand. Der fetch-Aufruf nutzte check=False + verwarf stderr.",
       "fix": "Neuer Helper _remote_default_branch (origin/HEAD -> origin/main -> origin/master). Nach dem Fetch 'git reset --hard origin/<branch>' + 'git checkout -B <branch> origin/<branch>'. Fetch- und Reset-Returncodes werden geprueft und werfen RuntimeError mit gescrubbtem stderr. Tests: TestCloneOrUpdate (Bare-Remote: Arbeitsbaum folgt neuem Commit; Fetch-Fehler -> RuntimeError).",
-      "tags": ["repo-update", "clone_or_update", "provenance", "git", "fetch", "scoring-integrity"],
-      "related_bugs": ["bug-025"],
+      "tags": [
+        "repo-update",
+        "clone_or_update",
+        "provenance",
+        "git",
+        "fetch",
+        "scoring-integrity"
+      ],
+      "related_bugs": [
+        "bug-025"
+      ],
       "occurrences": 1,
       "last_seen": "2026-06-02"
     },
@@ -1610,8 +1619,16 @@
       "file": "skripte/evaluate_team.py",
       "root_cause": "Die Direktpush-Erkennung filterte nur Commits, deren Subject mit 'Merge ' beginnt. Squash-Merge-Commits haben aber den MR-Titel als Subject.",
       "fix": "Aus den gemergten MRs merge_commit_sha + squash_commit_sha in ein Set sammeln; First-Parent-Commits, deren SHA darin liegt, nicht als Direktpush zaehlen. Neues Detail mr_squash_commits_recognized + Reason-Text. Tests: TestBranchingSquashAware (squash-SHA nicht gezaehlt; echter Direktcommit weiterhin gezaehlt).",
-      "tags": ["branching", "squash-merge", "heuristik", "false-positive", "scoring"],
-      "related_bugs": ["bug-024"],
+      "tags": [
+        "branching",
+        "squash-merge",
+        "heuristik",
+        "false-positive",
+        "scoring"
+      ],
+      "related_bugs": [
+        "bug-024"
+      ],
       "occurrences": 1,
       "last_seen": "2026-06-02"
     },
@@ -1622,7 +1639,14 @@
       "file": "skripte/evaluate_team.py",
       "root_cause": "Die Heuristik zaehlte len(real_wiki_pages) ohne den Seiteninhalt zu betrachten (Signatur hatte die wiki_contents gar nicht).",
       "fix": "Signatur um optionales wiki_contents={slug:text} erweitert; collect_results reicht das bereits geladene wiki_contents durch. Nur Seiten mit bereinigter Textlaenge >= thresholds.code_docs.min_wiki_page_chars (Default 200) zaehlen. Neues Detail substantial_wiki_pages; ohne wiki_contents bleibt das alte Verhalten (signature-stabiler Fallback). Tests: TestCodeDocsWikiSubstance (viele kurze -> 0 Bonus; 4 lange -> 1 Punkt; 15 lange -> 2 Punkte; None -> backward-compatible).",
-      "tags": ["code-docs", "wiki", "substanz", "heuristik", "config", "scoring"],
+      "tags": [
+        "code-docs",
+        "wiki",
+        "substanz",
+        "heuristik",
+        "config",
+        "scoring"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-06-02"
@@ -1634,10 +1658,48 @@
       "file": "skripte/build_overview.py",
       "root_cause": "Toter Aufruf cfg = ev.load_config() in main(); der Rueckgabewert wurde nie verwendet, erzwang aber eine vorhandene .env.",
       "fix": "Den ungenutzten load_config()-Aufruf entfernt. Test: TestBuildOverviewNoConfig patcht ev.load_config so, dass es bei Aufruf wirft, und prueft dass main() trotzdem durchlaeuft.",
-      "tags": ["build_overview", "config", "dead-code", "token", "usability"],
+      "tags": [
+        "build_overview",
+        "config",
+        "dead-code",
+        "token",
+        "usability"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-06-02"
+    },
+    {
+      "id": "bug-099",
+      "timestamp": "2026-06-02T14:30:23.673Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/bewertungskriterien.md",
+      "root_cause": "13 lines replaced/restructured",
+      "fix": "Rewrote 15→22 lines (13 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T14:30:23.673Z"
+    },
+    {
+      "id": "bug-100",
+      "timestamp": "2026-06-02T14:30:38.977Z",
+      "error_message": "Incorrect value in code",
+      "file": "docs/funktionsweise.md",
+      "root_cause": "Had `config.yaml`",
+      "fix": "Changed to `thr(\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T14:30:38.977Z"
     }
   ]
 }

@@ -738,3 +738,4 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 16:30 | Edited docs/bewertungskriterien.md | inline fix | ~46 |
 | 16:30 | Edited docs/funktionsweise.md | inline fix | ~129 |
 | 16:31 | docs-config-audit: 3 stale Stellen gefixt (work_scope normalize_by measured statt fixed, tests_files 5→6, funktionsweise TODO-Hinweis veraltet) | docs/bewertungskriterien.md docs/funktionsweise.md | done | ~6k |
+| 16:32 | Session end: 3 writes across 2 files (bewertungskriterien.md, funktionsweise.md) | 7 reads | ~595 tok |
