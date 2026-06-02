@@ -639,3 +639,19 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 09:39 | Edited skripte/test_evaluate.py | modified test_vendor_dirs_contains_node_modules() | ~344 |
 | 09:40 | Created skripte/_verify_sampling.py | — | ~367 |
 | 09:42 | Alle LLM-Sample-Groessen/Char-Caps zentral in config.yaml llm_sampling: + llm_sample()-Helper ausgelagert (9 Calls, ~22 Knoepfe); Defaults == bisher | evaluate_team.py, config.yaml, test_evaluate.py | 80 Tests gruen; Override-Flow live verifiziert (5->2) | ~45k |
+| 09:43 | Session end: 21 writes across 6 files (llm_audit.py, _llm_audit_tmp.py, test_evaluate.py, evaluate_team.py, config.yaml) | 5 reads | ~58623 tok |
+
+## Session: 2026-06-02 09:43
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:01 | Edited skripte/evaluate_team.py | modified staff_domain_committers() | ~542 |
+| 10:01 | Edited skripte/evaluate_team.py | modified NORMALISIERUNG() | ~362 |
+| 10:02 | Edited skripte/evaluate_team.py | expanded (+14 lines) | ~256 |
+| 10:02 | Edited skripte/evaluate_team.py | 10→13 lines | ~258 |
+| 10:02 | Edited skripte/evaluate_team.py | 3→4 lines | ~90 |
+| 10:02 | Edited skripte/config.yaml | expanded (+11 lines) | ~324 |
+| 10:03 | Edited skripte/test_evaluate.py | modified _thr() | ~141 |
+| 10:03 | Edited skripte/test_evaluate.py | modified _thr() | ~1785 |
+
+| 10:05 | SUMMARY: work_scope normalisiert jetzt auf gemessene Autoren (normalize_by=measured, geklammert 5-8) statt fix 6; staff_domain_committers() flaggt aktive @uni-due.de-Committer zur manuellen Pruefung. +5 Tests, 86 gruen. Validiert an echten Repos: noisy zaehlt GitHub/Gmail-Studis korrekt, juggler flaggt Niermann. | evaluate_team.py, config.yaml, test_evaluate.py | bug-086 | ~3000 |

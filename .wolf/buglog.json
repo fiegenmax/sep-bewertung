@@ -1402,6 +1402,59 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-06-02T07:38:51.769Z"
+    },
+    {
+      "id": "bug-084",
+      "timestamp": "2026-06-02T08:01:51.252Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "12 lines replaced/restructured",
+      "fix": "Rewrote 13→18 lines (12 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T08:01:51.252Z"
+    },
+    {
+      "id": "bug-085",
+      "timestamp": "2026-06-02T08:02:52.418Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/config.yaml",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 7→18 lines (5 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "yaml"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T08:02:52.418Z"
+    },
+    {
+      "id": "bug-086",
+      "timestamp": "2026-06-02",
+      "error_message": "Arbeitsumfang/Kopf teilte fix durch 6 angenommene Autoren statt durch die reale Teamgroesse; aktive Committer auf @uni-due.de (z.B. Niermann, 47 Commits in team-juggler) wurden still als Staff ausgefiltert.",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "analyze_work_scope normalisierte hartcodiert auf assumed_active_authors; _is_tutor_identity filtert jede @uni-due.de-Adresse (ausser stud.) als Staff, ohne aktive Vielcommitter (evtl. falsch konfigurierte Studis) zu kennzeichnen. Pures .stud-Whitelisting waere falsch gewesen, da echte Studis mit GitHub-Noreply/Gmail committen (team-noisy: Cedric 152, Konstantin 42).",
+      "fix": "normalize_by-Schalter (measured|fixed, Default measured): teilt durch count_active_authors, geklammert auf [team_size_min, team_size_max]=5..8. Neue Funktion staff_domain_committers() flaggt aktive Staff-Domain-Committer ab staff_flag_min_commits im Reason-Text zur manuellen Pruefung (statt stiller Filterung). Pures .stud-Whitelisting bewusst verworfen.",
+      "tags": [
+        "work-scope",
+        "author-count",
+        "email-domain",
+        "staff-filter",
+        "config",
+        "calibration"
+      ],
+      "related_bugs": [
+        "bug-076"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-06-02"
     }
   ]
 }

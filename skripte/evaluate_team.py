@@ -603,6 +603,42 @@ def count_active_authors(repo):
     return len(keys)
 
 
+def staff_domain_committers(repo, min_commits=1):
+    """Aktive Committer auf einer Staff-Domain (z.B. uni-due.de, aber NICHT der
+    Studi-Subdomain stud.uni-due.de), die NICHT ueber ein Tutor-Namensfragment
+    erkannt werden. Solche Identitaeten werden als Lehrpersonal ausgefiltert
+    (zaehlen nicht als Studi-Autor), koennten aber falsch-konfigurierte Studis
+    sein, die mit der Uni- statt der Studi-Mail committen (real beobachtet: ein
+    Mitglied mit 46 Commits auf @uni-due.de). Rueckgabe: [(name, email, commits),
+    ...] ab min_commits Commits, absteigend nach Commit-Zahl. Dient als
+    'bitte manuell pruefen'-Signal, NICHT zur automatischen Umklassifizierung.
+    Pro E-Mail aggregiert (gleiche Person unter mehreren Namensschreibweisen)."""
+    out = run(["git", "shortlog", "-sne", "--all", "--no-merges"], repo).stdout.splitlines()
+    tutors = get_tutors()
+    staff = get_staff_domains()
+    students = get_student_domains()
+    found = {}
+    for line in out:
+        m = _SHORTLOG_RE.match(line)
+        if not m:
+            continue
+        count = int(m.group(1))
+        name, email = m.group(2).strip(), m.group(3).strip().lower()
+        if any(t in name.lower() or t in email for t in tutors):
+            continue  # per Name sicher als Tutor erkannt -> kein Grenzfall
+        if "@" not in email:
+            continue
+        domain = email.rsplit("@", 1)[1]
+        if _domain_matches(domain, staff) and not _domain_matches(domain, students):
+            if email in found:
+                found[email] = (found[email][0], email, found[email][2] + count)
+            else:
+                found[email] = (name, email, count)
+    res = [v for v in found.values() if v[2] >= min_commits]
+    res.sort(key=lambda v: -v[2])
+    return res
+
+
 # ============================================================
 # Analysen pro Bewertungs-Kategorie
 # ============================================================
@@ -1530,18 +1566,23 @@ def analyze_work_scope(repo, issues, mrs, members):
     immer 15 (alle SS26-Teams: 193-634 Commits, 8k-23k LOC -> ausnahmslos 15/15).
     Wir staffeln deshalb nach Commits/Kopf und LOC/Kopf.
 
-    ANNAHME (bewusst, dokumentiert): Ein SEP-Team hat erfahrungsgemaess
-    *5-6 aktive Autoren*. Die Pro-Kopf-Normalisierung rechnet deshalb mit einer
-    festen angenommenen Teamgroesse (config: work_scope.assumed_active_authors,
-    Default 6 = konservativ am oberen Rand), NICHT mit der real gemessenen
-    Autorenzahl. Gruende:
-      - Die GitLab-Mitgliederzahl ueberschaetzt (zaehlt Nie-Committer/Tutoren mit;
-        SS26: 11-12 'Mitglieder' bei real 7-8 Commit-Autoren).
-      - Durch die *gemessene* Autorenzahl zu teilen wuerde Trittbrettfahrer
-        belohnen (1 Person macht alles -> riesige Pro-Kopf-Werte -> 15). Ungleiche
-        Verteilung faengt ohnehin das Kriterium 'Commit-Verteilung' (Gini) ab.
-    Die gemessene Autorenzahl wird nur zur Transparenz/Plausibilitaet ausgewiesen;
-    weicht sie stark von 5-6 ab, weist der Reason-Text auf manuelle Pruefung hin.
+    NORMALISIERUNG (config: work_scope.normalize_by):
+      - "measured" (Default): teilt durch die real GEMESSENE Zahl aktiver
+        Commit-Autoren (count_active_authors, per E-Mail dedupliziert, Tutoren/
+        Staff ausgefiltert), GEKLAMMERT auf [team_size_min, team_size_max]
+        (Default 5-8). Die Klammer verhindert beide Extreme: 1-Personen-Repos
+        wuerden sonst Trittbrettfahrer belohnen (riesige Pro-Kopf-Werte -> 15);
+        nach oben deckelt sie ungewoehnlich grosse Autorenlisten.
+      - "fixed": teilt durch die feste Annahme work_scope.assumed_active_authors
+        (altes Verhalten, 5-6 aktive Autoren angenommen).
+    Hintergrund: Die GitLab-Mitgliederzahl ueberschaetzt (zaehlt Nie-Committer/
+    Tutoren mit; SS26: 11-12 'Mitglieder' bei real 7-8 Commit-Autoren), deshalb
+    die per-E-Mail gemessene Autorenzahl statt der Mitgliederzahl. Ungleiche
+    Arbeitsverteilung faengt zusaetzlich das Kriterium 'Commit-Verteilung' (Gini)
+    ab. Aktive Committer auf einer Staff-Domain (z.B. @uni-due.de statt
+    @stud.uni-due.de) werden weiter ausgefiltert, aber ab
+    work_scope.staff_flag_min_commits im Reason-Text zur manuellen Pruefung
+    markiert (koennten falsch-konfigurierte Studis sein, s. staff_domain_committers).
     """
     tutors = get_tutors()
     n_members = sum(1 for m in members if m.get("access_level", 0) <= 40
@@ -1567,8 +1608,22 @@ def analyze_work_scope(repo, issues, mrs, members):
         except Exception:
             pass
 
-    # Normalisierungsbasis: angenommene Teamgroesse (5-6 aktive Autoren, s.o.).
-    team_size = max(1, thr("work_scope.assumed_active_authors", 6))
+    # Normalisierungsbasis: gemessene Autoren (geklammert) oder feste Annahme, s.o.
+    mode = str(thr("work_scope.normalize_by", "measured")).lower()
+    if mode == "fixed":
+        team_size = max(1, thr("work_scope.assumed_active_authors", 6))
+        basis_note = f"{team_size} angenommene aktive Autoren (fix)"
+    else:  # "measured": gemessene aktive Autoren, gegen Extreme geklammert
+        lo = max(1, thr("work_scope.team_size_min", 5))
+        hi = max(lo, thr("work_scope.team_size_max", 8))
+        team_size = min(max(n_authors, lo), hi)
+        if n_authors < lo:
+            clamp_hint = f", auf Minimum {lo} angehoben"
+        elif n_authors > hi:
+            clamp_hint = f", auf Maximum {hi} gedeckelt"
+        else:
+            clamp_hint = ""
+        basis_note = f"{team_size} aktive Autoren (gemessen: {n_authors}{clamp_hint})"
     commits_per_dev = n_commits / team_size
     loc_per_dev = loc / team_size
 
@@ -1591,18 +1646,22 @@ def analyze_work_scope(repo, issues, mrs, members):
     devnote = f"{n_authors} aktive Commit-Autoren gemessen"
     if n_members and n_members != n_authors:
         devnote += f" (GitLab listet {n_members} Mitglieder)"
-    if n_authors and not (5 <= n_authors <= 7):
-        devnote += " — weicht von der 5-6-Annahme ab, Umfang ggf. relativieren"
+    flagged = staff_domain_committers(repo, thr("work_scope.staff_flag_min_commits", 20))
+    if flagged:
+        who = ", ".join(f"{n} ({c} Commits)" for n, _e, c in flagged)
+        devnote += (f" — ⚠ aktive(r) Committer auf Uni-Domain als Staff ausgefiltert: "
+                    f"{who}; evtl. Studi mit falscher Mail-Konfiguration, bitte manuell prüfen")
     reason = (f"{n_commits} Commits, {merged_mrs} gemergte MRs, {closed_issues} geschlossene Issues, "
               f"ca. {loc} Lines of Code. {devnote}. "
-              f"Normalisiert auf {team_size} angenommene aktive Autoren: "
+              f"Normalisiert auf {basis_note}: "
               f"{commits_per_dev:.0f} Commits/Kopf, {loc_per_dev:.0f} LOC/Kopf. "
               f"⚠ Manuell prüfen, ob der Umfang zur tatsächlichen Sprint-Zahl passt.")
     return {"criterion": "Arbeitsumfang angemessen", "max": 15, "score": score,
             "label": label, "reason": reason,
             "details": {"commits": n_commits, "merged_mrs": merged_mrs, "closed_issues": closed_issues,
                         "loc": loc, "estimated_devs": n_members, "git_authors": n_authors,
-                        "assumed_team_size": team_size,
+                        "assumed_team_size": team_size, "normalize_by": mode,
+                        "staff_domain_flagged": [list(f) for f in flagged],
                         "commits_per_dev": round(commits_per_dev, 1),
                         "loc_per_dev": round(loc_per_dev, 1)}}
 

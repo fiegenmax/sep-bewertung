@@ -678,8 +678,10 @@ class TestWorkScopePerDev(unittest.TestCase):
     Autorenzahl steht nur informativ in den Details."""
 
     # Bewusst winzige Schwellen, damit wenige Commits genuegen (schneller Test).
+    # normalize_by="fixed": diese Klasse testet gezielt die feste-Annahme-Variante.
     def _thr(self, assumed):
         return {"work_scope": {
+            "normalize_by": "fixed",
             "assumed_active_authors": assumed,
             "zero_commits": 1, "zero_loc": 1,
             "five_commits_per_dev": 2, "five_loc_per_dev": 100,
@@ -734,6 +736,129 @@ class TestWorkScopePerDev(unittest.TestCase):
         self._build(["solo"], 1, 5)  # 1 Commit, 5 LOC
         res = ev.analyze_work_scope(self.tmp, issues=[], mrs=[], members=[])
         self.assertEqual(res["score"], 0)
+
+
+class TestWorkScopeMeasured(unittest.TestCase):
+    """normalize_by="measured": teilt durch die GEMESSENE Autorenzahl, geklammert
+    auf [team_size_min, team_size_max]. Die Klammer schuetzt vor dem 1-Personen-
+    Exploit (zu wenige Autoren -> kuenstlich hohe Pro-Kopf-Werte) und deckelt nach
+    oben."""
+
+    def _thr(self, lo=5, hi=8):
+        return {"work_scope": {
+            "normalize_by": "measured", "team_size_min": lo, "team_size_max": hi,
+            "assumed_active_authors": 6,
+            "zero_commits": 1, "zero_loc": 1,
+            "five_commits_per_dev": 2, "five_loc_per_dev": 100,
+            "ten_commits_per_dev": 4, "ten_loc_per_dev": 300,
+            "staff_flag_min_commits": 20,
+        }}
+
+    def setUp(self):
+        for c in ("_THRESHOLDS_CACHE", "_LANG_CACHE", "_VENDOR_CACHE",
+                  "_TUTORS_CACHE", "_STAFF_DOMAINS_CACHE", "_STUDENT_DOMAINS_CACHE"):
+            setattr(ev, c, None)
+        self.tmp = Path(tempfile.mkdtemp())
+        import subprocess
+        subprocess.run(["git", "init", "-q"], cwd=self.tmp)
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+        ev._THRESHOLDS_CACHE = None
+
+    def _build(self, authors, commits_per_author=2, loc=10):
+        import subprocess
+        (self.tmp / "big.py").write_text("x = 1\n" * loc, encoding="utf-8")
+        for i in range(commits_per_author):
+            for a in authors:
+                env = {**os.environ, "GIT_AUTHOR_NAME": a, "GIT_AUTHOR_EMAIL": f"{a}@stud.uni-due.de",
+                       "GIT_COMMITTER_NAME": a, "GIT_COMMITTER_EMAIL": f"{a}@stud.uni-due.de"}
+                (self.tmp / "log.txt").write_text(f"{a}{i}", encoding="utf-8")
+                subprocess.run(["git", "add", "-A"], cwd=self.tmp, env=env)
+                subprocess.run(["git", "commit", "-q", "-m", f"{a}{i}"], cwd=self.tmp, env=env)
+
+    def test_measured_clamped_to_min(self):
+        # nur 2 Autoren -> unter team_size_min(5) -> Teiler auf 5 angehoben
+        ev._THRESHOLDS_CACHE = self._thr(lo=5, hi=8)
+        self._build(["alice", "bob"])
+        res = ev.analyze_work_scope(self.tmp, issues=[], mrs=[], members=[])
+        self.assertEqual(res["details"]["git_authors"], 2)
+        self.assertEqual(res["details"]["assumed_team_size"], 5)
+        self.assertEqual(res["details"]["normalize_by"], "measured")
+
+    def test_measured_within_range(self):
+        # 6 Autoren, innerhalb [5,8] -> Teiler == gemessene Zahl
+        ev._THRESHOLDS_CACHE = self._thr(lo=5, hi=8)
+        self._build(["a", "b", "c", "d", "e", "f"])
+        res = ev.analyze_work_scope(self.tmp, issues=[], mrs=[], members=[])
+        self.assertEqual(res["details"]["git_authors"], 6)
+        self.assertEqual(res["details"]["assumed_team_size"], 6)
+
+    def test_measured_clamped_to_max(self):
+        # 4 Autoren, aber team_size_max=2 -> Teiler auf 2 gedeckelt
+        ev._THRESHOLDS_CACHE = self._thr(lo=1, hi=2)
+        self._build(["a", "b", "c", "d"])
+        res = ev.analyze_work_scope(self.tmp, issues=[], mrs=[], members=[])
+        self.assertEqual(res["details"]["git_authors"], 4)
+        self.assertEqual(res["details"]["assumed_team_size"], 2)
+
+
+class TestStaffDomainFlag(unittest.TestCase):
+    """Aktive Committer auf einer Staff-Domain (uni-due.de, nicht stud.) werden
+    weiter ausgefiltert, aber ab staff_flag_min_commits zur manuellen Pruefung
+    markiert. staff_domain_committers() liefert die Grenzfaelle."""
+
+    def setUp(self):
+        for c in ("_THRESHOLDS_CACHE", "_LANG_CACHE", "_VENDOR_CACHE",
+                  "_TUTORS_CACHE", "_STAFF_DOMAINS_CACHE", "_STUDENT_DOMAINS_CACHE"):
+            setattr(ev, c, None)
+        self.tmp = Path(tempfile.mkdtemp())
+        import subprocess
+        subprocess.run(["git", "init", "-q"], cwd=self.tmp)
+        self._commit("Alice Stud", "alice@stud.uni-due.de", n=2)
+        self._commit("Matthias Niermann", "matthias.niermann@uni-due.de", n=5)  # aktiv, Staff-Domain
+        self._commit("Alexander Korn", "alexander.korn@uni-due.de", n=1)        # Betreuer, wenige Commits
+
+    def _commit(self, name, email, n=1):
+        import subprocess
+        env = {**os.environ, "GIT_AUTHOR_NAME": name, "GIT_AUTHOR_EMAIL": email,
+               "GIT_COMMITTER_NAME": name, "GIT_COMMITTER_EMAIL": email}
+        for i in range(n):
+            (self.tmp / "big.py").write_text(f"x = {name}{i}\n" * 5, encoding="utf-8")
+            subprocess.run(["git", "add", "-A"], cwd=self.tmp, env=env)
+            subprocess.run(["git", "commit", "-q", "-m", f"{name}{i}"], cwd=self.tmp, env=env)
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+        for c in ("_THRESHOLDS_CACHE", "_TUTORS_CACHE", "_STAFF_DOMAINS_CACHE", "_STUDENT_DOMAINS_CACHE"):
+            setattr(ev, c, None)
+
+    def test_threshold_separates_active_from_setup(self):
+        # min_commits=3 -> nur Niermann (5), nicht Korn (1), nie Alice (Studi)
+        flagged = ev.staff_domain_committers(self.tmp, min_commits=3)
+        emails = {e for _n, e, _c in flagged}
+        self.assertIn("matthias.niermann@uni-due.de", emails)
+        self.assertNotIn("alexander.korn@uni-due.de", emails)
+        self.assertNotIn("alice@stud.uni-due.de", emails)
+
+    def test_excludes_tutor_by_name(self):
+        ev._TUTORS_CACHE = ["niermann"]  # explizit als Tutor deklariert
+        flagged = ev.staff_domain_committers(self.tmp, min_commits=1)
+        emails = {e for _n, e, _c in flagged}
+        self.assertNotIn("matthias.niermann@uni-due.de", emails)
+
+    def test_work_scope_reason_flags_active_staff_committer(self):
+        ev._THRESHOLDS_CACHE = {"work_scope": {
+            "normalize_by": "measured", "team_size_min": 1, "team_size_max": 8,
+            "zero_commits": 1, "zero_loc": 1,
+            "five_commits_per_dev": 2, "five_loc_per_dev": 100,
+            "ten_commits_per_dev": 4, "ten_loc_per_dev": 300,
+            "staff_flag_min_commits": 3,
+        }}
+        res = ev.analyze_work_scope(self.tmp, issues=[], mrs=[], members=[])
+        self.assertIn("manuell prüfen", res["reason"])
+        self.assertIn("Niermann", res["reason"])
+        self.assertEqual(res["details"]["git_authors"], 1)  # nur Alice zaehlt als Autor
 
 
 class TestJobCoverage(unittest.TestCase):

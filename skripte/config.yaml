@@ -111,12 +111,23 @@ thresholds:
     min_must_closed_ratio: 0.6
 
   work_scope:
-    # Arbeitsumfang wird PRO KOPF bewertet. Annahme: ein SEP-Team hat
-    # erfahrungsgemaess 5-6 aktive Autoren. Die Pro-Kopf-Normalisierung teilt
-    # Gesamt-Commits/LOC durch diese feste angenommene Teamgroesse (NICHT durch
-    # die gemessene Autorenzahl -- die ueberschaetzt via GitLab-Mitglieder bzw.
-    # wuerde Trittbrettfahrer belohnen). 6 = konservativ am oberen Rand.
+    # Arbeitsumfang wird PRO KOPF bewertet (Gesamt-Commits/LOC / Teamgroesse).
+    # normalize_by steuert den Teiler:
+    #   "measured" (Default): real gemessene aktive Commit-Autoren (per E-Mail
+    #       dedupliziert, Tutoren/Staff ausgefiltert), GEKLAMMERT auf
+    #       [team_size_min, team_size_max]. Spiegelt die echte Teamgroesse wider,
+    #       die Klammer verhindert den 1-Personen-Exploit (riesige Pro-Kopf-Werte).
+    #   "fixed": feste assumed_active_authors (altes Verhalten).
+    normalize_by: measured
+    team_size_min: 5      # untere Klammer fuer "measured" (Trittbrettfahrer-Schutz)
+    team_size_max: 8      # obere Klammer fuer "measured"
+    # Teiler im Modus "fixed" (5-6 aktive Autoren angenommen, 6 = oberer Rand).
     assumed_active_authors: 6
+    # Aktive Committer auf einer Staff-Domain (uni-due.de, NICHT stud.uni-due.de)
+    # werden als Lehrpersonal ausgefiltert. Ab dieser Commit-Zahl werden sie aber
+    # im Reason-Text zur manuellen Pruefung markiert (evtl. falsch konfigurierte
+    # Studis, die mit der Uni- statt der Studi-Mail committen).
+    staff_flag_min_commits: 20
     # Absoluter Boden: quasi leeres Repo -> 0 (teamgroessen-unabhaengig).
     zero_commits: 20
     zero_loc: 1000
