@@ -541,8 +541,17 @@ def _has_acceptance(desc_lower):
     return "acceptance criteria" in desc_lower or "akzeptanzkriterien" in desc_lower
 
 
+_MD_EMPHASIS = re.compile(r"[*_`~]+")
+
+
 def _has_story_format(desc_lower):
-    return bool(_US_FMT_EN.search(desc_lower) or _US_FMT_DE.search(desc_lower))
+    # Markdown-Betonung entfernen ('**As a**' -> 'As a'), bevor das Format-Regex
+    # greift. GitLabs Story-Template setzt die Schluesselwoerter fett; die Regexes
+    # verlangen aber ein Leerzeichen direkt nach 'as a'/'als', das das '**'
+    # zerstoert (bug-075). Ohne Strip wuerden korrekt formatierte Stories als
+    # formatlos zaehlen und das Kriterium faelschlich abwerten.
+    cleaned = _MD_EMPHASIS.sub("", desc_lower)
+    return bool(_US_FMT_EN.search(cleaned) or _US_FMT_DE.search(cleaned))
 
 
 def _looks_like_user_story(issue):

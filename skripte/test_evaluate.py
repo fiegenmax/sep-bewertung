@@ -59,6 +59,18 @@ class TestUserStories(unittest.TestCase):
         r = ev.analyze_user_stories(issues, llm=None)
         self.assertEqual(r["score"], 0)
 
+    def test_markdown_bold_story_template(self):
+        # GitLabs Story-Template setzt die Schluesselwoerter fett: '**As a** user'.
+        # Frueher (bug-075) zerbrach das Format-Regex am '**' direkt nach 'as a'
+        # und zaehlte solche Stories als formatlos -> faelschlich score 1 statt 3.
+        desc = ("## User story\n\n**As a** user\n\n**I want to** log in\n\n"
+                "**So that** I can access my data\n\n## Acceptance criteria\n"
+                "- [ ] login works\n- [ ] errors are shown")
+        issues = [_issue(i, ["type::userstory"], desc) for i in range(1, 6)]
+        r = ev.analyze_user_stories(issues, llm=None)
+        self.assertEqual(r["details"]["with_format"], 5)
+        self.assertEqual(r["score"], 3)
+
 
 class TestGitlabUsage(unittest.TestCase):
     def test_full(self):

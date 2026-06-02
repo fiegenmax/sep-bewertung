@@ -576,3 +576,15 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 07:30 | Inspektion: LLM-Score > Kriterium-Max entdeckt (6/9 LLM-Kriterien scale_max != max) | build_xlsx/evaluate_team | bug-074 gefunden | ~9k |
 | 07:45 | Fix bug-074: scale_max ins llm_review-Dict + _normalize_llm_score in build_xlsx (D auf 0..max) + 7 Tests | llm.py, build_xlsx.py, evaluate_team.py, test_evaluate.py | 94 Tests gruen, 0 LLM>Max | ~11k |
 | 08:00 | Regenerate + verify: 0 Verletzungen ueber alle 6 Teams, Hybrid-Summe jetzt skalenkonsistent | teams/*.xlsx | verifiziert | ~5k |
+| 08:24 | Session end: 5 writes across 4 files (llm.py, evaluate_team.py, build_xlsx.py, test_evaluate.py) | 3 reads | ~15005 tok |
+| 08:29 | Session end: 5 writes across 4 files (llm.py, evaluate_team.py, build_xlsx.py, test_evaluate.py) | 3 reads | ~15005 tok |
+| 08:38 | teams-Ordner auf vollen kombinierten Namen umgestellt | team_mapping.json, teams/* | gen_mapping neu generiert, 6 Ordner+xlsx team-bit->team-shannon-bit etc. umbenannt | ~6k |
+
+## Session: 2026-06-02 08:38
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 08:55 | manuelle Fairness-Pruefung team-shannon-bit: Repo geklont @b55f6f2, Heuristik-Claims gegen GitLab-API/Git verifiziert | repo+API | git-Fakten match exakt; US-Format-Regex-Bug (4/39 statt 39/39) entdeckt -> bug-075 | ~45k |
+| 08:59 | Edited skripte/test_evaluate.py | modified test_no_userstories() | ~273 |
+| 08:59 | Edited skripte/evaluate_team.py | modified _has_story_format() | ~165 |
+| 09:03 | bug-075 gefixt: Markdown-Strip in _has_story_format + Test; team-bit US-Score 1->3 verifiziert (live). LLM-Test-Sampler-Bias in cerebrum dokumentiert | evaluate_team.py, test_evaluate.py | 71 Tests gruen | ~30k |

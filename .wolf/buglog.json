@@ -1242,6 +1242,42 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-06-02"
+    },
+    {
+      "id": "bug-075",
+      "timestamp": "2026-06-02",
+      "error_message": "analyze_user_stories meldet '4/39 im As a...I want...so that-Format', obwohl alle 39 Stories des Teams das volle Format haben. Folge: User-Stories-Kriterium bekam Heuristik-Score 1 statt 3.",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "_US_FMT_EN = r'\\bas an? .+?(i want...)' verlangt ein LITERALES Leerzeichen direkt nach 'as a'. Die Stories nutzen Markdown-Fett: '**As a** user' — nach 'as a' folgt '**', kein Space, daher kein Match. 35/39 Stories sind so formatiert und fallen durch; nur 4 plain-Stories matchen. acceptance-Check (Substring 'acceptance criteria') trifft dagegen 39/39, daher acc_ratio=1.0 aber fmt_ratio=0.10 -> score 1 statt 3.",
+      "fix": "GEFIXT: In _has_story_format Markdown-Betonung vor dem Match strippen — _MD_EMPHASIS = re.compile(r'[*_`~]+'); cleaned = _MD_EMPHASIS.sub('', desc_lower); dann _US_FMT_EN/_US_FMT_DE auf cleaned. Greift fuer EN und DE. Test test_markdown_bold_story_template in test_evaluate.py ergaenzt (war vorher rot: 0!=5, jetzt gruen). Verifiziert gegen Live-Daten team-shannon-bit: 39/39 im Format -> score 3/3 statt vorher 1/3. 71 Tests gruen.",
+      "tags": [
+        "heuristic",
+        "user-stories",
+        "regex",
+        "markdown",
+        "false-negative",
+        "scoring",
+        "resolved"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02"
+    },
+    {
+      "id": "bug-076",
+      "timestamp": "2026-06-02T06:59:51.945Z",
+      "error_message": "Wrong return value",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "Was returning: bool(_US_FMT_EN.search(desc_lower) or _US_FMT_DE.s",
+      "fix": "Now returns: bool(_US_FMT_EN.search(cleaned) or _US_FMT_DE.sear",
+      "tags": [
+        "auto-detected",
+        "return-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T06:59:51.945Z"
     }
   ]
 }
