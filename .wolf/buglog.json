@@ -1218,6 +1218,30 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-06-02"
+    },
+    {
+      "id": "bug-074",
+      "timestamp": "2026-06-02",
+      "error_message": "LLM-Score (Spalte D) groesser als das Kriterium-Max (Spalte E) in den Bewertungs-xlsx, z.B. \"Verstaendliche Commit-Messages\": LLM=2 bei Max=1. Bei Inspektion nach dem Pipeline-Lauf aufgefallen.",
+      "file": "skripte/build_xlsx.py",
+      "root_cause": "6 von 9 LLM-Kriterien rufen llm.score() mit einem scale_max auf, das NICHT dem Kriteriums-max entspricht (Commit-Messages max1/scale3, Release max1/scale3, Sprint-Ziele max1/scale3, Branching max1/scale2 = ueberskaliert; Tests max7/scale3, Code-Doku max5/scale2 = unterskaliert). build_xlsx schrieb den ROHEN llm_review[score] ungenormt in Spalte D. Da die LLM-Hybrid-Summe D als Ersatz fuer C summiert (SUM(IF(D=\"\",C,D))) und das Divergenz-Flag |D-C|>1 prueft, war die Hybrid-Gesamtsumme verfaelscht (Tests/Code-Doku - die 2 hoechstwertigen Kriterien, 12 von 46 Punkten - auf 0-3/0-2 gedeckelt = deflationiert; die 4 binaeren Kriterien aufgeblaeht) und das Flag loeste staendig faelschlich aus.",
+      "fix": "(1) llm.score() haengt scale_max an das Ergebnis-Dict ({score,reason,scale_max}), damit Consumer normalisieren koennen. (2) Neuer reiner Helper build_xlsx._normalize_llm_score(llm_rev, crit_max) = max(0,min(crit_max, round(raw/scale*crit_max))); faellt auf Rohscore zurueck wenn scale_max fehlt (alte Daten). build_xlsx schreibt jetzt den normalisierten Wert in Spalte D. (3) analyze_release_changelog fuehrt scale_max im kombinierten llm_eval-Dict mit. 7 neue Unit-Tests (TestNormalizeLLMScore) + 2 bestehende Prefill-Tests an das neue scale_max-Feld angepasst. Verifiziert: 0 LLM>Max-Verletzungen ueber alle 6 Teams; betroffene Kriterien korrekt gestaucht/gespreizt; build_overview/fill_pdf lesen Spalte D nicht (unberuehrt); 94 Tests gruen.",
+      "tags": [
+        "llm",
+        "excel",
+        "build_xlsx",
+        "scale-mismatch",
+        "llm-hybrid",
+        "divergenz-flag",
+        "scoring",
+        "resolved"
+      ],
+      "related_bugs": [
+        "bug-061",
+        "bug-073"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-06-02"
     }
   ]
 }

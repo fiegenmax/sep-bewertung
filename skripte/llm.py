@@ -274,6 +274,12 @@ class LLMClient:
         result = _parse_score_response(out, scale_max)
         if result is None and out:
             log.warning(f"LLM score parse failed (got: {out[:200]})")
+        if result is not None:
+            # scale_max mitgeben, damit Consumer (build_xlsx Spalte D) den Score auf
+            # die Kriteriums-Skala (0..max) normalisieren koennen - sonst landet z.B.
+            # ein 0-3-Score neben einem max=1-Kriterium (verfaelscht LLM-Hybrid-Summe
+            # und Divergenz-Flag). Siehe bug-074.
+            result["scale_max"] = scale_max
         return result
 
 

@@ -54,6 +54,31 @@ THIN = Side(border_style="thin", color="BFBFBF")
 BORDER = Border(left=THIN, right=THIN, top=THIN, bottom=THIN)
 
 
+def _normalize_llm_score(llm_rev, crit_max):
+    """Rechnet den LLM-Score auf die Kriteriums-Skala (0..crit_max) um.
+
+    Die LLM-Funktionen bewerten teils auf einer anderen Skala als das Kriterium
+    (z.B. 0-3 fuer ein max=1-Kriterium). Spalte D muss aber direkt mit Spalte C
+    (Heuristik) und E (Max) vergleichbar sein, weil die LLM-Hybrid-Summe D als
+    Ersatz fuer C summiert (SUM(IF(D="",C,D))) und das Divergenz-Flag |D-C|>1
+    prueft. Ohne Normalisierung wuerde die Hybrid-Summe verfaelscht (Tests/Code-
+    Doku mit hoher max werden gedeckelt, binaere Kriterien aufgeblaeht) und das
+    Flag staendig faelschlich ausloesen. Siehe bug-074.
+
+    Gibt None zurueck wenn kein Review vorliegt. Faellt auf den Rohscore zurueck,
+    wenn scale_max fehlt (alte Daten) oder unbrauchbar ist.
+    """
+    if not llm_rev:
+        return None
+    raw = llm_rev.get("score")
+    if raw is None:
+        return None
+    scale = llm_rev.get("scale_max")
+    if not scale or scale <= 0 or crit_max is None:
+        return raw
+    return max(0, min(crit_max, round(raw / scale * crit_max)))
+
+
 def check_criterion_coverage(by_crit):
     """Gibt die CATEGORIES-Kriterien zurueck, fuer die KEIN Result vorliegt.
     Verhindert, dass eine String-/Umlaut-Drift eine Zeile still verschwinden laesst."""
@@ -241,7 +266,9 @@ def build_xlsx(team_name, gitlab_path, web_url, results, output_path,
             ws.cell(row=row, column=3).alignment = Alignment(horizontal="center")
             # D: LLM-Score (nur wenn LLM-Review vorhanden)
             llm_rev = (r.get("details") or {}).get("llm_review")
-            llm_score = llm_rev["score"] if llm_rev else None
+            # LLM-Score auf die Kriteriums-Skala (0..max) normalisieren, damit D
+            # mit C/E vergleichbar ist (LLM-Hybrid-Summe + Divergenz-Flag, bug-074).
+            llm_score = _normalize_llm_score(llm_rev, r["max"])
             llm_reason = llm_rev["reason"] if llm_rev else ""
             d_cell = ws.cell(row=row, column=4, value=llm_score)
             d_cell.font = Font(name=FONT, italic=True, color="6B5B95", size=10)

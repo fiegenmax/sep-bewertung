@@ -568,3 +568,11 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 06:30 | Pipeline-Lauf + Inspektion: 6/6 Teams OK, aber LLM HTTP 400 prefill-Fehler entdeckt (Sonnet) | run_all/llm.py | bug gefunden | ~8k |
 | 06:45 | bug-073 Fix: call() Auto-Fallback ohne Prefill bei 400 + score() max_tokens 600->1500 + Test | skripte/llm.py, test_evaluate.py | 88 Tests gruen, Live-Sonnet OK | ~10k |
 | 07:00 | Re-Run Pipeline: 0 Fehler/0 parse-fails, Issue<->Code-LLM-Score jetzt in allen Teams gefuellt | teams/*.xlsx | verifiziert | ~6k |
+| 08:20 | Edited skripte/llm.py | expanded (+6 lines) | ~188 |
+| 08:21 | Edited skripte/evaluate_team.py | 4→7 lines | ~150 |
+| 08:21 | Edited skripte/build_xlsx.py | modified _normalize_llm_score() | ~322 |
+| 08:21 | Edited skripte/build_xlsx.py | 3→5 lines | ~102 |
+| 08:21 | Edited skripte/test_evaluate.py | modified test_overscaled_binary_criterion() | ~535 |
+| 07:30 | Inspektion: LLM-Score > Kriterium-Max entdeckt (6/9 LLM-Kriterien scale_max != max) | build_xlsx/evaluate_team | bug-074 gefunden | ~9k |
+| 07:45 | Fix bug-074: scale_max ins llm_review-Dict + _normalize_llm_score in build_xlsx (D auf 0..max) + 7 Tests | llm.py, build_xlsx.py, evaluate_team.py, test_evaluate.py | 94 Tests gruen, 0 LLM>Max | ~11k |
+| 08:00 | Regenerate + verify: 0 Verletzungen ueber alle 6 Teams, Hybrid-Summe jetzt skalenkonsistent | teams/*.xlsx | verifiziert | ~5k |

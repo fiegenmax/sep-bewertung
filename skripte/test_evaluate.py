@@ -703,7 +703,7 @@ class TestScorePrefill(unittest.TestCase):
         self.assertEqual(captured["body"]["messages"][-1],
                          {"role": "assistant", "content": "{"})
         # (2) Prefill vorangestellt -> valides JSON -> sauber geparst.
-        self.assertEqual(res, {"score": 2, "reason": "ok"})
+        self.assertEqual(res, {"score": 2, "reason": "ok", "scale_max": 3})
 
     def test_prefill_unsupported_model_falls_back_without_prefill(self):
         # Modelle wie claude-sonnet-4-6 lehnen Prefill mit HTTP 400 ab. score()
@@ -757,7 +757,7 @@ class TestScorePrefill(unittest.TestCase):
 
         # Erst mit Prefill (400), dann Fallback ohne Prefill -> sauberes Ergebnis.
         self.assertEqual(calls, [True, False])
-        self.assertEqual(res, {"score": 2, "reason": "ok"})
+        self.assertEqual(res, {"score": 2, "reason": "ok", "scale_max": 3})
 
 
 class TestConventions(unittest.TestCase):
@@ -809,6 +809,46 @@ class TestCriterionCoverage(unittest.TestCase):
     def test_full_coverage_no_missing(self):
         full = {c: {} for _, crits in ev.CATEGORIES for c in crits}
         self.assertEqual(build_xlsx.check_criterion_coverage(full), [])
+
+
+class TestNormalizeLLMScore(unittest.TestCase):
+    def test_overscaled_binary_criterion(self):
+        # LLM 0-3 neben einem max=1-Kriterium -> auf 0..1 stauchen.
+        self.assertEqual(
+            build_xlsx._normalize_llm_score({"score": 3, "scale_max": 3}, 1), 1)
+        self.assertEqual(
+            build_xlsx._normalize_llm_score({"score": 2, "scale_max": 3}, 1), 1)
+        self.assertEqual(
+            build_xlsx._normalize_llm_score({"score": 1, "scale_max": 3}, 1), 0)
+        self.assertEqual(
+            build_xlsx._normalize_llm_score({"score": 0, "scale_max": 3}, 1), 0)
+
+    def test_underscaled_high_max_criterion(self):
+        # LLM 0-3 neben max=7 (Tests) -> auf 0..7 spreizen, nicht bei 3 deckeln.
+        self.assertEqual(
+            build_xlsx._normalize_llm_score({"score": 3, "scale_max": 3}, 7), 7)
+        self.assertEqual(
+            build_xlsx._normalize_llm_score({"score": 2, "scale_max": 3}, 7), 5)
+        self.assertEqual(
+            build_xlsx._normalize_llm_score({"score": 0, "scale_max": 3}, 7), 0)
+
+    def test_matching_scale_is_identity(self):
+        self.assertEqual(
+            build_xlsx._normalize_llm_score({"score": 2, "scale_max": 3}, 3), 2)
+
+    def test_none_and_missing(self):
+        self.assertIsNone(build_xlsx._normalize_llm_score(None, 3))
+        self.assertIsNone(build_xlsx._normalize_llm_score({"reason": "x"}, 3))
+
+    def test_missing_scale_max_falls_back_to_raw(self):
+        # Alte Daten ohne scale_max: nicht normalisieren, Rohscore durchreichen.
+        self.assertEqual(
+            build_xlsx._normalize_llm_score({"score": 2}, 1), 2)
+
+    def test_clamped_to_crit_max(self):
+        # Selbst bei kaputten Daten nie ueber crit_max hinaus.
+        self.assertEqual(
+            build_xlsx._normalize_llm_score({"score": 5, "scale_max": 3}, 1), 1)
 
 
 class TestDivergenceRule(unittest.TestCase):

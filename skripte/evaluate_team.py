@@ -769,7 +769,10 @@ def analyze_release_changelog(releases, repo, llm=None):
         combined_score = round((llm_eval["score"] + rvf_eval["score"]) / 2)
         combined_reason = (f"Release-Substanz: {llm_eval['reason']} | "
                             f"Release vs. Commits: {rvf_eval['reason']}")
-        llm_eval = {"score": combined_score, "reason": combined_reason}
+        # Beide Teil-Scores sind 0-3; scale_max mitfuehren, damit build_xlsx den
+        # kombinierten Score korrekt auf die Kriteriums-Skala normalisiert (bug-074).
+        llm_eval = {"score": combined_score, "reason": combined_reason,
+                    "scale_max": llm_eval.get("scale_max", 3)}
     elif rvf_eval:
         llm_eval = rvf_eval
     return {"criterion": "Release mit Changelog/Release-Notes", "max": 1, "score": score,
