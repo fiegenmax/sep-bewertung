@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-05-28T15:43:16.046Z",
   "lifetime": {
-    "total_tokens_estimated": 480154,
-    "total_reads": 308,
-    "total_writes": 406,
-    "total_sessions": 33,
-    "anatomy_hits": 43,
-    "anatomy_misses": 259,
-    "repeated_reads_blocked": 183,
-    "estimated_savings_vs_bare_cli": 742934
+    "total_tokens_estimated": 1342368,
+    "total_reads": 412,
+    "total_writes": 559,
+    "total_sessions": 39,
+    "anatomy_hits": 94,
+    "anatomy_misses": 312,
+    "repeated_reads_blocked": 292,
+    "estimated_savings_vs_bare_cli": 3043044
   },
   "sessions": [
     {
@@ -4540,6 +4540,1647 @@
         "writes_count": 5,
         "repeated_reads_blocked": 6,
         "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-06-02-0815",
+      "started": "2026-06-02T06:15:02.546Z",
+      "ended": "2026-06-02T06:24:40.309Z",
+      "reads": [
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/build_xlsx.py",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 13708,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/llm.py",
+          "tokens_estimated": 188,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 150,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/build_xlsx.py",
+          "tokens_estimated": 322,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/build_xlsx.py",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 535,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 13708,
+        "output_tokens_estimated": 1297,
+        "reads_count": 3,
+        "writes_count": 5,
+        "repeated_reads_blocked": 4,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-06-02-0815",
+      "started": "2026-06-02T06:15:02.546Z",
+      "ended": "2026-06-02T06:29:18.814Z",
+      "reads": [
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/build_xlsx.py",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 13708,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/llm.py",
+          "tokens_estimated": 188,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 150,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/build_xlsx.py",
+          "tokens_estimated": 322,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/build_xlsx.py",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 535,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 13708,
+        "output_tokens_estimated": 1297,
+        "reads_count": 3,
+        "writes_count": 5,
+        "repeated_reads_blocked": 4,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-06-02-0838",
+      "started": "2026-06-02T06:38:31.349Z",
+      "ended": "2026-06-02T06:39:04.022Z",
+      "reads": [
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/cerebrum.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 0,
+        "reads_count": 1,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-06-02-0838",
+      "started": "2026-06-02T06:38:31.349Z",
+      "ended": "2026-06-02T06:56:37.721Z",
+      "reads": [
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/cerebrum.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/anatomy.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/team_mapping.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/_inspect_results.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 29384,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/buglog.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 29384,
+        "output_tokens_estimated": 0,
+        "reads_count": 6,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 2
+      }
+    },
+    {
+      "id": "session-2026-06-02-0838",
+      "started": "2026-06-02T06:38:31.349Z",
+      "ended": "2026-06-02T07:04:19.948Z",
+      "reads": [
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/cerebrum.md",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/anatomy.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/team_mapping.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/_inspect_results.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 29384,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/buglog.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 14242,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 273,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 165,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 43626,
+        "output_tokens_estimated": 438,
+        "reads_count": 7,
+        "writes_count": 2,
+        "repeated_reads_blocked": 2,
+        "anatomy_lookups": 3
+      }
+    },
+    {
+      "id": "session-2026-06-02-0838",
+      "started": "2026-06-02T06:38:31.349Z",
+      "ended": "2026-06-02T07:13:51.908Z",
+      "reads": [
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/cerebrum.md",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/anatomy.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/team_mapping.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/_inspect_results.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 30217,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/buglog.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 14144,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 273,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 165,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 1139,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 140,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 520,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 124,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 93,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 571,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 515,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 118,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 126,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 44361,
+        "output_tokens_estimated": 3784,
+        "reads_count": 8,
+        "writes_count": 11,
+        "repeated_reads_blocked": 11,
+        "anatomy_lookups": 3
+      }
+    },
+    {
+      "id": "session-2026-06-02-0914",
+      "started": "2026-06-02T07:14:51.101Z",
+      "ended": "2026-06-02T07:33:25.753Z",
+      "reads": [
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 30898,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/llm.py",
+          "tokens_estimated": 3879,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 15204,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/buglog.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/tmp/llm_audit.py",
+          "tokens_estimated": 920,
+          "action": "create"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/_llm_audit_tmp.py",
+          "tokens_estimated": 910,
+          "action": "create"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 489,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 362,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/_llm_audit_tmp.py",
+          "tokens_estimated": 342,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 49981,
+        "output_tokens_estimated": 3023,
+        "reads_count": 4,
+        "writes_count": 5,
+        "repeated_reads_blocked": 2,
+        "anatomy_lookups": 3
+      }
+    },
+    {
+      "id": "session-2026-06-02-0914",
+      "started": "2026-06-02T07:14:51.101Z",
+      "ended": "2026-06-02T07:43:09.541Z",
+      "reads": [
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 31676,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/llm.py",
+          "tokens_estimated": 3879,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 15204,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/buglog.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 1509,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/tmp/llm_audit.py",
+          "tokens_estimated": 920,
+          "action": "create"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/_llm_audit_tmp.py",
+          "tokens_estimated": 910,
+          "action": "create"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 489,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 362,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/_llm_audit_tmp.py",
+          "tokens_estimated": 342,
+          "action": "create"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 406,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 108,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 57,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 162,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 60,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 232,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 29,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 157,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 182,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 262,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 278,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 94,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 29,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 565,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 344,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/_verify_sampling.py",
+          "tokens_estimated": 367,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 52268,
+        "output_tokens_estimated": 6355,
+        "reads_count": 5,
+        "writes_count": 21,
+        "repeated_reads_blocked": 13,
+        "anatomy_lookups": 4
+      }
+    },
+    {
+      "id": "session-2026-06-02-0943",
+      "started": "2026-06-02T07:43:58.166Z",
+      "ended": "2026-06-02T07:48:46.813Z",
+      "reads": [
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 2026,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/anatomy.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 31695,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 33721,
+        "output_tokens_estimated": 0,
+        "reads_count": 3,
+        "writes_count": 0,
+        "repeated_reads_blocked": 3,
+        "anatomy_lookups": 2
+      }
+    },
+    {
+      "id": "session-2026-06-02-0943",
+      "started": "2026-06-02T07:43:58.166Z",
+      "ended": "2026-06-02T08:15:01.894Z",
+      "reads": [
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 2026,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/anatomy.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 31695,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 15938,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 31695,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 2026,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/buglog.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/memory.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/cerebrum.md",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 542,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 362,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 256,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 258,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 90,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 324,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 141,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 1785,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.git/COMMIT_EDITMSG_FIX.txt",
+          "tokens_estimated": 255,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 83380,
+        "output_tokens_estimated": 4013,
+        "reads_count": 9,
+        "writes_count": 9,
+        "repeated_reads_blocked": 8,
+        "anatomy_lookups": 5
+      }
+    },
+    {
+      "id": "session-2026-06-02-0943",
+      "started": "2026-06-02T07:43:58.166Z",
+      "ended": "2026-06-02T08:24:49.949Z",
+      "reads": [
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 2026,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/anatomy.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 31695,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 15938,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 31695,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 2026,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/buglog.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/memory.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/cerebrum.md",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 542,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 362,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 256,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 258,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 90,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 324,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 141,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 1785,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.git/COMMIT_EDITMSG_FIX.txt",
+          "tokens_estimated": 255,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 83380,
+        "output_tokens_estimated": 4013,
+        "reads_count": 9,
+        "writes_count": 9,
+        "repeated_reads_blocked": 8,
+        "anatomy_lookups": 5
+      }
+    },
+    {
+      "id": "session-2026-06-02-0943",
+      "started": "2026-06-02T07:43:58.166Z",
+      "ended": "2026-06-02T08:41:12.158Z",
+      "reads": [
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 2231,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/anatomy.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 32614,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 15938,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 31695,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 2026,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/buglog.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/memory.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/cerebrum.md",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 17745,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/Bewertungs-Methodik.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 542,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 362,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 256,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 258,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 90,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 324,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 141,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 1785,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.git/COMMIT_EDITMSG_FIX.txt",
+          "tokens_estimated": 255,
+          "action": "create"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 70,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 124,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 286,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 91,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 163,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 138,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 657,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md",
+          "tokens_estimated": 126,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md",
+          "tokens_estimated": 23,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md",
+          "tokens_estimated": 38,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md",
+          "tokens_estimated": 290,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md",
+          "tokens_estimated": 91,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/Bewertungs-Methodik.md",
+          "tokens_estimated": 52,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/Bewertungs-Methodik.md",
+          "tokens_estimated": 33,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.git/CMSG.txt",
+          "tokens_estimated": 378,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 102249,
+        "output_tokens_estimated": 6573,
+        "reads_count": 12,
+        "writes_count": 24,
+        "repeated_reads_blocked": 14,
+        "anatomy_lookups": 6
+      }
+    },
+    {
+      "id": "session-2026-06-02-0943",
+      "started": "2026-06-02T07:43:58.166Z",
+      "ended": "2026-06-02T08:52:04.037Z",
+      "reads": [
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 2231,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/anatomy.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 32614,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 15938,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 31695,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 2026,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/buglog.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/memory.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/cerebrum.md",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 17745,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/Bewertungs-Methodik.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 542,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 362,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 256,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 258,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 90,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 324,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 141,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 1785,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.git/COMMIT_EDITMSG_FIX.txt",
+          "tokens_estimated": 255,
+          "action": "create"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 70,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 124,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 286,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 91,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 163,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 138,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 657,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md",
+          "tokens_estimated": 126,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md",
+          "tokens_estimated": 23,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md",
+          "tokens_estimated": 38,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md",
+          "tokens_estimated": 290,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md",
+          "tokens_estimated": 91,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/Bewertungs-Methodik.md",
+          "tokens_estimated": 52,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/Bewertungs-Methodik.md",
+          "tokens_estimated": 33,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.git/CMSG.txt",
+          "tokens_estimated": 378,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 102249,
+        "output_tokens_estimated": 6573,
+        "reads_count": 12,
+        "writes_count": 24,
+        "repeated_reads_blocked": 14,
+        "anatomy_lookups": 6
+      }
+    },
+    {
+      "id": "session-2026-06-02-0943",
+      "started": "2026-06-02T07:43:58.166Z",
+      "ended": "2026-06-02T09:21:30.041Z",
+      "reads": [
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 2231,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/anatomy.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 32614,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 15938,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 31695,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 2026,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/buglog.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/memory.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/cerebrum.md",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 17745,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/Bewertungs-Methodik.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 542,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 362,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 256,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 258,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 90,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 324,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 141,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 1785,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.git/COMMIT_EDITMSG_FIX.txt",
+          "tokens_estimated": 255,
+          "action": "create"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 70,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 124,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 286,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 91,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 163,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 138,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 657,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md",
+          "tokens_estimated": 126,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md",
+          "tokens_estimated": 23,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md",
+          "tokens_estimated": 38,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md",
+          "tokens_estimated": 290,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md",
+          "tokens_estimated": 91,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/Bewertungs-Methodik.md",
+          "tokens_estimated": 52,
+          "action": "edit"
+        },
+        {
+          "file": "C:/Users/maxfi/Documents/git/sep-bewertung/docs/Bewertungs-Methodik.md",
+          "tokens_estimated": 33,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.git/CMSG.txt",
+          "tokens_estimated": 378,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 102249,
+        "output_tokens_estimated": 6573,
+        "reads_count": 12,
+        "writes_count": 24,
+        "repeated_reads_blocked": 14,
+        "anatomy_lookups": 6
+      }
+    },
+    {
+      "id": "session-2026-06-02-1130",
+      "started": "2026-06-02T09:30:15.326Z",
+      "ended": "2026-06-02T09:45:50.959Z",
+      "reads": [
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/docs/review-fix-plan.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/anatomy.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/cerebrum.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/.wolf/buglog.json",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 32680,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/build_overview.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 18489,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 2635,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md",
+          "tokens_estimated": 4406,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/docs/funktionsweise.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 1186,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 374,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 313,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 231,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 166,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 131,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 74,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 24,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 129,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/build_overview.py",
+          "tokens_estimated": 68,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 2573,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md",
+          "tokens_estimated": 174,
+          "action": "edit"
+        },
+        {
+          "file": "c:/Users/maxfi/Documents/git/sep-bewertung/docs/funktionsweise.md",
+          "tokens_estimated": 256,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 58210,
+        "output_tokens_estimated": 5801,
+        "reads_count": 10,
+        "writes_count": 14,
+        "repeated_reads_blocked": 12,
+        "anatomy_lookups": 4
       }
     }
   ],
