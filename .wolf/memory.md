@@ -700,3 +700,41 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 09:55 | Review-Fix-Plan umgesetzt: clone_or_update reset-to-remote (bug-095), branching squash-fest (bug-096), code_docs wiki-substanz (bug-097), build_overview ohne .env (bug-098) | evaluate_team.py, build_overview.py, config.yaml, test_evaluate.py, docs | 122/122 Tests gruen | ~14k |
 | 11:45 | Session end: 14 writes across 6 files (evaluate_team.py, config.yaml, build_overview.py, test_evaluate.py, bewertungskriterien.md) | 10 reads | ~64011 tok |
 | 11:49 | Edited .gitignore | 2→5 lines | ~80 |
+| 11:51 | Session end: 15 writes across 7 files (evaluate_team.py, config.yaml, build_overview.py, test_evaluate.py, bewertungskriterien.md) | 11 reads | ~64097 tok |
+
+## Session: 2026-06-02 16:12
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-02 16:12
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-02 16:16
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-02 16:16
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-02 16:16
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:19 | Pipeline-Lauf (--overview) ueber 6 Teams + Sichtpruefung Scores | teams/*.xlsx | 6/6 OK, exit0, Coverage vollst., Spread 34-44/46 | ~3k |
+| 16:21 | PDFs fuer alle Teams (--pdf-only, kein Token/LLM) | teams/*/Bewertung_*.pdf | 6/6 OK | ~1k |
+| 16:22 | PDF<->xlsx-Verifikation (unabh. Reverse-Map der Checkboxen + Header + Zwischensummen) | teams/*/Bewertung_*.pdf | 6/6 OK, 0 Probleme | ~2k |
+
+## Session: 2026-06-02 16:27
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:30 | Edited docs/bewertungskriterien.md | modified Normalisierungsbasis() | ~380 |
+| 16:30 | Edited docs/bewertungskriterien.md | inline fix | ~46 |
+| 16:30 | Edited docs/funktionsweise.md | inline fix | ~129 |
+| 16:31 | docs-config-audit: 3 stale Stellen gefixt (work_scope normalize_by measured statt fixed, tests_files 5→6, funktionsweise TODO-Hinweis veraltet) | docs/bewertungskriterien.md docs/funktionsweise.md | done | ~6k |

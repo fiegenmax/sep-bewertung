@@ -165,7 +165,7 @@ Aggregiert über alle Sprachen (`test_globs`/`test_markers` je Sprache): Gesamtz
 
 **Warum so (Kalibrierung SS26):** Die oberen Stufen wurden ~2–4× angehoben, weil mit den alten Schwellen **alle** Teams 7/7 erreichten (23–32 Dateien, 107–157 Methoden), das LLM aber nur 0–2/7 vergab — die Skala war oben „durchgebrannt". Die Heuristik **zählt** nur (Datei/Methode), sie misst keine Qualität; der Substanz-Filter (substantiell = **mehr als ein** primärer Test-Marker: `@Test` / `def test_` / `func Test` / `it(`) hält 1-Test-Stubs (z.B. Angulars "should create") raus, aber die eigentliche Qualitätsaussage tragen Coverage und die LLM-Spalte.
 
-**LLM ergänzt:** Sample von bis zu 5 Test-Dateien (sprachunabhängig) → beurteilt: nur Happy Path oder auch Edge Cases / Error-Pfade? Score 0–3.
+**LLM ergänzt:** Sample von bis zu 6 Test-Dateien (sprachunabhängig, `llm_sampling.tests_files`) → beurteilt: nur Happy Path oder auch Edge Cases / Error-Pfade? Score 0–3.
 
 **Blinde Flecken:** Die Heuristik kennt keine Cypress/E2E-Tests die in einem separaten Repo liegen würden.
 
@@ -205,21 +205,28 @@ Im Excel steht prominent in der Begründung: "WICHTIG - MANUELLE PRÜFUNG ZWINGE
 **Was misst die Heuristik:** Anzahl Commits und LOC (sprachunabhängig über die
 Registry, ohne Vendor-Dirs) — **pro Kopf normalisiert**.
 
-**Annahme (bewusst, dokumentiert):** Ein SEP-Team hat erfahrungsgemäß **5–6
-aktive Autoren**. Die Pro-Kopf-Normalisierung teilt Gesamt-Commits/LOC durch eine
-**feste angenommene Teamgröße** (`config.yaml → work_scope.assumed_active_authors`,
-Default **6** = konservativ am oberen Rand), **nicht** durch die gemessene
-Autorenzahl. Gründe:
-- Die GitLab-Mitgliederzahl überschätzt (zählt Nie-Committer/Tutoren mit; im SS26
-  meldete GitLab 11–12 „Mitglieder" bei real nur 7–8 Commit-Autoren).
-- Durch die *gemessene* Autorenzahl zu teilen würde Trittbrettfahrer belohnen
-  (1 Person macht alles → riesige Pro-Kopf-Werte → 15). Ungleiche Verteilung fängt
-  ohnehin das Info-Kriterium **Commit-Verteilung** (Gini) ab.
+**Normalisierungsbasis (`config.yaml → work_scope.normalize_by`):** Der Teiler
+für die Pro-Kopf-Werte ist konfigurierbar, Default ist **`measured`**:
+- **`measured` (Default):** geteilt wird durch die **real gemessene** Zahl aktiver
+  Commit-Autoren (per E-Mail dedupliziert, Tutoren/Staff via `staff_email_domains`
+  ausgefiltert) — aber **geklammert** auf `[work_scope.team_size_min,
+  work_scope.team_size_max]` (Default **5–8**). Die Klammer ist der
+  Trittbrettfahrer-Schutz: ein 1-Personen-Team wird auf min 5 angehoben (kein
+  riesiger Pro-Kopf-Exploit), ein 12-Personen-Eintrag auf max 8 gedeckelt (kein
+  Verwässern durch Nie-Committer/Tutoren). Ungleiche Verteilung fängt ohnehin das
+  Info-Kriterium **Commit-Verteilung** (Gini) ab.
+- **`fixed` (altes Verhalten):** geteilt wird durch eine **feste angenommene
+  Teamgröße** (`work_scope.assumed_active_authors`, Default **6**), unabhängig von
+  der gemessenen Autorenzahl.
 
-Die gemessene Autorenzahl steht nur informativ im Reason-Text; weicht sie stark
-von 5–6 ab, weist der Text auf manuelle Prüfung hin.
+Hintergrund: Die GitLab-Mitgliederzahl überschätzt (zählt Nie-Committer/Tutoren
+mit; im SS26 meldete GitLab 11–12 „Mitglieder" bei real nur 7–8 Commit-Autoren) —
+deshalb die Klammer statt der rohen Mitglieder- oder Autorenzahl. Die gemessene
+Autorenzahl und der angewandte Teiler stehen im Reason-Text; eine ausgelöste
+Klammerung (`auf Minimum 5 angehoben` / `auf Maximum 8 gedeckelt`) wird dort
+explizit vermerkt.
 
-**Schwellen (kumulativ, pro Kopf bei 6 angenommenen Autoren):**
+**Schwellen (kumulativ, pro Kopf — Schwellen kalibriert auf ~6 Autoren):**
 - <20 Commits & <1k LoC (absolut) → 0
 - <15 Commits/Kopf ODER <800 LoC/Kopf → 5
 - <40 Commits/Kopf ODER <2000 LoC/Kopf → 10

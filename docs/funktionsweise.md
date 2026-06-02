@@ -186,7 +186,7 @@ thresholds:
     min_stories_for_one: 5
 ```
 
-Aktuell werden die Schwellen noch teilweise hartcodiert in den `analyze_*`-Funktionen genutzt — wenn du `config.yaml` ernsthaft als Konfiguration nutzen willst, müssen die hartcodierten Werte durch Zugriffe ersetzt werden. Das ist ein TODO.
+Die Schwellen werden in den `analyze_*`-Funktionen durchgängig über den Accessor `thr("block.key", default)` aus dieser Datei gelesen (der zweite Parameter ist der Fallback == bisheriges Verhalten, falls der Key in der YAML fehlt). Ebenso kommen LLM-Stichprobengrößen über `llm_sample(...)`, die Sprach-Registry über `get_languages()`, Tutoren über `get_tutors()` und Vendor-Dirs über `get_vendor_dirs()` aus der Config. Änderungen an `config.yaml` wirken also ohne Code-Anpassung.
 
 ### `skripte/team_mapping.json`
 
