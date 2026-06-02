@@ -449,6 +449,40 @@ class TestMultiLangTests(unittest.TestCase):
         self.assertEqual(res["details"]["substantive_test_files"], 0)
 
 
+class _CapturingLLM:
+    """Mini-Stub: merkt sich die an score() uebergebenen Prompts."""
+    enabled = True
+    model = "fake"
+
+    def __init__(self):
+        self.prompts = []
+
+    def score(self, prompt, scale_max, system=None, model=None):
+        self.prompts.append(prompt)
+        return {"score": 1, "reason": "stub", "scale_max": scale_max}
+
+
+class TestMeetingDocsSampling(unittest.TestCase):
+    """Der LLM-Review fuer Meeting-Protokolle muss die als Protokoll ERKANNTEN
+    Seiten sampeln (datierte zuerst), nicht die ersten 5 Wiki-Seiten in
+    API-Reihenfolge — sonst sieht das LLM nur Sprint-Backlogs und nie die
+    datierten Protokoll-Seiten (gleiche Sampling-Falle wie bug-076)."""
+
+    def setUp(self):
+        ev._THRESHOLDS_CACHE = None
+
+    def test_samples_dated_protocol_not_just_first_pages(self):
+        # 5 Sprint-Backlogs (matchen Keyword 'sprint') VOR der datierten Protokoll-Seite
+        wikis = [{"title": f"Sprint {i}", "slug": f"s{i}"} for i in range(1, 6)]
+        wikis.append({"title": "23.04.2026", "slug": "proto"})
+        contents = {f"s{i}": "Feature backlog list. " * 30 for i in range(1, 6)}
+        contents["proto"] = "Anwesend: Team. Diskussion, Beschluss, Action Items. " * 6
+        fake = _CapturingLLM()
+        ev.analyze_meeting_docs(wikis, contents, llm=fake)
+        self.assertTrue(fake.prompts, "LLM wurde gar nicht aufgerufen")
+        self.assertIn("23.04.2026", fake.prompts[0])  # datierte Protokoll-Seite gesampelt
+
+
 class TestCodeStructure(unittest.TestCase):
     def setUp(self):
         ev._VENDOR_CACHE = None

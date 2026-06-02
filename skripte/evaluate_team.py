@@ -767,17 +767,27 @@ def analyze_meeting_docs(wikis, wiki_contents=None, llm=None):
     # Optional: LLM checkt qualitativ ob das echte Meeting-Protokolle sind
     llm_eval = None
     if llm and llm.enabled and meeting_pages:
+        # GENAU die als Protokoll erkannten Seiten sampeln, nicht die ersten 5 Wiki-
+        # Seiten in API-Reihenfolge (bug-077): sonst sieht das LLM z.B. nur die
+        # Sprint-Backlogs und nie die datierten Protokoll-Seiten und urteilt 'keine
+        # Protokolle'. Datierte Seiten zuerst (am ehesten echte Protokolle), dann
+        # uebrige nach Textlaenge absteigend (substanziellste zuerst).
+        title_to_slug = {w.get("title", ""): w.get("slug", "")
+                         for w in wikis if not w.get("slug", "").startswith("uploads/")}
+
+        def _text_len(title):
+            c = (wiki_contents or {}).get(title_to_slug.get(title, ""), "")
+            return len(re.sub(r"!\[.*?\]\(.*?\)|<[^>]+>", "", c).strip())
+
+        ordered = sorted(meeting_pages,
+                         key=lambda t: (0 if date_re.search(t) else 1, -_text_len(t)))
         sample_contents = []
-        for w in wikis[:5]:
-            slug = w.get("slug", "")
-            if slug.startswith("uploads/"):
-                continue
-            if w.get("title") in meeting_pages:
-                content = (wiki_contents or {}).get(slug, "")
-                if content.strip():
-                    sample_contents.append(f"### {w['title']}\n{content[:1500]}")
-                if len(sample_contents) >= 3:
-                    break
+        for title in ordered:
+            content = (wiki_contents or {}).get(title_to_slug.get(title, ""), "")
+            if content.strip():
+                sample_contents.append(f"### {title}\n{content[:1500]}")
+            if len(sample_contents) >= 3:
+                break
         if sample_contents:
             system = ("Du bewertest Wiki-Seiten als Meeting-Protokolle eines Studi-Teams. "
                       "Gute Protokolle haben: Datum, anwesende Personen, klare Diskussions-Outputs, "

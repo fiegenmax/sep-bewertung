@@ -1316,6 +1316,44 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-06-02"
+    },
+    {
+      "id": "bug-079",
+      "timestamp": "2026-06-02T07:28:46.853Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "7 lines replaced/restructured",
+      "fix": "Rewrote 14→24 lines (7 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T07:28:46.853Z"
+    },
+    {
+      "id": "bug-080",
+      "timestamp": "2026-06-02",
+      "error_message": "LLM-Meeting-Review (analyze_meeting_docs) gab team-shannon-bit 0/1 ('keine Protokolle, nur Sprint-Backlogs'), obwohl 18 protokoll-artige Seiten existieren (10 substanziell), darunter datierte Protokolle 20.04.2026/23.04.2026. Heuristik korrekt 1/1.",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "Die LLM-Stichprobe lief ueber wikis[:5] (erste 5 Wiki-Seiten in API-Reihenfolge) und filterte erst danach auf meeting_pages. Die ersten Seiten waren Sprint-Backlogs ('Sprint 1/2'); die datierten Protokoll-Seiten stehen weiter hinten (Index 17-19) und wurden nie gesampelt. Gleiche Sampling-Falle wie bug-076 (Tests).",
+      "fix": "Statt wikis[:5] jetzt direkt ueber die erkannten meeting_pages iterieren, sortiert: datierte Seiten zuerst (date_re), dann nach Textlaenge absteigend; title->slug-Lookup ueber alle Wikis. Verifiziert live an team-shannon-bit: LLM kippt von 0/1 auf 1/1 (sieht jetzt echte Protokolle mit Datum/Beschluessen/Action Items, stimmt mit Heuristik ueberein). Test test_samples_dated_protocol_not_just_first_pages (rot->gruen). Gefunden beim vollstaendigen Live-Audit ALLER 11 LLM-Calls.",
+      "tags": [
+        "llm",
+        "meeting-docs",
+        "wiki",
+        "sampling",
+        "false-negative",
+        "scoring",
+        "resolved"
+      ],
+      "related_bugs": [
+        "bug-076"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-06-02"
     }
   ]
 }

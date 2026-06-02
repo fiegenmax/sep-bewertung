@@ -599,3 +599,25 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 09:10 | Edited skripte/config.yaml | 4→8 lines | ~118 |
 | 09:10 | Edited skripte/config.yaml | expanded (+9 lines) | ~126 |
 | 09:12 | 2 Folge-Fixes: (a) Staff-Domain-Filter (@uni-due.de ohne stud.) in count_active_authors/commit_distribution -> bit 8->6 Autoren; (b) LLM-Test-Sampler groessen-/sprachgewichtet + Cap 1500->4000 (bug-076) | evaluate_team.py, config.yaml, test_evaluate.py | 76 Tests gruen; live verifiziert | ~40k |
+| 09:13 | Session end: 11 writes across 3 files (test_evaluate.py, evaluate_team.py, config.yaml) | 8 reads | ~48145 tok |
+
+## Session: 2026-06-02 09:14
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-02 09:14
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-02 09:14
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 09:24 | Created ../../../../../tmp/llm_audit.py | — | ~920 |
+| 09:24 | Created skripte/_llm_audit_tmp.py | — | ~910 |
+| 09:28 | Edited skripte/test_evaluate.py | modified __init__() | ~489 |
+| 09:28 | Edited skripte/evaluate_team.py | modified _text_len() | ~362 |
+| 09:29 | Created skripte/_llm_audit_tmp.py | — | ~342 |
+| 09:31 | Live-Audit aller 11 LLM-Calls (fresh cache): alle ok, scale_max korrekt, Sonnet live bestaetigt. Fand+fixte meeting_docs-Sampling-Bug (wikis[:5] -> meeting_pages, datiert zuerst), bug-080 | evaluate_team.py, test_evaluate.py | LLM 0/1->1/1 live; 77 Tests gruen | ~70k |
