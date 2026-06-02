@@ -1278,6 +1278,44 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-06-02T06:59:51.945Z"
+    },
+    {
+      "id": "bug-077",
+      "timestamp": "2026-06-02T07:08:54.919Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "12 lines replaced/restructured",
+      "fix": "Rewrote 25→28 lines (12 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T07:08:54.919Z"
+    },
+    {
+      "id": "bug-076",
+      "timestamp": "2026-06-02",
+      "error_message": "LLM-Test-Review (analyze_tests) gab team-shannon-bit 2/7 ('ueberwiegend Stubs/unvollstaendig'), obwohl die Suite stark ist (157 Methoden, UserServiceTest 14 Tests/63 Asserts). Heuristik korrekt 7/7.",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "Die LLM-Stichprobe nahm die ERSTEN 5 Test-Dateien in repo.rglob-/Pfad-Reihenfolge und schnitt jede auf [:1500] Zeichen. Folge: (1) fuehrte mit dem alphabetisch ersten Spring-contextLoads-Stub, (2) die staerksten Tests (UserServiceTest etc.) und die KOMPLETTE TS-Suite (108 von 157 Methoden) wurden nie gesampelt, (3) der 1500-Zeichen-Cap schnitt Methoden mittendrin ab -> LLM interpretierte die Trunkierung als 'Test unvollstaendig'.",
+      "fix": "Neuer Helper _select_test_sample_files(repo, max_files): pro Sprache nach Dateigroesse (Substanz-Proxy) absteigend sortieren, dann Round-Robin ueber Sprachen -> sprachgemischte Stichprobe, fuehrt mit den groessten Tests. Cap auf config tests.llm_sample_chars (Default 4000, vorher 1500) angehoben, Trunkierung explizit markiert ('… [Datei gekuerzt]') und im System-Prompt erklaert ('NICHT als Unvollstaendigkeit werten'). Verifiziert an team-shannon-bit: Stichprobe fuehrt jetzt mit UserServiceTest (10.5 KB) und mischt Java+TS. Test test_mixes_languages_and_prefers_big_files ergaenzt.",
+      "tags": [
+        "llm",
+        "tests",
+        "sampling",
+        "truncation",
+        "false-negative",
+        "scoring",
+        "resolved"
+      ],
+      "related_bugs": [
+        "bug-075"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-06-02"
     }
   ]
 }

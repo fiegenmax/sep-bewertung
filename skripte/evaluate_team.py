@@ -144,9 +144,16 @@ _DEFAULT_LANGUAGES = {
 _DEFAULT_VENDOR_DIRS = ["node_modules", ".git", "dist", "build", "target", "out",
                         ".gradle", ".idea", "vendor", "venv", ".venv", "__pycache__"]
 _DEFAULT_TUTORS = ["vogelsang", "metzger"]
+# Staff-/Studi-E-Mail-Domains: Wer auf einer Staff-Domain liegt, aber NICHT auf
+# einer Studi-(Sub-)Domain, gilt als Lehrpersonal (Tutor/Betreuer) und zaehlt
+# nicht als Studi-Commit-Autor. uni-due.de = Personal, stud.uni-due.de = Studis.
+_DEFAULT_STAFF_DOMAINS = ["uni-due.de"]
+_DEFAULT_STUDENT_DOMAINS = ["stud.uni-due.de"]
 
 _LANG_CACHE = None
 _TUTORS_CACHE = None
+_STAFF_DOMAINS_CACHE = None
+_STUDENT_DOMAINS_CACHE = None
 _VENDOR_CACHE = None
 
 
@@ -167,6 +174,47 @@ def get_tutors():
         items = cfg if isinstance(cfg, list) and cfg else _DEFAULT_TUTORS
         _TUTORS_CACHE = [str(t).lower() for t in items]
     return _TUTORS_CACHE
+
+
+def get_staff_domains():
+    """E-Mail-Domains von Lehrpersonal aus config.yaml staff_email_domains:."""
+    global _STAFF_DOMAINS_CACHE
+    if _STAFF_DOMAINS_CACHE is None:
+        cfg = (load_yaml_config() or {}).get("staff_email_domains")
+        items = cfg if isinstance(cfg, list) and cfg else _DEFAULT_STAFF_DOMAINS
+        _STAFF_DOMAINS_CACHE = [str(d).lower().lstrip("@") for d in items]
+    return _STAFF_DOMAINS_CACHE
+
+
+def get_student_domains():
+    """E-Mail-Domains von Studierenden aus config.yaml student_email_domains:."""
+    global _STUDENT_DOMAINS_CACHE
+    if _STUDENT_DOMAINS_CACHE is None:
+        cfg = (load_yaml_config() or {}).get("student_email_domains")
+        items = cfg if isinstance(cfg, list) and cfg else _DEFAULT_STUDENT_DOMAINS
+        _STUDENT_DOMAINS_CACHE = [str(d).lower().lstrip("@") for d in items]
+    return _STUDENT_DOMAINS_CACHE
+
+
+def _domain_matches(domain, patterns):
+    """True, wenn domain == p oder eine Subdomain von p ist (host.endswith('.'+p))."""
+    return any(domain == p or domain.endswith("." + p) for p in patterns)
+
+
+def _is_tutor_identity(name, email):
+    """True fuer Lehrpersonal (Tutor/Betreuer), das nicht als Studi-Autor zaehlt.
+    Erkennung: (a) Tutor-Namensfragment in Name oder E-Mail, ODER (b) E-Mail auf
+    einer Staff-Domain, aber NICHT auf einer Studi-(Sub-)Domain (Studi gewinnt,
+    da stud.uni-due.de eine Subdomain von uni-due.de ist)."""
+    name_l = (name or "").lower()
+    email_l = (email or "").lower()
+    if any(t in name_l or t in email_l for t in get_tutors()):
+        return True
+    if "@" in email_l:
+        domain = email_l.rsplit("@", 1)[1]
+        if _domain_matches(domain, get_staff_domains()) and not _domain_matches(domain, get_student_domains()):
+            return True
+    return False
 
 
 def get_vendor_dirs():
@@ -525,6 +573,8 @@ def count_active_authors(repo):
         if not m:
             continue
         name, email = m.group(2).strip(), m.group(3).strip().lower()
+        if _is_tutor_identity(name, email):  # Lehrpersonal nicht mitzaehlen
+            continue
         keys.add(email or name.lower())
     return len(keys)
 
@@ -1249,6 +1299,49 @@ def _scan_tests_for_language(repo, lang_spec, vendor):
     return n_files, n_subst, n_methods
 
 
+def _select_test_sample_files(repo, max_files=6):
+    """Waehlt bis zu max_files Test-Dateien fuer den LLM-Review aus.
+
+    Frueher (bug-076) wurden einfach die ERSTEN Dateien in rglob-/Pfad-Reihenfolge
+    genommen, bis 5 voll waren — das fuehrte mit dem alphabetisch ersten (oft
+    trivialen) Stub an und ganze Sprachen fielen heraus, sobald die erste Sprache
+    das Budget fuellte. Stattdessen: pro Sprache nach Dateigroesse (Proxy fuer
+    Substanz) absteigend sortieren und dann im Round-Robin ueber die Sprachen
+    auswaehlen — so ist die Stichprobe sprachgemischt und fuehrt mit den
+    groessten/aussagekraeftigsten Tests, nicht mit dem kleinsten Stub."""
+    vendor = get_vendor_dirs()
+    per_lang = []  # Liste pro Sprache: nach Groesse absteigend sortierte Pfade
+    for spec in get_languages().values():
+        if not spec.get("test_globs"):
+            continue
+        files = set()
+        for glob in spec["test_globs"]:
+            for f in repo.rglob(glob.replace("**/", "")):
+                if not any(part in vendor for part in f.parts):
+                    files.add(f)
+        sized = []
+        for f in files:
+            try:
+                sized.append((f.stat().st_size, f))
+            except OSError:
+                pass
+        # Groesse absteigend, bei Gleichstand stabil nach Name (deterministisch).
+        sized.sort(key=lambda t: (-t[0], str(t[1])))
+        if sized:
+            per_lang.append([f for _, f in sized])
+    # Round-Robin: groesste je Sprache zuerst, dann zweitgroesste je Sprache, ...
+    picked = []
+    i = 0
+    while len(picked) < max_files and any(i < len(lst) for lst in per_lang):
+        for lst in per_lang:
+            if i < len(lst):
+                picked.append(lst[i])
+                if len(picked) >= max_files:
+                    break
+        i += 1
+    return picked
+
+
 def analyze_tests(repo, llm=None, coverage_pct=None):
     """Tests (0-7), sprachunabhaengig ueber die Registry. Optional coverage_pct aus CI."""
     vendor = get_vendor_dirs()
@@ -1289,27 +1382,30 @@ def analyze_tests(repo, llm=None, coverage_pct=None):
 
     llm_eval = None
     if llm and llm.enabled:
+        # Groessen-/sprachgemischte Stichprobe statt der ersten N in Pfad-Reihenfolge
+        # (bug-076). Pro Datei grosszuegiger Ausschnitt, damit Tests nicht mitten in
+        # einer Methode abgeschnitten werden und als 'unvollstaendig' fehlinterpretiert
+        # werden (der alte 1500er-Cap war die Hauptquelle dafuer).
+        max_files = _tests_thr("llm_sample_files", "llm_sample_files", 6)
+        max_chars = _tests_thr("llm_sample_chars", "llm_sample_chars", 4000)
         samples = []
-        for name, spec in get_languages().items():
-            if not spec.get("test_globs") or len(samples) >= 5:
+        for f in _select_test_sample_files(repo, max_files=max_files):
+            try:
+                txt = f.read_text(encoding="utf-8", errors="ignore")
+            except Exception:
                 continue
-            for glob in spec["test_globs"]:
-                for f in repo.rglob(glob.replace("**/", "")):
-                    if any(part in vendor for part in f.parts):
-                        continue
-                    try:
-                        samples.append(f"### {f.name}\n```\n{f.read_text(encoding='utf-8', errors='ignore')[:1500]}\n```")
-                    except Exception:
-                        pass
-                    if len(samples) >= 5:
-                        break
-                if len(samples) >= 5:
-                    break
+            clipped = txt[:max_chars]
+            if len(txt) > max_chars:
+                clipped += "\n… [Datei gekuerzt]"
+            samples.append(f"### {f.name} ({len(txt)} Zeichen)\n```\n{clipped}\n```")
         if samples:
             system = ("Du bewertest Test-Qualitaet eines Studi-Teams. Gut: Edge Cases, Error-Pfade, "
                       "klare Assertions. Schwach: nur Happy Path, leere Tests, 'should be created'-Stubs. "
+                      "Die Dateien sind eine groessen-gewichtete Stichprobe ueber mehrere Sprachen; "
+                      "lange Dateien koennen am Ende gekuerzt sein ('… [Datei gekuerzt]') — werte das "
+                      "NICHT als Unvollstaendigkeit des Tests. "
                       "Score 0=ueberwiegend Stubs, 1=mittel, 2=gut, 3=hervorragend (Edge Cases und Error-Pfade).")
-            prompt = (f"Hier sind {len(samples)} Test-Dateien:\n\n"
+            prompt = (f"Hier sind {len(samples)} Test-Dateien (Stichprobe):\n\n"
                       + wrap_student_content("\n\n".join(samples)))
             llm_eval = llm.score(prompt, scale_max=3, system=system)
 
@@ -1661,6 +1757,8 @@ def analyze_commit_distribution(repo):
         if not m:
             continue
         count, name, email = int(m.group(1)), m.group(2).strip(), m.group(3).strip().lower()
+        if _is_tutor_identity(name, email):  # Lehrpersonal nicht als Studi-Autor zaehlen
+            continue
         key = email or name.lower()
         entry = by_email.setdefault(key, {"count": 0, "name": name, "name_count": 0})
         entry["count"] += count

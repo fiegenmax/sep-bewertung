@@ -60,6 +60,10 @@ thresholds:
     big_substantive_for_sixth: 10
     big_methods_for_seventh: 50
     big_substantive_for_seventh: 8
+    # LLM-Stichprobe fuer die Test-Qualitaets-Zweitmeinung: groessen-gewichtet und
+    # sprachgemischt ausgewaehlt (nicht die ersten N in Pfad-Reihenfolge).
+    llm_sample_files: 6       # Anzahl Test-Dateien an den LLM
+    llm_sample_chars: 4000    # Zeichen pro Datei (grosszuegig, kein Methoden-Abschnitt)
 
   release_executable:
     min_release_notes_chars: 500
@@ -115,6 +119,15 @@ run:
 tutors:
   - vogelsang
   - metzger
+
+# E-Mail-Domains zur Tutor-/Studi-Unterscheidung bei der Commit-Autoren-Zaehlung.
+# Wer auf einer staff-Domain committet, aber NICHT auf einer student-(Sub-)Domain,
+# gilt als Lehrpersonal (Tutor/Betreuer) und zaehlt nicht als Studi-Autor mit.
+# Beispiel UDE: alexander.korn@uni-due.de = Personal, x@stud.uni-due.de = Studi.
+staff_email_domains:
+  - uni-due.de
+student_email_domains:
+  - stud.uni-due.de
 
 # Verzeichnisse, die bei LOC/Test-Scans ausgeschlossen werden
 vendor_dirs:

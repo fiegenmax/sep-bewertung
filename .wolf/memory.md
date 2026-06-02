@@ -588,3 +588,14 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 08:59 | Edited skripte/test_evaluate.py | modified test_no_userstories() | ~273 |
 | 08:59 | Edited skripte/evaluate_team.py | modified _has_story_format() | ~165 |
 | 09:03 | bug-075 gefixt: Markdown-Strip in _has_story_format + Test; team-bit US-Score 1->3 verifiziert (live). LLM-Test-Sampler-Bias in cerebrum dokumentiert | evaluate_team.py, test_evaluate.py | 71 Tests gruen | ~30k |
+| 09:04 | Session end: 2 writes across 2 files (test_evaluate.py, evaluate_team.py) | 7 reads | ~44064 tok |
+| 09:07 | Edited skripte/test_evaluate.py | modified test_same_email_merged() | ~1139 |
+| 09:07 | Edited skripte/evaluate_team.py | expanded (+7 lines) | ~140 |
+| 09:07 | Edited skripte/evaluate_team.py | modified get_staff_domains() | ~520 |
+| 09:08 | Edited skripte/evaluate_team.py | modified _is_tutor_identity() | ~124 |
+| 09:08 | Edited skripte/evaluate_team.py | modified _is_tutor_identity() | ~93 |
+| 09:08 | Edited skripte/evaluate_team.py | modified _select_test_sample_files() | ~571 |
+| 09:08 | Edited skripte/evaluate_team.py | modified _select_test_sample_files() | ~515 |
+| 09:10 | Edited skripte/config.yaml | 4→8 lines | ~118 |
+| 09:10 | Edited skripte/config.yaml | expanded (+9 lines) | ~126 |
+| 09:12 | 2 Folge-Fixes: (a) Staff-Domain-Filter (@uni-due.de ohne stud.) in count_active_authors/commit_distribution -> bit 8->6 Autoren; (b) LLM-Test-Sampler groessen-/sprachgewichtet + Cap 1500->4000 (bug-076) | evaluate_team.py, config.yaml, test_evaluate.py | 76 Tests gruen; live verifiziert | ~40k |

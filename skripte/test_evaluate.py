@@ -534,6 +534,83 @@ class TestAuthorIdentity(unittest.TestCase):
         self.assertEqual(res["details"]["total_commits"], 3)
 
 
+class TestStaffDomainFilter(unittest.TestCase):
+    """Lehrpersonal (Tutoren/Betreuer) darf nicht als Studi-Commit-Autor zaehlen
+    und die Autorenzahl aufblaehen. Erkennung: Tutor-Namensfragment ODER
+    Staff-E-Mail-Domain (uni-due.de, aber NICHT die Studi-Subdomain
+    stud.uni-due.de)."""
+
+    def setUp(self):
+        for c in ("_TUTORS_CACHE", "_STAFF_DOMAINS_CACHE", "_STUDENT_DOMAINS_CACHE"):
+            setattr(ev, c, None)
+        self.tmp = Path(tempfile.mkdtemp())
+        import subprocess
+        subprocess.run(["git", "init", "-q"], cwd=self.tmp)
+
+        def commit(name, email, msg):
+            env = {**os.environ, "GIT_AUTHOR_NAME": name, "GIT_AUTHOR_EMAIL": email,
+                   "GIT_COMMITTER_NAME": name, "GIT_COMMITTER_EMAIL": email}
+            (self.tmp / "f.txt").write_text(msg, encoding="utf-8")
+            subprocess.run(["git", "add", "-A"], cwd=self.tmp, env=env)
+            subprocess.run(["git", "commit", "-q", "-m", msg], cwd=self.tmp, env=env)
+
+        commit("Alice Stud", "alice@stud.uni-due.de", "c1")
+        commit("Bob Stud", "bob@stud.uni-due.de", "c2")
+        commit("Alexander Korn", "alexander.korn@uni-due.de", "c3")  # Staff
+        commit("Max Tutor", "max.fiegen@uni-due.de", "c4")           # Staff
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+        for c in ("_TUTORS_CACHE", "_STAFF_DOMAINS_CACHE", "_STUDENT_DOMAINS_CACHE"):
+            setattr(ev, c, None)
+
+    def test_is_tutor_identity_staff_vs_student(self):
+        self.assertTrue(ev._is_tutor_identity("Korn", "alexander.korn@uni-due.de"))
+        self.assertFalse(ev._is_tutor_identity("Alice", "alice@stud.uni-due.de"))
+
+    def test_is_tutor_identity_name_fragment(self):
+        ev._TUTORS_CACHE = ["vogelsang"]
+        self.assertTrue(ev._is_tutor_identity("Tim Vogelsang", "tim@gmx.de"))
+
+    def test_staff_excluded_from_active_authors(self):
+        # 2 Studis + 2 Staff -> nur 2 aktive Autoren
+        self.assertEqual(ev.count_active_authors(self.tmp), 2)
+
+    def test_staff_excluded_from_distribution(self):
+        res = ev.analyze_commit_distribution(self.tmp)
+        names = [n for n, _ in res["details"]["authors"]]
+        self.assertEqual(len(names), 2)
+        self.assertNotIn("Alexander Korn", names)
+
+
+class TestTestSampleSelection(unittest.TestCase):
+    """Der LLM-Test-Review sampelt qualitaets-/groessen-gewichtet und mischt
+    Sprachen, statt die ersten 5 Dateien in Pfad-Reihenfolge zu nehmen (sonst
+    fuehrt der winzige Stub die Stichprobe an und ganze Sprachen fehlen)."""
+
+    def setUp(self):
+        ev._LANG_CACHE = None
+        ev._VENDOR_CACHE = None
+        ev._THRESHOLDS_CACHE = None
+        self.tmp = Path(tempfile.mkdtemp())
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def test_mixes_languages_and_prefers_big_files(self):
+        # winziger Java-Stub (alphabetisch zuerst) + grosser Java-Test + 2 TS-Specs
+        (self.tmp / "AStubTest.java").write_text("class A {}\n", encoding="utf-8")
+        (self.tmp / "BigServiceTest.java").write_text("// big\n" + "x\n" * 2000, encoding="utf-8")
+        (self.tmp / "a.spec.ts").write_text("it('a',()=>{});\n" * 50, encoding="utf-8")
+        (self.tmp / "b.spec.ts").write_text("it('b',()=>{});\n" * 80, encoding="utf-8")
+        picked = ev._select_test_sample_files(self.tmp, max_files=3)
+        names = [p.name for p in picked]
+        self.assertEqual(len(names), 3)
+        self.assertIn("BigServiceTest.java", names)           # grosser Test dabei
+        self.assertTrue(any(n.endswith(".spec.ts") for n in names))  # TS gemischt
+        self.assertNotEqual(names[0], "AStubTest.java")       # Stub fuehrt NICHT
+
+
 class TestWorkScopePerDev(unittest.TestCase):
     """Arbeitsumfang wird auf eine ANGENOMMENE Teamgroesse (5-6 aktive Autoren)
     normalisiert, NICHT auf die gemessene Autorenzahl. Hoehere angenommene
