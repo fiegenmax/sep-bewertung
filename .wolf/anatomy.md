@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-02T09:41:02.572Z
-> Files: 16 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-02T09:49:25.812Z
+> Files: 17 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../tmp/
 
@@ -12,6 +12,7 @@
 
 ## ./
 
+- `.gitignore` — Git ignore rules (~308 tok)
 
 ## .claude/
 
