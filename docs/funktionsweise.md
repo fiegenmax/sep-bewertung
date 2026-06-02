@@ -43,8 +43,9 @@ Wie die Pipeline intern aufgebaut ist. Für Entwickler-Sicht.
 ### 2. Repo klonen oder fetchen
 
 `clone_or_update(http_url, token, local_path)`:
-- Wenn `local_path` existiert: `git fetch --all --tags --prune`.
-- Sonst: `git clone <auth_url>` wobei der Token als `oauth2:<token>@` in die URL injiziert wird.
+- Wenn `local_path` existiert: `git fetch --all --tags --prune`, danach den Arbeitsbaum **deterministisch** auf den Remote-Stand des Default-Branches setzen (`git reset --hard origin/<branch>`, Branch ermittelt über `origin/HEAD`, sonst `origin/main`, sonst `origin/master`). Ein bloßer Fetch würde den Arbeitsbaum sonst auf einem alten Commit stehen lassen, während Issues/MRs/Wiki frisch aus der API kommen — die im Excel gestempelte Provenienz (HEAD) und die bewerteten Dateien liefen auseinander.
+- Sonst: `git clone` mit flüchtigem HTTP-Basic-`http.extraHeader`-Auth (Token landet nicht in `.git/config`).
+- Fail-Fast: Fetch-/Reset-Fehler werden nicht geschluckt, sondern als RuntimeError gemeldet.
 - Sanity-Check am Schluss: `git log --oneline -1` — wenn leer, RuntimeError. Verhindert dass leere Repos die nachgelagerten Analysen crashen.
 
 ### 3. API-Daten holen

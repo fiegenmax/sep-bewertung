@@ -120,7 +120,7 @@ Die zwei Scores werden gemittelt.
 **Was misst die Heuristik (additiv, Summe gedeckelt bei 5):**
 - Top-Level-README ≥500 Zeichen und nicht die GitLab-Default-Vorlage: +1
 - Sub-READMEs (z.B. in backend/frontend) ≥1000 Zeichen gesamt: +1
-- ≥3 substantielle Wiki-Seiten: +1, ≥15 Seiten: +2 (gestaffelt, nicht additiv)
+- ≥3 substantielle Wiki-Seiten: +1, ≥15 Seiten: +2 (gestaffelt, nicht additiv). „Substanziell" heißt: der bereinigte Seitentext erreicht ≥`code_docs.min_wiki_page_chars` (Default 200) Zeichen — kurze Stub-/Backlog-Seiten zählen nicht mehr mit. (Greift, wenn die Pipeline die Wiki-Inhalte durchreicht; ohne Inhalte zählt wie früher jede Nicht-Upload-Seite.)
 - OpenAPI/Swagger-Spec im Repo gefunden (Java-Annotationen ODER `openapi.{yaml,yml,json}`/`swagger.{yaml,yml,json}`): +1
 - **Datenbankschema dokumentiert: +1** — `_detect_db_schema` erkennt `*.sql`, `*.prisma`, Liquibase-Changelogs, ein `migrations/`-Verzeichnis mit Inhalt, oder ORM-Entities/Models (`@Entity`, `@Table(`, Django `models.Model`, SQLAlchemy `declarative_base`). Das PDF nennt "Datenbankschemata" explizit.
 - Inline-Kommentar-Anteil ≥10% **über alle erkannten Sprachen** (Comment-Marker je Sprache aus der Registry, nicht mehr nur Java): +1
@@ -256,6 +256,8 @@ genauso wie echte Features. Deshalb bleibt der ⚠-Hinweis zur manuellen Prüfun
 - ≥10 gemergte MRs
 - UND ≥3 Branches neben main
 - UND ≤15 Direkt-Pushes auf main (Commits ohne Merge-Hintergrund)
+
+Direktpushes werden über die First-Parent-Linie von `origin/main` gezählt. Davon abgezogen werden echte Merge-Commits **und** bekannte MR-Merge-/Squash-Commits (`merge_commit_sha`/`squash_commit_sha` der gemergten MRs) — sonst würde ein GitLab-Squash-Merge, dessen Commit-Message nicht mit „Merge " beginnt, fälschlich als Direktpush gewertet. Die Zahl der so erkannten MR-Squash-Commits steht in Reason/Details (`mr_squash_commits_recognized`).
 
 **Warum so:** Das PDF verlangt "Feature-Branches, MR". Direkte Pushes auf main sind ein Verstoß. 15 als Schwelle erlaubt initial commit + ein paar kleine Fixes.
 

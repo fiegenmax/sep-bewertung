@@ -551,20 +551,67 @@ def _scrub_secrets(text, *secrets):
     return out
 
 
+def _remote_default_branch(local):
+    """Ermittelt den Default-Branch des Remotes `origin` in absteigender Praeferenz:
+    `origin/HEAD` (das ist der echte Default-Branch des Servers), dann `origin/main`,
+    dann `origin/master`. Gibt den reinen Branch-Namen (ohne `origin/`) zurueck,
+    oder None wenn keiner aufloesbar ist."""
+    # origin/HEAD zeigt symbolisch auf den Default-Branch (vom Klon gesetzt).
+    sym = subprocess.run(["git", "-C", str(local), "symbolic-ref",
+                          "--short", "refs/remotes/origin/HEAD"],
+                         capture_output=True, text=True)
+    if sym.returncode == 0:
+        ref = sym.stdout.strip()  # z.B. "origin/main"
+        if ref.startswith("origin/"):
+            return ref[len("origin/"):]
+    for branch in ("main", "master"):
+        check = subprocess.run(["git", "-C", str(local), "rev-parse", "--verify",
+                                "--quiet", f"refs/remotes/origin/{branch}"],
+                               capture_output=True, text=True)
+        if check.returncode == 0:
+            return branch
+    return None
+
+
 def clone_or_update(http_url, token, local):
     """Klont/aktualisiert das Repo nach REPOS/<name>.
 
     Der Token wird NICHT in die Remote-URL geschrieben (und landet damit nicht im
     Klartext in <repo>/.git/config), sondern nur fluechtig pro git-Aufruf als
     HTTP-Basic-Authorization-Header uebergeben (oauth2:<token>).
-    Fail-Fast: prueft hinterher, ob das Repo tatsaechlich Commits enthaelt.
+
+    Bei einem bestehenden Klon reicht ein blosser `git fetch` NICHT: der
+    Arbeitsbaum bliebe auf dem alten Commit stehen, waehrend Issues/MRs/Wiki frisch
+    aus der API kommen -> die im Excel gestempelte Provenienz (HEAD) und die
+    bewerteten Dateien wuerden auseinanderlaufen. Darum wird der Arbeitsbaum nach
+    dem Fetch deterministisch auf `origin/<default-branch>` zurueckgesetzt.
+    Fail-Fast: Fetch-/Checkout-Fehler werden NICHT geschluckt, sondern als
+    RuntimeError gemeldet; hinterher wird geprueft, ob das Repo Commits enthaelt.
     """
     local.parent.mkdir(parents=True, exist_ok=True)
     basic = base64.b64encode(f"oauth2:{token}".encode("utf-8")).decode("ascii")
     auth = ["-c", f"http.extraHeader=Authorization: Basic {basic}"]
     if local.exists():
-        subprocess.run(["git", *auth, "-C", str(local), "fetch", "--all", "--tags", "--prune"],
-                       check=False, capture_output=True)
+        fetch = subprocess.run(
+            ["git", *auth, "-C", str(local), "fetch", "--all", "--tags", "--prune"],
+            capture_output=True, text=True)
+        if fetch.returncode != 0:
+            raise RuntimeError(f"git fetch fehlgeschlagen fuer {local}: "
+                               f"{_scrub_secrets(fetch.stderr, token, basic)[:200]}")
+        # Arbeitsbaum auf den Remote-Stand des Default-Branches setzen.
+        branch = _remote_default_branch(local)
+        if branch:
+            reset = subprocess.run(
+                ["git", "-C", str(local), "reset", "--hard", f"origin/{branch}"],
+                capture_output=True, text=True)
+            if reset.returncode != 0:
+                raise RuntimeError(f"git reset --hard origin/{branch} fehlgeschlagen "
+                                   f"fuer {local}: "
+                                   f"{_scrub_secrets(reset.stderr, token, basic)[:200]}")
+            # Lokalen HEAD auf den Branch heften (statt detached), damit die
+            # Provenienz sauber den Branch-Namen sieht.
+            subprocess.run(["git", "-C", str(local), "checkout", "-B", branch,
+                            f"origin/{branch}"], capture_output=True, text=True)
     else:
         result = subprocess.run(["git", *auth, "clone", http_url, str(local)],
                                 capture_output=True, text=True)
@@ -1060,9 +1107,21 @@ def _detect_db_schema(repo, vendor=None):
     return False, ""
 
 
-def analyze_code_docs(repo, wikis, llm=None):
+def _wiki_text_len(content):
+    """Bereinigte Textlaenge einer Wiki-Seite (Whitespace getrimmt).
+    Dient dazu, kurze Stub-/Backlog-Seiten von substanzieller Doku zu trennen."""
+    return len((content or "").strip())
+
+
+def analyze_code_docs(repo, wikis, llm=None, wiki_contents=None):
     """Code ausreichend dokumentiert (0-5) - sprachunabhaengig.
-    Quellen: README(s), Wiki, API-Spezifikation, Datenbankschema, Inline-Kommentare."""
+    Quellen: README(s), Wiki, API-Spezifikation, Datenbankschema, Inline-Kommentare.
+
+    `wiki_contents` (optional, {slug: text}): wenn gesetzt, zaehlen fuer den
+    Wiki-Doku-Bonus nur Seiten, deren bereinigter Text die Mindestlaenge
+    `thresholds.code_docs.min_wiki_page_chars` erreicht - kurze Stub-/Backlog-Seiten
+    geben dann keinen Bonus. Ohne `wiki_contents` (Default) bleibt das alte Verhalten
+    (jede Nicht-Upload-Seite zaehlt) erhalten."""
     vendor = get_vendor_dirs()
     readmes = []
     for r_path in repo.rglob("README.md"):
@@ -1099,9 +1158,16 @@ def analyze_code_docs(repo, wikis, llm=None):
             has_openapi = True
             break
 
-    # Wiki / sonstige Doku (nur substantielle Seiten zaehlen wenn moeglich)
+    # Wiki / sonstige Doku: nur substanzielle Seiten zaehlen, wenn die Inhalte
+    # vorliegen (sonst signature-stabiler Fallback = jede Nicht-Upload-Seite).
     real_wiki_pages = [w for w in wikis if not w.get("slug", "").startswith("uploads/")]
-    # Wenn wiki_contents im Skript gesetzt sind, koennte man hier filtern - aktuell signature-stabil halten
+    if wiki_contents is not None:
+        min_wiki_chars = thr("code_docs.min_wiki_page_chars", 200)
+        substantial_wiki_pages = sum(
+            1 for w in real_wiki_pages
+            if _wiki_text_len(wiki_contents.get(w.get("slug", ""), "")) >= min_wiki_chars)
+    else:
+        substantial_wiki_pages = len(real_wiki_pages)
 
     # Inline-Kommentar-Anteil sprachunabhaengig: Extension -> Comment-Marker aus der Registry
     ext_markers = {}
@@ -1144,12 +1210,12 @@ def analyze_code_docs(repo, wikis, llm=None):
         score += 1
         reasons.append(f"Weitere README(s) in Subprojekten ({other_readme_chars} Zeichen).")
     # Wiki: gestaffelt (1 Punkt fuer wenig, 2 fuer viel substantielles)
-    if len(real_wiki_pages) >= thr("code_docs.wiki_pages_for_two_points", 8):
+    if substantial_wiki_pages >= thr("code_docs.wiki_pages_for_two_points", 8):
         score += 2
-        reasons.append(f"{len(real_wiki_pages)} substanzielle Wiki-Seiten - umfangreiche Dokumentation.")
-    elif len(real_wiki_pages) >= thr("code_docs.wiki_pages_for_one_point", 3):
+        reasons.append(f"{substantial_wiki_pages} substanzielle Wiki-Seiten - umfangreiche Dokumentation.")
+    elif substantial_wiki_pages >= thr("code_docs.wiki_pages_for_one_point", 3):
         score += 1
-        reasons.append(f"{len(real_wiki_pages)} substanzielle Wiki-Seiten.")
+        reasons.append(f"{substantial_wiki_pages} substanzielle Wiki-Seiten.")
     if has_openapi:
         score += 1
         reasons.append("API-Dokumentation (OpenAPI/Swagger) gefunden.")
@@ -1194,6 +1260,7 @@ def analyze_code_docs(repo, wikis, llm=None):
             "label": str(score), "reason": " ".join(reasons),
             "details": {"top_readme_chars": top_readme_chars, "is_template_readme": is_template,
                         "other_readme_chars": other_readme_chars, "wiki_pages": len(real_wiki_pages),
+                        "substantial_wiki_pages": substantial_wiki_pages,
                         "has_openapi": has_openapi, "has_db_schema": has_db_schema,
                         "db_schema": db_schema_desc, "comment_ratio": round(comment_ratio, 3),
                         "source_lines_total": total_lines, "source_comment_lines": comment_lines,
@@ -1714,10 +1781,31 @@ def analyze_branching(repo, mrs, llm=None):
     if not any("origin/main" in b for b in branches):
         if any("origin/master" in b for b in branches):
             main_ref = "origin/master"
+    # Bekannte MR-Merge-/Squash-SHAs sammeln: GitLab-Squash-Merges erzeugen EINEN
+    # Commit direkt auf der main-First-Parent-Linie, dessen Message NICHT mit
+    # "Merge " beginnt - der wuerde sonst faelschlich als Direktpush gezaehlt.
+    mr_commit_shas = set()
+    for m in merged_mrs:
+        for key in ("merge_commit_sha", "squash_commit_sha"):
+            sha = m.get(key)
+            if sha:
+                mr_commit_shas.add(sha)
     # Erste Variante: alle Commits direkt auf main (--first-parent zeigt nur die main-Linie)
     fp = run(["git", "log", main_ref, "--first-parent", "--pretty=format:%H %s"], repo).stdout.splitlines()
-    # Davon abziehen: jene die Merge-Commits sind (kommen via MR rein)
-    direct_commits_main = [line for line in fp if " " in line and not line.split(" ", 1)[1].startswith("Merge ")]
+    # Davon abziehen: echte Merge-Commits (Message "Merge ...") UND bekannte
+    # MR-Merge-/Squash-Commits (kommen via MR rein, sind also keine Direktpushes).
+    direct_commits_main = []
+    mr_squash_recognized = 0
+    for line in fp:
+        if " " not in line:
+            continue
+        sha, subject = line.split(" ", 1)
+        if subject.startswith("Merge "):
+            continue
+        if sha in mr_commit_shas:
+            mr_squash_recognized += 1
+            continue
+        direct_commits_main.append(line)
     # Schwelle: 5 oder weniger direkte Commits sind normal (initial commit, kleine Fixes)
     direct_push_count = len(direct_commits_main)
 
@@ -1734,13 +1822,15 @@ def analyze_branching(repo, mrs, llm=None):
     reason = (f"{len(all_branches)} Remote-Branches insgesamt ({len(non_main)} neben main), "
               f"davon {len(feature_branches)} mit Feature/Fix-Prefix. "
               f"{len(merged_mrs)} gemergte MRs ({target_main} auf main). "
-              f"Direkte Commits auf {main_ref} (nicht via MR): {direct_push_count}.")
+              f"Direkte Commits auf {main_ref} (nicht via MR): {direct_push_count} "
+              f"(davon {mr_squash_recognized} als MR-Merge/Squash erkannt und nicht gezaehlt).")
     llm_eval = analyze_branching_pattern(repo, mrs, llm)
     return {"criterion": "Branching-Workflow (Feature-Branches, MR)", "max": 1, "score": score,
             "label": label, "reason": reason,
             "details": {"remote_branches": len(all_branches), "non_main_branches": len(non_main),
                         "feature_named_branches": len(feature_branches), "merged_mrs": len(merged_mrs),
                         "direct_commits_on_main": direct_push_count,
+                        "mr_squash_commits_recognized": mr_squash_recognized,
                         "sample_direct_commits": direct_commits_main[:5],
                         "llm_review": llm_eval}}
 
@@ -2326,7 +2416,7 @@ def collect_results(entry, token, llm_client=None, yaml_cfg=None):
         analyze_release_changelog(releases, repo, llm=llm_client),
         analyze_epics(issues, epic_links=epic_links),
         analyze_code_structure(repo),
-        analyze_code_docs(repo, wikis, llm=llm_client),
+        analyze_code_docs(repo, wikis, llm=llm_client, wiki_contents=wiki_contents),
         analyze_code_clean(repo),
         analyze_tests(repo, llm=llm_client, coverage_pct=coverage_pct),
         analyze_release_executable(repo, releases),

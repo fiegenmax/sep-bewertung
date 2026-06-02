@@ -1441,5 +1441,200 @@ class TestCheckboxMapMatchesGeometry(unittest.TestCase):
                              f"Geometrie-Zuordnung weicht ab fuer: {crit}")
 
 
+# ============================================================
+# 6. Repo-Update (clone_or_update) — Arbeitsbaum folgt dem Remote
+# ============================================================
+
+def _git_env(name="Dev", email="dev@x.de"):
+    return {**os.environ, "GIT_AUTHOR_NAME": name, "GIT_AUTHOR_EMAIL": email,
+            "GIT_COMMITTER_NAME": name, "GIT_COMMITTER_EMAIL": email}
+
+
+def _git_commit(repo, fname, content, msg, env=None):
+    import subprocess
+    env = env or _git_env()
+    (repo / fname).write_text(content, encoding="utf-8")
+    subprocess.run(["git", "add", "-A"], cwd=repo, env=env, check=True,
+                   capture_output=True)
+    subprocess.run(["git", "commit", "-q", "-m", msg], cwd=repo, env=env, check=True,
+                   capture_output=True)
+
+
+def _git_init_main(repo):
+    import subprocess
+    repo.mkdir(parents=True, exist_ok=True)
+    subprocess.run(["git", "init", "-q", "-b", "main"], cwd=repo, check=True,
+                   capture_output=True)
+
+
+class TestCloneOrUpdate(unittest.TestCase):
+    """Bei einem bestehenden Klon muss clone_or_update den Arbeitsbaum auf den
+    frischen Remote-Stand ziehen (nicht nur fetchen), und Fetch-Fehler melden."""
+
+    def setUp(self):
+        import subprocess
+        self.base = Path(tempfile.mkdtemp())
+        self.work = self.base / "work"
+        self.bare = self.base / "remote.git"
+        self.local = self.base / "local"
+        _git_init_main(self.work)
+        _git_commit(self.work, "f.txt", "A", "commit A")
+        self.sha_a = subprocess.run(["git", "-C", str(self.work), "rev-parse", "HEAD"],
+                                    capture_output=True, text=True).stdout.strip()
+        subprocess.run(["git", "clone", "--bare", "-q", str(self.work), str(self.bare)],
+                       check=True, capture_output=True)
+
+    def tearDown(self):
+        shutil.rmtree(self.base, ignore_errors=True)
+
+    def _head(self, repo):
+        import subprocess
+        return subprocess.run(["git", "-C", str(repo), "rev-parse", "HEAD"],
+                              capture_output=True, text=True).stdout.strip()
+
+    def test_update_advances_worktree(self):
+        import subprocess
+        # Erst-Klon ueber clone_or_update -> Arbeitsbaum auf A.
+        ev.clone_or_update(str(self.bare), "dummytoken", self.local)
+        self.assertEqual(self._head(self.local), self.sha_a)
+        self.assertEqual((self.local / "f.txt").read_text(encoding="utf-8"), "A")
+
+        # Remote bekommt Commit B (ueber einen pushenden Klon).
+        pusher = self.base / "pusher"
+        subprocess.run(["git", "clone", "-q", str(self.bare), str(pusher)],
+                       check=True, capture_output=True)
+        _git_commit(pusher, "f.txt", "B", "commit B")
+        sha_b = self._head(pusher)
+        subprocess.run(["git", "-C", str(pusher), "push", "-q", "origin", "main"],
+                       check=True, capture_output=True)
+
+        # Zweiter Lauf: Arbeitsbaum muss jetzt auf B stehen (frueher blieb er auf A).
+        ev.clone_or_update(str(self.bare), "dummytoken", self.local)
+        self.assertEqual(self._head(self.local), sha_b)
+        self.assertEqual((self.local / "f.txt").read_text(encoding="utf-8"), "B")
+
+    def test_fetch_failure_raises(self):
+        import subprocess
+        ev.clone_or_update(str(self.bare), "dummytoken", self.local)
+        # Remote unerreichbar machen -> fetch muss fehlschlagen und RuntimeError werfen.
+        bad = str(self.base / "does-not-exist.git")
+        subprocess.run(["git", "-C", str(self.local), "remote", "set-url", "origin", bad],
+                       check=True, capture_output=True)
+        with self.assertRaises(RuntimeError):
+            ev.clone_or_update(bad, "dummytoken", self.local)
+
+
+# ============================================================
+# 7. Branching-Heuristik — Squash-Merges sind keine Direktpushes
+# ============================================================
+
+class TestBranchingSquashAware(unittest.TestCase):
+    def setUp(self):
+        import subprocess
+        for c in ("_THRESHOLDS_CACHE", "_LANG_CACHE", "_VENDOR_CACHE"):
+            setattr(ev, c, None)
+        self.base = Path(tempfile.mkdtemp())
+        work = self.base / "work"
+        bare = self.base / "remote.git"
+        self.local = self.base / "local"
+        _git_init_main(work)
+        self.shas = {}
+        for name in ("A", "B", "C"):
+            _git_commit(work, "f.txt", name, name)
+            self.shas[name] = subprocess.run(
+                ["git", "-C", str(work), "rev-parse", "HEAD"],
+                capture_output=True, text=True).stdout.strip()
+        subprocess.run(["git", "clone", "--bare", "-q", str(work), str(bare)],
+                       check=True, capture_output=True)
+        subprocess.run(["git", "clone", "-q", str(bare), str(self.local)],
+                       check=True, capture_output=True)
+
+    def tearDown(self):
+        shutil.rmtree(self.base, ignore_errors=True)
+        setattr(ev, "_THRESHOLDS_CACHE", None)
+
+    def test_squash_sha_not_counted_as_direct_push(self):
+        # Ein MR, dessen squash_commit_sha auf der First-Parent-Linie liegt (B),
+        # darf nicht als Direktpush zaehlen.
+        mrs = [{"state": "merged", "target_branch": "main", "iid": 1,
+                "author": {"username": "stud"}, "squash_commit_sha": self.shas["B"]}]
+        res = ev.analyze_branching(self.local, mrs, llm=None)
+        self.assertEqual(res["details"]["mr_squash_commits_recognized"], 1)
+        # A und C bleiben als echte Direktpushes (B ist erkannt).
+        self.assertEqual(res["details"]["direct_commits_on_main"], 2)
+
+    def test_real_direct_commit_still_counted(self):
+        # Ohne MR-SHAs zaehlen alle drei First-Parent-Commits als Direktpush.
+        res = ev.analyze_branching(self.local, mrs=[], llm=None)
+        self.assertEqual(res["details"]["mr_squash_commits_recognized"], 0)
+        self.assertEqual(res["details"]["direct_commits_on_main"], 3)
+
+
+# ============================================================
+# 8. Code-Doku — Wiki-Seiten nach Substanz, nicht nach Anzahl
+# ============================================================
+
+class TestCodeDocsWikiSubstance(unittest.TestCase):
+    def setUp(self):
+        for c in ("_THRESHOLDS_CACHE", "_LANG_CACHE", "_VENDOR_CACHE"):
+            setattr(ev, c, None)
+        self.tmp = Path(tempfile.mkdtemp())  # leeres Repo: Score kommt nur vom Wiki
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+        setattr(ev, "_THRESHOLDS_CACHE", None)
+
+    def test_many_short_pages_give_no_bonus(self):
+        wikis = [{"slug": f"page{i}"} for i in range(20)]
+        contents = {f"page{i}": "stub" for i in range(20)}  # je 4 Zeichen
+        res = ev.analyze_code_docs(self.tmp, wikis, llm=None, wiki_contents=contents)
+        self.assertEqual(res["details"]["substantial_wiki_pages"], 0)
+        self.assertEqual(res["score"], 0)
+
+    def test_several_long_pages_give_one_point(self):
+        wikis = [{"slug": f"p{i}"} for i in range(4)]
+        contents = {f"p{i}": "x" * 300 for i in range(4)}
+        res = ev.analyze_code_docs(self.tmp, wikis, llm=None, wiki_contents=contents)
+        self.assertEqual(res["details"]["substantial_wiki_pages"], 4)
+        self.assertEqual(res["score"], 1)
+
+    def test_many_long_pages_give_two_points(self):
+        wikis = [{"slug": f"p{i}"} for i in range(15)]
+        contents = {f"p{i}": "x" * 300 for i in range(15)}
+        res = ev.analyze_code_docs(self.tmp, wikis, llm=None, wiki_contents=contents)
+        self.assertEqual(res["details"]["substantial_wiki_pages"], 15)
+        self.assertEqual(res["score"], 2)
+
+    def test_no_contents_is_backward_compatible(self):
+        # Ohne wiki_contents bleibt das alte Verhalten: jede Nicht-Upload-Seite zaehlt.
+        wikis = [{"slug": f"p{i}"} for i in range(4)]
+        res = ev.analyze_code_docs(self.tmp, wikis, llm=None)
+        self.assertEqual(res["details"]["substantial_wiki_pages"], 4)
+        self.assertEqual(res["score"], 1)
+
+
+# ============================================================
+# 9. build_overview — laeuft ohne .env / Token
+# ============================================================
+
+class TestBuildOverviewNoConfig(unittest.TestCase):
+    def test_main_does_not_load_config(self):
+        tmp = Path(tempfile.mkdtemp())
+        try:
+            (tmp / "team_mapping.json").write_text("[]", encoding="utf-8")
+            orig = (ev.OUTPUTS, ev.TEAMS, ev.load_config)
+            ev.OUTPUTS, ev.TEAMS = tmp, tmp
+
+            def _boom():
+                raise RuntimeError("load_config darf fuer die Uebersicht nicht aufgerufen werden")
+            ev.load_config = _boom
+            try:
+                build_overview.main()  # darf nicht crashen (kein .env noetig)
+            finally:
+                ev.OUTPUTS, ev.TEAMS, ev.load_config = orig
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -1526,6 +1526,118 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-06-02"
+    },
+    {
+      "id": "bug-091",
+      "timestamp": "2026-06-02T09:34:22.518Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 25→72 lines (3 removed) | Also: # Davon abziehen: jene die Merge-Commits sind (kom; direct_commits_main = [line for line in fp if \" \"  | Also: def analyze_code_docs(repo, wikis, llm=None):; Quellen: README(s), Wiki, API-Spezifikation, Daten | Also: # Wiki / sonstige Doku (nur substantielle Seiten z; # Wenn wiki_contents im Skript gesetzt sind, koenn",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 4,
+      "last_seen": "2026-06-02T09:35:25.866Z"
+    },
+    {
+      "id": "bug-092",
+      "timestamp": "2026-06-02T09:35:40.385Z",
+      "error_message": "Incorrect value in code",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "Had \"has_openapi\"",
+      "fix": "Changed to \"substantial_wiki_pages\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T09:35:40.385Z"
+    },
+    {
+      "id": "bug-093",
+      "timestamp": "2026-06-02T09:40:37.871Z",
+      "error_message": "Incorrect value in code",
+      "file": "docs/bewertungskriterien.md",
+      "root_cause": "Had \"Feature-Branches, MR\"",
+      "fix": "Changed to `origin/main`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T09:40:37.871Z"
+    },
+    {
+      "id": "bug-094",
+      "timestamp": "2026-06-02T09:41:02.584Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/funktionsweise.md",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 4→5 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T09:41:02.584Z"
+    },
+    {
+      "id": "bug-095",
+      "timestamp": "2026-06-02",
+      "error_message": "Bei bestehenden Clones machte clone_or_update nur 'git fetch' - der Arbeitsbaum blieb auf einem alten Commit, waehrend Issues/MRs/Wiki frisch aus der API kamen. Die im Excel gestempelte Provenienz (HEAD) und die tatsaechlich bewerteten Dateien liefen auseinander. Zudem wurden Fetch-Fehler still geschluckt (check=False).",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "clone_or_update fetchte nur und setzte den Arbeitsbaum nie auf den neuen Remote-Stand. Der fetch-Aufruf nutzte check=False + verwarf stderr.",
+      "fix": "Neuer Helper _remote_default_branch (origin/HEAD -> origin/main -> origin/master). Nach dem Fetch 'git reset --hard origin/<branch>' + 'git checkout -B <branch> origin/<branch>'. Fetch- und Reset-Returncodes werden geprueft und werfen RuntimeError mit gescrubbtem stderr. Tests: TestCloneOrUpdate (Bare-Remote: Arbeitsbaum folgt neuem Commit; Fetch-Fehler -> RuntimeError).",
+      "tags": ["repo-update", "clone_or_update", "provenance", "git", "fetch", "scoring-integrity"],
+      "related_bugs": ["bug-025"],
+      "occurrences": 1,
+      "last_seen": "2026-06-02"
+    },
+    {
+      "id": "bug-096",
+      "timestamp": "2026-06-02",
+      "error_message": "analyze_branching zaehlte First-Parent-Commits auf main als Direktpushes, wenn die Commit-Message nicht mit 'Merge ' begann. GitLab-Squash-Merges erzeugen genau so einen Commit (Subject = MR-Titel) und galten faelschlich als Direktpush -> Branching-Kriterium konnte zu Unrecht auf 0 fallen.",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "Die Direktpush-Erkennung filterte nur Commits, deren Subject mit 'Merge ' beginnt. Squash-Merge-Commits haben aber den MR-Titel als Subject.",
+      "fix": "Aus den gemergten MRs merge_commit_sha + squash_commit_sha in ein Set sammeln; First-Parent-Commits, deren SHA darin liegt, nicht als Direktpush zaehlen. Neues Detail mr_squash_commits_recognized + Reason-Text. Tests: TestBranchingSquashAware (squash-SHA nicht gezaehlt; echter Direktcommit weiterhin gezaehlt).",
+      "tags": ["branching", "squash-merge", "heuristik", "false-positive", "scoring"],
+      "related_bugs": ["bug-024"],
+      "occurrences": 1,
+      "last_seen": "2026-06-02"
+    },
+    {
+      "id": "bug-097",
+      "timestamp": "2026-06-02",
+      "error_message": "analyze_code_docs vergab Wiki-Punkte rein nach Anzahl der Wiki-Seiten. Kurze Stub-/Backlog-Seiten zaehlten als substanzielle Dokumentation.",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "Die Heuristik zaehlte len(real_wiki_pages) ohne den Seiteninhalt zu betrachten (Signatur hatte die wiki_contents gar nicht).",
+      "fix": "Signatur um optionales wiki_contents={slug:text} erweitert; collect_results reicht das bereits geladene wiki_contents durch. Nur Seiten mit bereinigter Textlaenge >= thresholds.code_docs.min_wiki_page_chars (Default 200) zaehlen. Neues Detail substantial_wiki_pages; ohne wiki_contents bleibt das alte Verhalten (signature-stabiler Fallback). Tests: TestCodeDocsWikiSubstance (viele kurze -> 0 Bonus; 4 lange -> 1 Punkt; 15 lange -> 2 Punkte; None -> backward-compatible).",
+      "tags": ["code-docs", "wiki", "substanz", "heuristik", "config", "scoring"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02"
+    },
+    {
+      "id": "bug-098",
+      "timestamp": "2026-06-02",
+      "error_message": "build_overview.main lud ueber ev.load_config() die .env (Token), obwohl die Uebersicht nur vorhandene Excel-Dateien und team_mapping.json braucht. Ohne .env crashte die Uebersicht unnoetig (FileNotFoundError).",
+      "file": "skripte/build_overview.py",
+      "root_cause": "Toter Aufruf cfg = ev.load_config() in main(); der Rueckgabewert wurde nie verwendet, erzwang aber eine vorhandene .env.",
+      "fix": "Den ungenutzten load_config()-Aufruf entfernt. Test: TestBuildOverviewNoConfig patcht ev.load_config so, dass es bei Aufruf wirft, und prueft dass main() trotzdem durchlaeuft.",
+      "tags": ["build_overview", "config", "dead-code", "token", "usability"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02"
     }
   ]
 }

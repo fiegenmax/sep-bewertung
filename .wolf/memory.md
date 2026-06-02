@@ -675,3 +675,26 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 
 | 10:40 | SUMMARY: Schwellen-Kalibrierung P1+P1b+P2+P3 (bug-087): tests/code_docs/commit/sprint Schwellen angehoben, Coverage-Schwellen konfigurierbar. +3 Tests, 89 grün. Tests-Spread real 4-7 statt 7/7. Doku nachgezogen. | config.yaml, evaluate_team.py, test_evaluate.py, docs/*.md | bug-087 | ~4000 |
 | 10:39 | Created .git/CMSG.txt | — | ~353 |
+| 10:41 | Session end: 24 writes across 7 files (evaluate_team.py, config.yaml, test_evaluate.py, COMMIT_EDITMSG_FIX.txt, bewertungskriterien.md) | 12 reads | ~108822 tok |
+| 10:52 | Session end: 24 writes across 7 files (evaluate_team.py, config.yaml, test_evaluate.py, COMMIT_EDITMSG_FIX.txt, bewertungskriterien.md) | 12 reads | ~108822 tok |
+| 11:21 | Session end: 24 writes across 7 files (evaluate_team.py, config.yaml, test_evaluate.py, COMMIT_EDITMSG_FIX.txt, bewertungskriterien.md) | 12 reads | ~108822 tok |
+
+## Session: 2026-06-02 11:30
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 11:34 | Edited skripte/evaluate_team.py | modified _remote_default_branch() | ~1186 |
+| 11:34 | Edited skripte/evaluate_team.py | modified in() | ~374 |
+| 11:34 | Edited skripte/evaluate_team.py | 12→14 lines | ~313 |
+| 11:35 | Edited skripte/evaluate_team.py | modified _wiki_text_len() | ~231 |
+| 11:35 | Edited skripte/evaluate_team.py | expanded (+7 lines) | ~166 |
+| 11:35 | Edited skripte/evaluate_team.py | modified thr() | ~131 |
+| 11:35 | Edited skripte/evaluate_team.py | 2→3 lines | ~74 |
+| 11:35 | Edited skripte/evaluate_team.py | inline fix | ~24 |
+| 11:35 | Edited skripte/config.yaml | 4→8 lines | ~129 |
+| 11:36 | Edited skripte/build_overview.py | modified main() | ~68 |
+| 11:39 | Edited skripte/test_evaluate.py | modified _git_env() | ~2573 |
+| 11:40 | Edited docs/bewertungskriterien.md | inline fix | ~95 |
+| 11:40 | Edited docs/bewertungskriterien.md | 1→3 lines | ~162 |
+| 11:41 | Edited docs/funktionsweise.md | 4→5 lines | ~239 |
+| 09:55 | Review-Fix-Plan umgesetzt: clone_or_update reset-to-remote (bug-095), branching squash-fest (bug-096), code_docs wiki-substanz (bug-097), build_overview ohne .env (bug-098) | evaluate_team.py, build_overview.py, config.yaml, test_evaluate.py, docs | 122/122 Tests gruen | ~14k |

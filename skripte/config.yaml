@@ -95,6 +95,10 @@ thresholds:
     # 15 statt 8: SS26-Teams hatten 8-42 Wiki-Seiten -> der 2-Punkte-Bonus war zu
     # leicht. Hebt die Latte fuer "umfangreiche Doku".
     wiki_pages_for_two_points: 15
+    # Mindestlaenge (bereinigte Zeichen) einer Wiki-Seite, damit sie als
+    # substanzielle Doku zaehlt. Kurze Stub-/Backlog-Seiten fallen so raus.
+    # Greift nur, wenn collect_results die Wiki-Inhalte durchreicht.
+    min_wiki_page_chars: 200
     # 0.10 statt 0.05: 5% Inline-Kommentare sind sehr wenig; gute Teams liegen
     # deutlich darueber (SS26 z.B. 18.7%).
     min_inline_comment_ratio: 0.10

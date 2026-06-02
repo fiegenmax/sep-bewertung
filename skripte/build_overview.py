@@ -187,7 +187,8 @@ def build_overview(mapping, output_path):
 
 
 def main():
-    cfg = ev.load_config()
+    # Kein load_config()/Token noetig: die Uebersicht liest nur die bereits
+    # generierten Bewertung_<team>.xlsx + team_mapping.json.
     mapping = json.loads((ev.OUTPUTS / "team_mapping.json").read_text(encoding="utf-8"))
     out = ev.TEAMS / "Uebersicht_alle_Teams.xlsx"
     print(f"Generiere Uebersicht ueber {len(mapping)} Teams ...")
