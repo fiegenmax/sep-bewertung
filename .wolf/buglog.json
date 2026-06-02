@@ -1700,6 +1700,54 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-06-02T14:30:38.977Z"
+    },
+    {
+      "id": "bug-101",
+      "timestamp": "2026-06-02T14:45:16.373Z",
+      "error_message": "Significant refactor of ",
+      "file": "CLAUDE.md",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 17→23 lines (5 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T14:45:16.373Z"
+    },
+    {
+      "id": "bug-102",
+      "timestamp": "2026-06-02T14:45:26.379Z",
+      "error_message": "Incorrect value in code",
+      "file": "CLAUDE.md",
+      "root_cause": "Had `run_all.py`",
+      "fix": "Changed to `collect_results()`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T14:45:26.379Z"
+    },
+    {
+      "id": "bug-103",
+      "timestamp": "2026-06-02T14:46:36.486Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/funktionsweise.md",
+      "root_cause": "10 lines replaced/restructured",
+      "fix": "Rewrote 30→35 lines (10 removed) | Also: 1. `clone_or_update` — git fetch oder clone.; 2. `api_get_paginated` für issues, mrs, releases, ",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-02T14:46:58.288Z"
     }
   ]
 }

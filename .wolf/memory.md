@@ -739,3 +739,16 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 16:30 | Edited docs/funktionsweise.md | inline fix | ~129 |
 | 16:31 | docs-config-audit: 3 stale Stellen gefixt (work_scope normalize_by measured statt fixed, tests_files 5→6, funktionsweise TODO-Hinweis veraltet) | docs/bewertungskriterien.md docs/funktionsweise.md | done | ~6k |
 | 16:32 | Session end: 3 writes across 2 files (bewertungskriterien.md, funktionsweise.md) | 7 reads | ~595 tok |
+
+## Session: 2026-06-02 16:41
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:45 | Edited CLAUDE.md | expanded (+6 lines) | ~430 |
+| 16:45 | Edited CLAUDE.md | inline fix | ~129 |
+| 16:45 | Edited README.md | 3→2 lines | ~29 |
+| 16:46 | Edited docs/funktionsweise.md | modified Team() | ~131 |
+| 16:46 | Edited docs/funktionsweise.md | 3→5 lines | ~146 |
+| 16:46 | Edited docs/funktionsweise.md | 30→35 lines | ~435 |
+| 16:46 | Edited docs/funktionsweise.md | 9→10 lines | ~139 |
+| 16:47 | Doku-Aufräumen: 8 veraltete Docs gelöscht (Bewertungs-Methodik, befundbericht, review-fix-plan, 5x superpowers), CLAUDE.md/README/funktionsweise/anatomy auf aktuellen Stand (collect_results, gen_mapping, Zeilenzahlen) | docs/, CLAUDE.md, README.md, .wolf/anatomy.md | done | ~1500 |

@@ -67,7 +67,6 @@ python run_all.py --pdf --overview
 | `docs/bewertungskriterien.md` | Was jedes Kriterium misst und warum |
 | `docs/llm-integration.md` | LLM-Calls im Detail, Kosten |
 | `docs/troubleshooting.md` | Häufige Probleme |
-| `Bewertungs-Methodik.md` | Methodik-Überblick (Legacy, im docs/ besser strukturiert) |
 
 ## Was rauskommt
 

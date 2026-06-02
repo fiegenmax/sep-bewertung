@@ -16,10 +16,10 @@ Wie die Pipeline intern aufgebaut ist. Für Entwickler-Sicht.
              │
              ▼
    ┌─────────────────────────────────────────┐
-   │  Pro Team:                              │
+   │  Pro Team (gebündelt in collect_results):│
    │  1. evaluate_team.clone_or_update()     │  → <temp>/sep_repos/<team>/
    │  2. evaluate_team.api_get(...)          │  → GitLab API (mit Cache)
-   │  3. ~22× evaluate_team.analyze_*()      │  → List[Result-Dict]
+   │  3. ~20× evaluate_team.analyze_*()      │  → List[Result-Dict]
    │     (sprachunabhaengig: Java/TS/Py/Go/Kt)│  + Info: Konventionen, Provenienz
    │  4. evaluate_team.analyze_sanity_check()│  → LLM Konsistenz-Check
    │  5. build_xlsx.build_xlsx()             │  → team-X/Bewertung_X.xlsx
@@ -60,7 +60,9 @@ Alle drei nutzen einen **persistenten Disk-Cache** unter `<temp>/sep_gitlab_api_
 
 ### 4. Analysen ausführen
 
-`evaluate_team.py` definiert 20 `analyze_*`-Funktionen, jede mit einheitlicher Signatur:
+`evaluate_team.collect_results(entry, token, llm_client, yaml_cfg)` ist die **zentrale Orchestrierung**: sie klont/fetcht das Repo, zieht alle API-Daten und ruft der Reihe nach alle `analyze_*`-Funktionen auf. Sowohl `run_all.py` als auch der Standalone-`build_xlsx.py` rufen nur noch `collect_results()` auf — die Analyse-Liste ist also an genau einer Stelle definiert.
+
+`evaluate_team.py` definiert rund 20 `analyze_*`-Funktionen (15 bepunktete Kriterien + score-lose Info-Analysen), jede mit einheitlicher Signatur:
 
 ```python
 def analyze_xxx(...) -> Dict[str, Any]:
@@ -143,36 +145,41 @@ Bei HTTPError oder Exception wird `None` zurückgegeben — die `analyze_*`-Funk
 
 ## Datei-für-Datei
 
-### `skripte/evaluate_team.py` (~1500 Zeilen)
+### `skripte/evaluate_team.py` (~2450 Zeilen)
 
 Das Herzstück. Enthält:
 - API-Wrapper (`api_get`, etc.)
 - Repo-Operations (`clone_or_update`, `run`)
-- 20 `analyze_*`-Funktionen mit Heuristik + optional LLM
+- rund 20 `analyze_*`-Funktionen mit Heuristik + optional LLM (15 bepunktete + Info)
 - 5 LLM-only Hilfsfunktionen (`analyze_commit_substance`, `analyze_issue_vs_code`, etc.) die in andere `analyze_*` eingebunden sind
 - `analyze_sanity_check` der am Ende über alle Ergebnisse läuft
+- `collect_results()` als zentrale Orchestrierung (klont, zieht API-Daten, ruft alle `analyze_*` auf)
 - `fetch_coverage_from_ci` für Test-Coverage aus Pipelines
 - `CATEGORIES` und `MANUAL_CRITERIA` als Konstanten
 
-### `skripte/llm.py` (~170 Zeilen)
+### `skripte/llm.py` (~300 Zeilen)
 
 `LLMClient`-Klasse + Cache-Helper + `load_llm_from_configs` Factory.
 
-### `skripte/build_xlsx.py` (~440 Zeilen)
+### `skripte/build_xlsx.py` (~520 Zeilen)
 
-`build_xlsx`-Funktion + Helper für extract/merge + ein eigenes `main()` für Standalone-Aufruf (`python build_xlsx.py team-X`).
+`build_xlsx`-Funktion + Helper für extract/merge + ein eigenes `main()` für Standalone-Aufruf (`python build_xlsx.py team-X`, ruft `collect_results()`).
 
-### `skripte/build_overview.py` (~170 Zeilen)
+### `skripte/build_overview.py` (~200 Zeilen)
 
-Liest existierende Bewertungs-Excels, baut Übersicht.
+Liest existierende Bewertungs-Excels, baut Übersicht. Braucht weder Token noch LLM.
 
-### `skripte/fill_pdf.py` (~190 Zeilen)
+### `skripte/fill_pdf.py` (~250 Zeilen)
 
 PDF-Form-Filling mit `pypdf`. Hartcodiertes Mapping zwischen Kriterium-Name und PDF-Form-Field.
 
-### `skripte/run_all.py` (~140 Zeilen)
+### `skripte/run_all.py` (~160 Zeilen)
 
-Master-Skript, parsed Flags (`--fresh`, `--pdf`, `--overview`), looped über Teams. Try/Except pro Team damit ein kaputtes Team nicht alle anderen stoppt.
+Master-Skript, parsed Flags (`--fresh`, `--pdf`, `--overview`, `--pdf-only`), looped über Teams. Try/Except pro Team damit ein kaputtes Team nicht alle anderen stoppt.
+
+### `skripte/gen_mapping.py`
+
+Erzeugt `team_mapping.json` aus `skripte/teams.txt` (eine Zeile pro Team), indem es pro Team die GitLab-ID/URLs über die API auflöst. Idempotent, schreibt vorher ein `.bak`.
 
 ### `skripte/config.yaml`
 
@@ -199,14 +206,15 @@ Pro Team ein Eintrag mit `local_folder`, `gitlab_path`, `gitlab_id`, URLs. Wird 
 3. Erzeugt LLM-Client (mit Schalter `enabled`).
 4. Lädt `team_mapping.json`, filtert auf `team-shannon-alpha`.
 5. Ruft `process(entry, token, llm_client)`:
-   1. `clone_or_update` — git fetch oder clone.
-   2. `api_get_paginated` für issues, mrs, releases, milestones, members.
-   3. `api_get` für wikis, boards.
-   4. `api_get_parallel` für Wiki-Seiteninhalte.
-   5. `fetch_coverage_from_ci`.
-   6. 20× `analyze_*` mit dem LLM-Client.
-   7. `analyze_sanity_check`.
-   8. `build_xlsx(...)` schreibt die Excel.
+   1. `collect_results(entry, token, llm_client, yaml_cfg)` — bündelt Schritte a–g:
+      - a. `clone_or_update` — git fetch oder clone.
+      - b. `api_get_paginated` für issues, mrs, releases, milestones, members.
+      - c. `api_get` für wikis, boards.
+      - d. `api_get_parallel` für Wiki-Seiteninhalte.
+      - e. `fetch_coverage_from_ci`.
+      - f. ~20× `analyze_*` mit dem LLM-Client.
+      - g. `analyze_sanity_check`.
+   2. `build_xlsx(...)` schreibt die Excel.
 6. (optional) `fill_pdf.main_for("team-shannon-alpha")`.
 7. (optional, am Ende) `build_overview.main()`.
 

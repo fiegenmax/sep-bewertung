@@ -19,20 +19,26 @@ Es zieht für jede Studi-Team-Gruppe das GitLab-Repo + Issues/MRs/Wiki/Releases,
 .
 ├── CLAUDE.md                       # Diese Datei
 ├── README.md                       # Quickstart für Menschen
+├── pyproject.toml                  # uv-Projekt (Deps + Konsolen-Befehl sep-bewertung)
+├── uv.lock                         # uv-Lockfile
 ├── .env                            # NIE COMMITTEN! Token + API-Key (Fallback: .gitlab-config)
 ├── .env.example                    # Committbares Template mit Platzhaltern
 ├── .gitignore
-├── Bewertungs-Methodik.md          # Methodik-Überblick (Legacy, siehe docs/)
-├── Template *.pdf                  # Original-Bewertungsbögen UDE
+├── assets/Templates/               # Leere Original-Bewertungsbögen UDE (Template *.pdf)
 ├── skripte/                        # Die Pipeline selbst
 │   ├── config.yaml                 # Konfigurierbare Schwellen für Heuristiken
-│   ├── team_mapping.json           # Lokaler Ordner → GitLab-Projekt
-│   ├── evaluate_team.py            # 20 Analysefunktionen (Heuristik + LLM)
+│   ├── team_mapping.json           # Lokaler Ordner → GitLab-Projekt (generiert, gitignored)
+│   ├── team_mapping.example.json   # Committbare Vorlage dazu
+│   ├── teams.example.txt           # Vorlage für die Team-Liste (gen_mapping.py)
+│   ├── gen_mapping.py              # team_mapping.json aus teams.txt + GitLab-API erzeugen
+│   ├── evaluate_team.py            # Analysefunktionen (Heuristik + LLM) + collect_results()
 │   ├── llm.py                      # Anthropic-API-Wrapper mit Disk-Cache
 │   ├── build_xlsx.py               # Excel-Generator
 │   ├── build_overview.py           # Übersicht über alle Teams
 │   ├── fill_pdf.py                 # PDF-Formular ausfüllen (optional)
-│   └── run_all.py                  # Master-Skript mit Flags
+│   ├── run_all.py                  # Master-Skript mit Flags
+│   ├── test_evaluate.py            # Tests für Heuristiken + Excel-Roundtrip
+│   └── test_gen_mapping.py         # Tests für gen_mapping
 ├── docs/                           # Detaillierte Doku
 │   ├── nutzung.md                  # Wie das Tool benutzt wird
 │   ├── funktionsweise.md           # Wie es intern funktioniert
@@ -190,7 +196,7 @@ Weitere config-Blöcke (alle mit Defaults == bisherigem Verhalten):
 
 ### Neue Analyse hinzufügen
 
-→ Funktion `analyze_xxx(...)` in `evaluate_team.py` schreiben, im `CATEGORIES`-Mapping einbinden, in `run_all.py` und `build_xlsx.py` aufrufen. Pattern beachten: `return {"criterion": "...", "max": N, "score": ..., "reason": ..., "details": {"llm_review": ...}}`.
+→ Funktion `analyze_xxx(...)` in `evaluate_team.py` schreiben, im `CATEGORIES`-Mapping einbinden und in `collect_results()` (in `evaluate_team.py`) aufrufen. `collect_results()` ist die zentrale Stelle, die alle `analyze_*`-Aufrufe bündelt — `run_all.py` und `build_xlsx.py` rufen beide nur noch `collect_results()` auf, du musst sie nicht mehr einzeln anfassen. Pattern beachten: `return {"criterion": "...", "max": N, "score": ..., "reason": ..., "details": {"llm_review": ...}}`.
 
 ### Neue LLM-Funktion
 

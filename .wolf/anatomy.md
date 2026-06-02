@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-02T14:30:38.960Z
-> Files: 2 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-02T14:46:58.263Z
+> Files: 4 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../tmp/
 
@@ -11,6 +11,8 @@
 
 ## ./
 
+- `CLAUDE.md` — OpenWolf (~3655 tok)
+- `README.md` — Project documentation (~925 tok)
 
 ## .claude/
 
@@ -23,14 +25,11 @@
 
 ## docs/
 
-- `bewertungskriterien.md` — Bewertungskriterien — was wird gemessen und warum (~4725 tok)
-- `funktionsweise.md` — Funktionsweise (~3079 tok)
-
-## docs/superpowers/plans/
-
-
-## docs/superpowers/specs/
-
+- `nutzung.md` — Praktische Bedienanleitung der Pipeline (~2900 tok)
+- `funktionsweise.md` — Interner Aufbau / Datenfluss (~3320 tok)
+- `bewertungskriterien.md` — Was jedes Kriterium misst und warum (~4725 tok)
+- `llm-integration.md` — LLM-Calls, Prompts, Kosten (~2100 tok)
+- `troubleshooting.md` — Häufige Probleme + Workarounds (~1900 tok)
 
 ## skripte/
 
