@@ -401,6 +401,32 @@ class TestConfigAccessors(unittest.TestCase):
         self.assertIn("node_modules", ev.get_vendor_dirs())
 
 
+class TestLlmSampling(unittest.TestCase):
+    """Alle LLM-Stichproben-Groessen kommen zentral aus config.yaml llm_sampling:
+    via llm_sample(key, default). Config-Wert gewinnt, sonst der Default."""
+
+    def setUp(self):
+        ev._LLM_SAMPLING_CACHE = None
+
+    def tearDown(self):
+        ev._LLM_SAMPLING_CACHE = None
+
+    def test_config_value_wins_else_default(self):
+        ev._LLM_SAMPLING_CACHE = {"commit_messages_count": 7}
+        self.assertEqual(ev.llm_sample("commit_messages_count", 20), 7)   # aus config
+        self.assertEqual(ev.llm_sample("tests_files", 6), 6)             # nicht gesetzt -> default
+
+    def test_non_int_config_falls_back_to_default(self):
+        ev._LLM_SAMPLING_CACHE = {"tests_files": "viele"}
+        self.assertEqual(ev.llm_sample("tests_files", 6), 6)
+
+    def test_real_config_has_block(self):
+        # config.yaml liefert den Block (nicht leer) und Default-Werte
+        ev._LLM_SAMPLING_CACHE = None
+        self.assertEqual(ev.llm_sample("tests_files", 99), 6)
+        self.assertEqual(ev.llm_sample("meeting_pages_count", 99), 3)
+
+
 class TestMultiLangLoc(unittest.TestCase):
     def setUp(self):
         ev._LANG_CACHE = None

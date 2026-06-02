@@ -621,3 +621,21 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 09:28 | Edited skripte/evaluate_team.py | modified _text_len() | ~362 |
 | 09:29 | Created skripte/_llm_audit_tmp.py | — | ~342 |
 | 09:31 | Live-Audit aller 11 LLM-Calls (fresh cache): alle ok, scale_max korrekt, Sonnet live bestaetigt. Fand+fixte meeting_docs-Sampling-Bug (wikis[:5] -> meeting_pages, datiert zuerst), bug-080 | evaluate_team.py, test_evaluate.py | LLM 0/1->1/1 live; 77 Tests gruen | ~70k |
+| 09:33 | Session end: 5 writes across 4 files (llm_audit.py, _llm_audit_tmp.py, test_evaluate.py, evaluate_team.py) | 4 reads | ~53004 tok |
+| 09:36 | Edited skripte/evaluate_team.py | modified thr() | ~406 |
+| 09:37 | Edited skripte/evaluate_team.py | 7→9 lines | ~108 |
+| 09:37 | Edited skripte/evaluate_team.py | 4→4 lines | ~57 |
+| 09:37 | Edited skripte/evaluate_team.py | modified strip() | ~162 |
+| 09:37 | Edited skripte/evaluate_team.py | 2→3 lines | ~60 |
+| 09:37 | Edited skripte/evaluate_team.py | modified items() | ~232 |
+| 09:37 | Edited skripte/evaluate_team.py | _tests_thr() → llm_sample() | ~29 |
+| 09:37 | Edited skripte/evaluate_team.py | modified strip() | ~157 |
+| 09:38 | Edited skripte/evaluate_team.py | 7→9 lines | ~182 |
+| 09:38 | Edited skripte/evaluate_team.py | 13→17 lines | ~262 |
+| 09:38 | Edited skripte/evaluate_team.py | 16→19 lines | ~278 |
+| 09:38 | Edited skripte/evaluate_team.py | 7→8 lines | ~94 |
+| 09:38 | Edited skripte/config.yaml | 8→4 lines | ~29 |
+| 09:39 | Edited skripte/config.yaml | expanded (+42 lines) | ~565 |
+| 09:39 | Edited skripte/test_evaluate.py | modified test_vendor_dirs_contains_node_modules() | ~344 |
+| 09:40 | Created skripte/_verify_sampling.py | — | ~367 |
+| 09:42 | Alle LLM-Sample-Groessen/Char-Caps zentral in config.yaml llm_sampling: + llm_sample()-Helper ausgelagert (9 Calls, ~22 Knoepfe); Defaults == bisher | evaluate_team.py, config.yaml, test_evaluate.py | 80 Tests gruen; Override-Flow live verifiziert (5->2) | ~45k |

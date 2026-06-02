@@ -114,6 +114,30 @@ def thr(path, default):
     return node
 
 
+_LLM_SAMPLING_CACHE = None
+
+
+def get_llm_sampling():
+    """Laedt (gecacht) den llm_sampling:-Block aus config.yaml. {} wenn nicht da."""
+    global _LLM_SAMPLING_CACHE
+    if _LLM_SAMPLING_CACHE is None:
+        cfg = (load_yaml_config() or {}).get("llm_sampling")
+        _LLM_SAMPLING_CACHE = cfg if isinstance(cfg, dict) and cfg else {}
+    return _LLM_SAMPLING_CACHE
+
+
+def llm_sample(key, default):
+    """Zentraler Zugriff auf Stichproben-Groessen/Laengen-Limits der LLM-Calls
+    (config.yaml llm_sampling:). Ein Ort fuer alle 'wie viele Items / wie viele
+    Zeichen gehen ans LLM'-Knoepfe. Default == bisheriges Verhalten; nur als int.
+    """
+    val = get_llm_sampling().get(key, default)
+    try:
+        return int(val)
+    except (TypeError, ValueError):
+        return default
+
+
 # ============================================================
 # Sprach-Registry / Tutoren / Vendor-Dirs (config-getrieben, Default == bisher)
 # ============================================================
@@ -666,9 +690,11 @@ def analyze_user_stories(issues, llm=None, sample_size=5):
     if llm and llm.enabled and us:
         import random
         random.seed(42)
-        sample = random.sample(us, min(sample_size, len(us)))
+        count = llm_sample("user_stories_count", sample_size)
+        chars = llm_sample("user_stories_chars", 600)
+        sample = random.sample(us, min(count, len(us)))
         sample_text = "\n\n---\n\n".join(
-            f"#{i['iid']}: {i['title']}\n{(i.get('description') or '')[:600]}"
+            f"#{i['iid']}: {i['title']}\n{(i.get('description') or '')[:chars]}"
             for i in sample
         )
         system = ("Du bewertest die inhaltliche Qualitaet von User Stories in einem Studi-SEP-Projekt. "
@@ -781,12 +807,14 @@ def analyze_meeting_docs(wikis, wiki_contents=None, llm=None):
 
         ordered = sorted(meeting_pages,
                          key=lambda t: (0 if date_re.search(t) else 1, -_text_len(t)))
+        n_pages = llm_sample("meeting_pages_count", 3)
+        page_chars = llm_sample("meeting_pages_chars", 1500)
         sample_contents = []
         for title in ordered:
             content = (wiki_contents or {}).get(title_to_slug.get(title, ""), "")
             if content.strip():
-                sample_contents.append(f"### {title}\n{content[:1500]}")
-            if len(sample_contents) >= 3:
+                sample_contents.append(f"### {title}\n{content[:page_chars]}")
+            if len(sample_contents) >= n_pages:
                 break
         if sample_contents:
             system = ("Du bewertest Wiki-Seiten als Meeting-Protokolle eines Studi-Teams. "
@@ -829,7 +857,8 @@ def analyze_release_changelog(releases, repo, llm=None):
                   "(1) Liste implementierter Features, (2) bekannte Probleme/Einschraenkungen, "
                   "(3) idealerweise geplante Features oder Roadmap. Score 0=schwach/Marketing-Text, "
                   "1=akzeptabel, 2=gut, 3=ausfuehrlich strukturiert.")
-        prompt = "Bewerte diese Release-Notes:\n\n" + wrap_student_content(desc[:3000])
+        prompt = ("Bewerte diese Release-Notes:\n\n"
+                  + wrap_student_content(desc[:llm_sample("release_notes_chars", 3000)]))
         llm_eval = llm.score(prompt, scale_max=3, system=system)
     # Zusatz: LLM-Check Release vs. tatsaechliche Features (ergaenzt llm_eval)
     rvf_eval = analyze_release_vs_features(releases, repo, llm) if llm and llm.enabled else None
@@ -1101,9 +1130,11 @@ def analyze_code_docs(repo, wikis, llm=None):
     # Optional: LLM checkt Code-Kommentar-Qualitaet
     llm_eval = None
     if llm and llm.enabled:
+        n_files = llm_sample("code_docs_files", 3)
+        file_chars = llm_sample("code_docs_chars", 1200)
         samples = []
         for ext, markers in ext_markers.items():
-            if not markers or len(samples) >= 3:
+            if not markers or len(samples) >= n_files:
                 continue
             for f in repo.rglob(f"*{ext}"):
                 if any(part in vendor for part in f.parts):
@@ -1113,8 +1144,8 @@ def analyze_code_docs(repo, wikis, llm=None):
                 except Exception:
                     continue
                 if any(m in txt for m in markers):
-                    samples.append(f"### {f.relative_to(repo)}\n```\n{txt[:1200]}\n```")
-                if len(samples) >= 3:
+                    samples.append(f"### {f.relative_to(repo)}\n```\n{txt[:file_chars]}\n```")
+                if len(samples) >= n_files:
                     break
         if samples:
             system = ("Du bewertest Code-Kommentare. Gut: erklaeren WARUM (Intention, "
@@ -1396,8 +1427,8 @@ def analyze_tests(repo, llm=None, coverage_pct=None):
         # (bug-076). Pro Datei grosszuegiger Ausschnitt, damit Tests nicht mitten in
         # einer Methode abgeschnitten werden und als 'unvollstaendig' fehlinterpretiert
         # werden (der alte 1500er-Cap war die Hauptquelle dafuer).
-        max_files = _tests_thr("llm_sample_files", "llm_sample_files", 6)
-        max_chars = _tests_thr("llm_sample_chars", "llm_sample_chars", 4000)
+        max_files = llm_sample("tests_files", 6)
+        max_chars = llm_sample("tests_chars", 4000)
         samples = []
         for f in _select_test_sample_files(repo, max_files=max_files):
             try:
@@ -1722,9 +1753,12 @@ def analyze_code_reviews(mrs, token, project_id, llm=None):
     llm_eval = None
     if llm and llm.enabled and with_human_note > 0:
         # Sammle einige echte Review-Notes
+        scan_count = llm_sample("code_reviews_scan_count", 20)
+        sample_count = llm_sample("code_reviews_sample_count", 5)
+        note_chars = llm_sample("code_reviews_chars", 400)
         review_notes = []
-        for m in merged_mrs[:20]:
-            if len(review_notes) >= 5:
+        for m in merged_mrs[:scan_count]:
+            if len(review_notes) >= sample_count:
                 break
             iid = m["iid"]
             author = (m.get("author") or {}).get("username")
@@ -1736,7 +1770,7 @@ def analyze_code_reviews(mrs, token, project_id, llm=None):
                             and (n2.get("author") or {}).get("username") != author):
                         body = (n2.get("body") or "").strip()
                         if len(body) > 10:
-                            review_notes.append(f"!{iid}: {body[:400]}")
+                            review_notes.append(f"!{iid}: {body[:note_chars]}")
                             break
             except Exception:
                 pass
@@ -1983,7 +2017,7 @@ def analyze_commit_substance(repo, llm=None):
         return None
     import random
     random.seed(42)
-    sample = random.sample(out, min(20, len(out)))
+    sample = random.sample(out, min(llm_sample("commit_messages_count", 20), len(out)))
     prompt = ("Hier sind " + str(len(sample)) + " Commit-Messages:\n\n"
               + wrap_student_content("\n".join("- " + m for m in sample)))
     system = ("Du bewertest Commit-Messages eines Studi-Projekts. "
@@ -2015,17 +2049,21 @@ def analyze_issue_vs_code(issues, mrs, token, project_id, llm=None,
         return None
     import random
     random.seed(42)
-    sample = random.sample(pairs, min(sample_size, len(pairs)))
+    sample = random.sample(pairs, min(llm_sample("issue_vs_code_pairs", sample_size), len(pairs)))
+    diff_files = llm_sample("issue_vs_code_files", 8)
+    diff_chars = llm_sample("issue_vs_code_diff_chars", 1500)
+    total_chars = llm_sample("issue_vs_code_total_chars", 6000)
+    story_chars = llm_sample("issue_vs_code_story_chars", 1500)
     parts = []
     for story, mr in sample:
         try:
             changes = api_get("/projects/" + str(project_id) + "/merge_requests/" + str(mr["iid"]) + "/changes", token)
             diff_text = ""
-            for ch in (changes.get("changes") or [])[:8]:
-                diff = ch.get("diff", "")[:1500]
+            for ch in (changes.get("changes") or [])[:diff_files]:
+                diff = ch.get("diff", "")[:diff_chars]
                 diff_text += "--- " + str(ch.get("new_path", "?")) + "\n" + diff + "\n"
-            diff_text = diff_text[:6000]
-            story_desc = (story.get("description") or "")[:1500]
+            diff_text = diff_text[:total_chars]
+            story_desc = (story.get("description") or "")[:story_chars]
             parts.append(
                 "=== User Story #" + str(story["iid"]) + ": " + story["title"] + " ===\n" +
                 story_desc + "\n\n=== MR !" + str(mr["iid"]) + ": " + mr["title"] + " ===\n" +
@@ -2053,11 +2091,13 @@ def analyze_release_vs_features(releases, repo, llm=None):
     desc = releases[0].get("description") or ""
     if not desc.strip():
         return None
-    commits = run(["git", "log", "main", "--no-merges", "-50", "--pretty=format:%s"], repo).stdout
+    n_commits = "-" + str(llm_sample("release_commits_count", 50))
+    commits = run(["git", "log", "main", "--no-merges", n_commits, "--pretty=format:%s"], repo).stdout
     if not commits.strip():
-        commits = run(["git", "log", "--all", "--no-merges", "-50", "--pretty=format:%s"], repo).stdout
+        commits = run(["git", "log", "--all", "--no-merges", n_commits, "--pretty=format:%s"], repo).stdout
     prompt = "Vergleiche Release-Notes mit den tatsaechlichen Commits:\n\n" + wrap_student_content(
-        "=== Release-Notes ===\n" + desc[:3000] + "\n\n=== Letzte Commit-Messages ===\n" + commits)
+        "=== Release-Notes ===\n" + desc[:llm_sample("release_notes_chars", 3000)]
+        + "\n\n=== Letzte Commit-Messages ===\n" + commits)
     system = ("Du vergleichst Release-Notes mit tatsaechlichen Commits. "
               "Score 0=Notes versprechen Features die in Commits fehlen (Marketing), "
               "1=teilweise konsistent, 2=Notes passen gut, 3=sehr ehrlich.")
@@ -2068,12 +2108,14 @@ def analyze_branching_pattern(repo, mrs, llm=None):
     """LLM: erkennbarer Git-Workflow?"""
     if not (llm and llm.enabled):
         return None
+    n_branches = llm_sample("branching_branches_count", 40)
+    n_mrs = llm_sample("branching_mrs_count", 30)
     branches = run(["git", "branch", "-a"], repo).stdout.splitlines()
-    branches = [b.strip().replace("remotes/", "") for b in branches[:50] if b.strip()]
+    branches = [b.strip().replace("remotes/", "") for b in branches if b.strip()]
     mr_titles = ["!" + str(m["iid"]) + ": " + m["title"] + " (target=" + str(m.get("target_branch")) + ")"
-                 for m in mrs[:30]]
+                 for m in mrs[:n_mrs]]
     prompt = "Beurteile den Git-Workflow anhand dieser Daten:\n\n" + wrap_student_content(
-        "=== Remote-Branches ===\n" + "\n".join(branches[:40])
+        "=== Remote-Branches ===\n" + "\n".join(branches[:n_branches])
         + "\n\n=== Letzte MR-Titel ===\n" + "\n".join(mr_titles))
     system = ("Bewerte ob ein konsistenter Git-Workflow erkennbar ist. "
               "Erkenntnistypen: GitFlow, GitHub Flow, Trunk-Based, Chaos. "
@@ -2085,13 +2127,14 @@ def analyze_sanity_check(results, llm=None):
     """LLM: konsistenzcheck der Gesamtbewertung."""
     if not (llm and llm.enabled):
         return None
+    reason_chars = llm_sample("sanity_reason_chars", 400)
     summary = []
     total_score = 0
     total_max = 0
     for r in results:
         if r.get("max", 0) > 0:
             summary.append("- " + r["criterion"] + ": " + str(r["score"]) + "/" + str(r["max"])
-                           + " | " + r["reason"][:400])
+                           + " | " + r["reason"][:reason_chars])
             total_score += r["score"]
             total_max += r["max"]
     if not summary:

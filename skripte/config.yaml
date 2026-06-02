@@ -12,10 +12,52 @@ llm:
   max_tokens: 400
   # Cache-TTL in Tagen - LLM-Antworten werden gecached, um Kosten zu sparen
   cache_ttl_days: 7
-  # Max Anzahl Samples pro Analyse (z.B. wieviele User Stories der LLM zur Bewertung gegeben werden)
+  # Globaler Default fuer die User-Stories-Stichprobe (von llm_sampling.user_stories_count
+  # ueberschrieben, falls dort gesetzt). Siehe llm_sampling: unten fuer alle Knoepfe.
   sample_size: 5
   # Sampling-Temperatur fuer reproduzierbare Scores (0 = deterministisch)
   temperature: 0
+
+# ----------------------------------------------------------------------------
+# Stichproben-Groessen und Laengen-Limits ALLER LLM-Zweitmeinungen an EINEM Ort.
+# Hier schnell justieren, wie viel Datengrundlage jeder LLM-Call bekommt
+# (Kosten/Granularitaet). Alle Defaults == bisheriges Verhalten.
+#   *_count / *_files / *_pairs = Anzahl Items, die ans LLM gehen
+#   *_chars                     = max. Zeichen pro Item (laengeres wird gekuerzt)
+# ----------------------------------------------------------------------------
+llm_sampling:
+  # User Stories (Qualitaets-Check, Haiku)
+  user_stories_count: 5
+  user_stories_chars: 600
+  # Commit-Messages (Substanz-Check, Haiku)
+  commit_messages_count: 20
+  # Wiki-/Meeting-Protokolle (Haiku)
+  meeting_pages_count: 3
+  meeting_pages_chars: 1500
+  # Release-Notes (Substanz + Notes-vs-Commits, Haiku)
+  release_notes_chars: 3000
+  release_commits_count: 50
+  # Code-Kommentare (Haiku)
+  code_docs_files: 3
+  code_docs_chars: 1200
+  # Test-Dateien (Haiku) - groessen-/sprachgewichtete Stichprobe
+  tests_files: 6
+  tests_chars: 4000
+  # Issue <-> Code: Story/MR-Diff-Abgleich (Sonnet, teurer -> sparsam halten)
+  issue_vs_code_pairs: 4
+  issue_vs_code_files: 8
+  issue_vs_code_diff_chars: 1500
+  issue_vs_code_total_chars: 6000
+  issue_vs_code_story_chars: 1500
+  # Branching-Workflow (Haiku)
+  branching_branches_count: 40
+  branching_mrs_count: 30
+  # Code-Review-Substanz (Haiku)
+  code_reviews_scan_count: 20    # wie viele MRs nach Review-Notes durchsucht werden
+  code_reviews_sample_count: 5   # wie viele Review-Kommentare ans LLM gehen
+  code_reviews_chars: 400
+  # Sanity-Check der Gesamtbewertung (Haiku)
+  sanity_reason_chars: 400
 
 # Schwellen pro Kriterium
 thresholds:
@@ -60,10 +102,6 @@ thresholds:
     big_substantive_for_sixth: 10
     big_methods_for_seventh: 50
     big_substantive_for_seventh: 8
-    # LLM-Stichprobe fuer die Test-Qualitaets-Zweitmeinung: groessen-gewichtet und
-    # sprachgemischt ausgewaehlt (nicht die ersten N in Pfad-Reihenfolge).
-    llm_sample_files: 6       # Anzahl Test-Dateien an den LLM
-    llm_sample_chars: 4000    # Zeichen pro Datei (grosszuegig, kein Methoden-Abschnitt)
 
   release_executable:
     min_release_notes_chars: 500
