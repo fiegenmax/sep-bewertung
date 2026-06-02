@@ -1748,6 +1748,22 @@
       "related_bugs": [],
       "occurrences": 2,
       "last_seen": "2026-06-02T14:46:58.288Z"
+    },
+    {
+      "id": "bug-104",
+      "timestamp": "2026-06-02T14:54:36.083Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/bewertungskriterien.md",
+      "root_cause": "11 lines replaced/restructured",
+      "fix": "Rewrote 13→14 lines (11 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T14:54:36.083Z"
     }
   ]
 }

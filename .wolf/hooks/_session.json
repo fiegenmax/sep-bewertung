@@ -56,6 +56,16 @@
       "count": 1,
       "tokens": 0,
       "first_read": "2026-06-02T14:45:03.364Z"
+    },
+    "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/config.yaml": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-06-02T14:52:27.664Z"
+    },
+    "c:/Users/maxfi/Documents/git/sep-bewertung/skripte/evaluate_team.py": {
+      "count": 4,
+      "tokens": 0,
+      "first_read": "2026-06-02T14:52:28.367Z"
     }
   },
   "files_written": [
@@ -100,16 +110,23 @@
       "action": "edit",
       "tokens": 148,
       "at": "2026-06-02T14:46:58.282Z"
+    },
+    {
+      "file": "c:/Users/maxfi/Documents/git/sep-bewertung/docs/bewertungskriterien.md",
+      "action": "edit",
+      "tokens": 469,
+      "at": "2026-06-02T14:54:36.078Z"
     }
   ],
   "edit_counts": {
     "CLAUDE.md": 2,
     "README.md": 1,
-    "docs/funktionsweise.md": 4
+    "docs/funktionsweise.md": 4,
+    "docs/bewertungskriterien.md": 1
   },
   "anatomy_hits": 2,
-  "anatomy_misses": 9,
-  "repeated_reads_warned": 2,
+  "anatomy_misses": 11,
+  "repeated_reads_warned": 5,
   "cerebrum_warnings": 0,
   "stop_count": 0
 }

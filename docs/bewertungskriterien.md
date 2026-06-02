@@ -133,19 +133,20 @@ Die zwei Scores werden gemittelt.
 
 ### Code sauber/ohne größere Mängel (0–1)
 
-**Was misst die Heuristik:** Eine Liste von Negativ-Checks. Wenn auch nur einer zutrifft → 0.
-- `node_modules/` im Git-Index
-- Build-Artefakte (`dist/`, `target/`, `build/`, `out/`, `.gradle/`, `.idea/`)
-- IDE-Configs (`.idea/`, `.vscode/`, `*.iml`)
-- OS-Cruft (`.DS_Store`, `Thumbs.db`)
-- Debug-/Log-Dateien (`merge-debug.txt`, `debug.log`, `*.log`)
-- Binaries >5 MB
-- >20 TODOs/FIXMEs im Code
-- Keine Lint-Config UND keine `.editorconfig`
+**Was misst die Heuristik:** Eine Liste von Negativ-Checks. Sobald **einer** auslöst → 0. Die meisten lösen schon bei der ersten Fundstelle aus, zwei haben aber eine kleine Toleranz (konfigurierbar unter `thresholds.repo_hygiene`):
 
-**Warum so:** Das sind alles klassische "wurde nicht aufgeräumt"-Indikatoren. Bei studentischen Repos kommen sie regelmäßig vor und sind ein guter Negativ-Hint.
+- `node_modules/` im Git-Index — löst ab **1** Datei aus
+- Build-Artefakte (`dist/`, `target/`, `build/`, `out/`, `.gradle/`, `.idea/`) — erst ab **>5** Dateien (`max_build_artifacts`)
+- IDE-Configs (`.idea/`, `.vscode/`, `*.iml`) — erst ab **>3** Dateien (`max_ide_configs`)
+- OS-Cruft (`.DS_Store`, `Thumbs.db`) — ab **1**
+- Debug-/Log-Dateien (`merge-debug.txt`, `debug.log`, `*.log`) — ab **1**
+- Binaries >5 MB (`large_binary_mb`) — ab **1** (Scan auf die ersten 500 getrackten Dateien begrenzt)
+- **>20** TODO/FIXME/XXX/HACK-Marker (`max_todos`) — **nur in `*.java`/`*.ts` gezählt** (je erste 300 Dateien), nicht sprachunabhängig
+- Keine Lint-Config (`.eslintrc*`/`eslint.config.*`/`.prettierrc*`/`checkstyle.xml`) UND keine `.editorconfig`
 
-**Blinde Flecken:** Die Heuristik gibt 0/1 — kein Halbwert. Ein Repo mit nur einer .DS_Store-Datei bekommt die gleiche Bewertung wie eins mit 100MB node_modules + 200 TODOs.
+**Warum so:** Das sind alles klassische "wurde nicht aufgeräumt"-Indikatoren. Bei studentischen Repos kommen sie regelmäßig vor und sind ein guter Negativ-Hint. Die Toleranz bei Build-Artefakten/IDE-Configs federt vereinzelte Fehl-Commits ab, ohne ein systematisch unsauberes Repo durchzulassen.
+
+**Blinde Flecken:** Die Heuristik gibt 0/1 — kein Halbwert. Ein Repo mit nur einer .DS_Store-Datei bekommt die gleiche Bewertung wie eins mit 100 MB node_modules + 200 TODOs. Und: Der TODO-Zähler ist Java/TS-spezifisch — ein reines Python-/Go-Team wird bei TODOs nicht erfasst (die übrigen Checks sind dagegen `git ls-files`-basiert und damit sprachunabhängig).
 
 ### Tests vorhanden und sinnvoll (0–7)
 

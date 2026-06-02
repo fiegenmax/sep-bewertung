@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-02T14:46:58.263Z
-> Files: 4 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-02T14:54:36.060Z
+> Files: 7 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../tmp/
 
@@ -25,10 +25,10 @@
 
 ## docs/
 
-- `nutzung.md` — Praktische Bedienanleitung der Pipeline (~2900 tok)
+- `bewertungskriterien.md` — Bewertungskriterien — was wird gemessen und warum (~4941 tok)
 - `funktionsweise.md` — Interner Aufbau / Datenfluss (~3320 tok)
-- `bewertungskriterien.md` — Was jedes Kriterium misst und warum (~4725 tok)
 - `llm-integration.md` — LLM-Calls, Prompts, Kosten (~2100 tok)
+- `nutzung.md` — Praktische Bedienanleitung der Pipeline (~2900 tok)
 - `troubleshooting.md` — Häufige Probleme + Workarounds (~1900 tok)
 
 ## skripte/

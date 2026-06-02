@@ -752,3 +752,4 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 16:46 | Edited docs/funktionsweise.md | 30→35 lines | ~435 |
 | 16:46 | Edited docs/funktionsweise.md | 9→10 lines | ~139 |
 | 16:47 | Doku-Aufräumen: 8 veraltete Docs gelöscht (Bewertungs-Methodik, befundbericht, review-fix-plan, 5x superpowers), CLAUDE.md/README/funktionsweise/anatomy auf aktuellen Stand (collect_results, gen_mapping, Zeilenzahlen) | docs/, CLAUDE.md, README.md, .wolf/anatomy.md | done | ~1500 |
+| 16:54 | Edited docs/bewertungskriterien.md | modified Toleranz() | ~438 |
