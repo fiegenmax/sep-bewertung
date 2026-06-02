@@ -43,13 +43,13 @@ Davon sind 4 Punkte (Team-Organisation 2 + Selbstständigkeit 2) ausschließlich
 ### Verständliche Commit-Messages (0–1)
 
 **Was misst die Heuristik:**
-- Ø-Länge ohne Merge-Commits ≥ 25 Zeichen
+- Ø-Länge ohne Merge-Commits ≥ 35 Zeichen
 - Anteil trivialer Messages ("fix", "update", "wip") < 15%
 - Anteil sehr kurzer Messages (<8 Zeichen) < 10%
 
 **Schwellen:** Alle drei müssen erfüllt sein für 1 Punkt.
 
-**Warum so:** 25 Zeichen reicht für "Add user authentication" oder ähnliche aussagekräftige Messages. 15%/10% Toleranzen erlauben einzelne "fix typo"-Commits ohne Punktabzug.
+**Warum so:** 35 statt 25 Zeichen, weil alle SS26-Teams im Schnitt bei 39–48 Zeichen lagen — 25 filterte nichts. 35 trennt knappe von ausführlichen Messages. 15%/10% Toleranzen erlauben einzelne "fix typo"-Commits ohne Punktabzug.
 
 **LLM ergänzt:** Sample von 20 zufälligen Commits → bewertet ob sie WAS UND WARUM beschreiben oder nur WAS. Score 0–3.
 
@@ -120,10 +120,10 @@ Die zwei Scores werden gemittelt.
 **Was misst die Heuristik (additiv, Summe gedeckelt bei 5):**
 - Top-Level-README ≥500 Zeichen und nicht die GitLab-Default-Vorlage: +1
 - Sub-READMEs (z.B. in backend/frontend) ≥1000 Zeichen gesamt: +1
-- ≥3 substantielle Wiki-Seiten: +1, ≥8 Seiten: +2 (gestaffelt, nicht additiv)
+- ≥3 substantielle Wiki-Seiten: +1, ≥15 Seiten: +2 (gestaffelt, nicht additiv)
 - OpenAPI/Swagger-Spec im Repo gefunden (Java-Annotationen ODER `openapi.{yaml,yml,json}`/`swagger.{yaml,yml,json}`): +1
 - **Datenbankschema dokumentiert: +1** — `_detect_db_schema` erkennt `*.sql`, `*.prisma`, Liquibase-Changelogs, ein `migrations/`-Verzeichnis mit Inhalt, oder ORM-Entities/Models (`@Entity`, `@Table(`, Django `models.Model`, SQLAlchemy `declarative_base`). Das PDF nennt "Datenbankschemata" explizit.
-- Inline-Kommentar-Anteil ≥5% **über alle erkannten Sprachen** (Comment-Marker je Sprache aus der Registry, nicht mehr nur Java): +1
+- Inline-Kommentar-Anteil ≥10% **über alle erkannten Sprachen** (Comment-Marker je Sprache aus der Registry, nicht mehr nur Java): +1
 
 **Warum so:** Gute Doku hat mehrere Quellen. Die Punkte sind so verteilt dass weder reines Wiki noch reines Code-Kommentar volle Punktzahl gibt — der Mix wird belohnt. Da 6 Signale auf max 5 gedeckelt sind, genügt es, einige davon abzudecken.
 
@@ -152,18 +152,18 @@ Die zwei Scores werden gemittelt.
 **Was misst die Heuristik (additiv, max 7, sprachunabhängig über die Registry):**
 Aggregiert über alle Sprachen (`test_globs`/`test_markers` je Sprache): Gesamtzahl Test-Dateien, davon **substantielle** (>1 primärer Test-Marker), und Gesamtzahl Test-Methoden/-Fälle.
 - ≥5 Test-Dateien insgesamt: +1
-- ≥15 Test-Dateien: +1
+- ≥25 Test-Dateien: +1
 - ≥5 substantielle Test-Dateien: +1
-- ≥30 Test-Methoden/-Fälle insgesamt: +1
-- ≥3 substantielle Test-Dateien: +1
-- ≥10 substantielle Test-Dateien: +1
-- ≥50 Methoden/-Fälle UND ≥8 substantielle Test-Dateien: +1
+- ≥80 Test-Methoden/-Fälle insgesamt: +1
+- ≥8 substantielle Test-Dateien: +1
+- ≥18 substantielle Test-Dateien: +1
+- ≥130 Methoden/-Fälle UND ≥22 substantielle Test-Dateien: +1
 
-**Coverage-Boost:** Wenn CI Coverage reportet:
+**Coverage-Boost:** Wenn CI Coverage reportet (Schwellen konfigurierbar via `tests.coverage_bonus_min` / `coverage_penalty_max`):
 - ≥80%: +1 (capped bei max 7)
 - <30%: -1 (mindestens 2)
 
-**Warum so:** Reine Anzahl kann Stubs zählen, deshalb der Substanz-Filter: substantiell = **mehr als ein** primärer Test-Marker (erster Eintrag der Sprache: `@Test` / `def test_` / `func Test` / `it(`). Das filtert generierte 1-Test-Stubs (z.B. Angulars "should create") heraus. Coverage liefert das fehlende Substanz-Signal.
+**Warum so (Kalibrierung SS26):** Die oberen Stufen wurden ~2–4× angehoben, weil mit den alten Schwellen **alle** Teams 7/7 erreichten (23–32 Dateien, 107–157 Methoden), das LLM aber nur 0–2/7 vergab — die Skala war oben „durchgebrannt". Die Heuristik **zählt** nur (Datei/Methode), sie misst keine Qualität; der Substanz-Filter (substantiell = **mehr als ein** primärer Test-Marker: `@Test` / `def test_` / `func Test` / `it(`) hält 1-Test-Stubs (z.B. Angulars "should create") raus, aber die eigentliche Qualitätsaussage tragen Coverage und die LLM-Spalte.
 
 **LLM ergänzt:** Sample von bis zu 5 Test-Dateien (sprachunabhängig) → beurteilt: nur Happy Path oder auch Edge Cases / Error-Pfade? Score 0–3.
 
@@ -189,8 +189,10 @@ Im Excel steht prominent in der Begründung: "WICHTIG - MANUELLE PRÜFUNG ZWINGE
 ### Sprint-Ziele erreicht (0–1)
 
 **Was misst die Heuristik:**
-- ≥50% aller Issues geschlossen
+- ≥65% aller Issues geschlossen
 - UND ≥60% der `priority::must`-Issues geschlossen
+
+> Hinweis: Die Heuristik misst hier nur **Issue-Abschluss**, nicht echte Ziel­erreichung (Issues schließen ≠ Sprintziel erreicht). Die Lücke ist semantisch, nicht nur eine Schwelle — im Zweifel der LLM-Spalte (D) mehr Gewicht geben.
 
 **Warum so:** Die Must-Quote ist wichtiger als die Gesamt-Quote — wenn nur Could/Should-Issues offen sind, ist das okay.
 

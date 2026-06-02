@@ -58,7 +58,7 @@ Die Kriterien folgen exakt dem PDF "Prüfungsprotokoll (Artefakte)". Pro Kriteri
 Analysiert alle Issues mit Label `type::userstory`. Geprüft wird, ob sie das *"As a … I want … so that …"*-Format einhalten und eine Akzeptanzkriterien-Sektion enthalten. Schwelle: ≥85% beider Merkmale → 3 P.; ≥50% beider → 2 P.; ≥5 Stories vorhanden → 1 P.; sonst 0. Zusätzlich wird ausgegeben, wie viele Stories ein Story-Weight (Schätzung) haben — nur als Info, fließt nicht in den Score ein.
 
 **Verständliche Commit-Messages (0–1)**
-Durchschnittliche Länge der Commits (ohne Merges) muss ≥25 Zeichen sein. Triviale Messages (`"fix"`, `"update"`, `"wip"` etc.) dürfen <15% ausmachen. Sehr kurze (<8 Zeichen) <10%.
+Durchschnittliche Länge der Commits (ohne Merges) muss ≥35 Zeichen sein. Triviale Messages (`"fix"`, `"update"`, `"wip"` etc.) dürfen <15% ausmachen. Sehr kurze (<8 Zeichen) <10%.
 
 **Team-Meetings dokumentiert (0–1)**
 Wiki-Seiten mit Datums-Titel (z.B. `18.05.2026`) oder Schlüsselwörtern (`meeting`, `sprint`, `besprechung`, `protokoll`). Zusätzlich wird der Inhalt geprüft: nur Seiten mit >150 Zeichen reinem Text (Bilder/Uploads rausgerechnet) zählen als "substantiell". ≥2 substantielle Seiten → 1 P.
@@ -89,9 +89,9 @@ Negativ-Checks auf Git-Tracked-Files: `node_modules/`, Build-Artefakte (`dist/`,
 
 **Tests vorhanden und sinnvoll (0–7)**
 Heuristik auf 7 Stufen, additiv:
-- ≥5 / ≥15 Test-Dateien → +1 / +1
+- ≥5 / ≥25 Test-Dateien → +1 / +1
 - ≥5 substantielle Java-Test-Klassen → +1
-- ≥30 / ≥50 `@Test`-Methoden → +1 / +1
+- ≥80 / ≥130 `@Test`-Methoden → +1 / +1
 - ≥3 substantielle Angular-Specs (nicht nur Default-Stubs!) → +1
 - Wenn beide Welten viele substantielle Tests haben → +1
 

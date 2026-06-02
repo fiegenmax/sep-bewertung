@@ -192,6 +192,15 @@ class TestEpicLinksFetch(unittest.TestCase):
 
 
 class TestSprintGoals(unittest.TestCase):
+    # Schwellen explizit pinnen, damit der Test die LOGIK prueft und nicht am
+    # config-Default haengt (min_closed_ratio wurde spaeter auf 0.65 angehoben).
+    def setUp(self):
+        ev._THRESHOLDS_CACHE = {"sprint_goals": {"min_closed_ratio": 0.5,
+                                                 "min_must_closed_ratio": 0.6}}
+
+    def tearDown(self):
+        ev._THRESHOLDS_CACHE = None
+
     def test_pass(self):
         issues = []
         # 5 must-Issues: 4 closed, 1 open
@@ -859,6 +868,52 @@ class TestStaffDomainFlag(unittest.TestCase):
         self.assertIn("manuell prüfen", res["reason"])
         self.assertIn("Niermann", res["reason"])
         self.assertEqual(res["details"]["git_authors"], 1)  # nur Alice zaehlt als Autor
+
+
+class TestCoverageThresholds(unittest.TestCase):
+    """Die CI-Coverage-Schwellen sind konfigurierbar (tests.coverage_bonus_min /
+    coverage_penalty_max); frueher waren 80/30 hartcodiert."""
+
+    def setUp(self):
+        ev._LANG_CACHE = None
+        ev._VENDOR_CACHE = None
+        self.tmp = Path(tempfile.mkdtemp())
+        for n in ("test_a.py", "test_b.py"):  # je 2 Testfaelle -> substanziell
+            (self.tmp / n).write_text(
+                "def test_x():\n assert 1\n\ndef test_y():\n assert 2\n", encoding="utf-8")
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+        ev._THRESHOLDS_CACHE = None
+
+    def _thr(self, bonus, penalty):
+        # Niedrige Stufen -> Basisscore 5 (zwischen 2 und 7, damit Bonus UND Penalty greifen).
+        return {"tests": {
+            "files_for_first_point": 1, "files_for_second_point": 2,
+            "substantive_for_third": 1, "methods_for_fourth": 2,
+            "substantive_for_fifth": 1, "big_substantive_for_sixth": 99,
+            "big_methods_for_seventh": 99, "big_substantive_for_seventh": 99,
+            "coverage_bonus_min": bonus, "coverage_penalty_max": penalty,
+        }}
+
+    def test_bonus_at_configured_threshold(self):
+        ev._THRESHOLDS_CACHE = self._thr(bonus=85, penalty=30)
+        base = ev.analyze_tests(self.tmp, llm=None, coverage_pct=None)["score"]
+        boosted = ev.analyze_tests(self.tmp, llm=None, coverage_pct=85)["score"]
+        self.assertEqual(boosted, min(7, base + 1))
+
+    def test_no_bonus_below_configured_threshold(self):
+        ev._THRESHOLDS_CACHE = self._thr(bonus=90, penalty=30)
+        base = ev.analyze_tests(self.tmp, llm=None, coverage_pct=None)["score"]
+        same = ev.analyze_tests(self.tmp, llm=None, coverage_pct=85)["score"]  # 85 < 90
+        self.assertEqual(same, base)
+
+    def test_penalty_at_configured_threshold(self):
+        ev._THRESHOLDS_CACHE = self._thr(bonus=80, penalty=50)
+        base = ev.analyze_tests(self.tmp, llm=None, coverage_pct=None)["score"]
+        self.assertGreater(base, 2)
+        penalized = ev.analyze_tests(self.tmp, llm=None, coverage_pct=40)["score"]  # 40 < 50
+        self.assertEqual(penalized, max(2, base - 1))
 
 
 class TestJobCoverage(unittest.TestCase):

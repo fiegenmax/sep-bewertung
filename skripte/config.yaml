@@ -71,7 +71,9 @@ thresholds:
     min_stories_for_one: 5
 
   commit_messages:
-    min_avg_length: 25
+    # 35 statt 25: alle SS26-Teams lagen bei 39-48 Zeichen Schnitt -> 25 filterte
+    # nichts. 35 spreizt knappe von ausfuehrlichen Messages.
+    min_avg_length: 35
     max_trivial_ratio: 0.15
     max_very_short_ratio: 0.10
 
@@ -90,24 +92,41 @@ thresholds:
     min_top_readme_chars: 500
     min_subreadme_chars: 1000
     wiki_pages_for_one_point: 3
-    wiki_pages_for_two_points: 8
-    min_inline_comment_ratio: 0.05
+    # 15 statt 8: SS26-Teams hatten 8-42 Wiki-Seiten -> der 2-Punkte-Bonus war zu
+    # leicht. Hebt die Latte fuer "umfangreiche Doku".
+    wiki_pages_for_two_points: 15
+    # 0.10 statt 0.05: 5% Inline-Kommentare sind sehr wenig; gute Teams liegen
+    # deutlich darueber (SS26 z.B. 18.7%).
+    min_inline_comment_ratio: 0.10
 
   tests:
+    # Obere Stufen ~2-4x angehoben: ALLE SS26-Teams erreichten 7/7 (23-32 Dateien,
+    # 107-157 Methoden, 14-27 substanziell), das LLM gab dagegen nur 0-2/7. Die
+    # alte Skala war oben "durchgebrannt" und konnte gute nicht von schwachen
+    # Test-Suiten trennen. HINWEIS: Die Heuristik ZAEHLT nur (Datei/Methode), sie
+    # misst keine Qualitaet -> die Coverage-Schwellen unten und die LLM-Spalte
+    # tragen die eigentliche Qualitaetsaussage.
     files_for_first_point: 5
-    files_for_second_point: 15
+    files_for_second_point: 25      # war 15
     substantive_for_third: 5
-    methods_for_fourth: 30
-    substantive_for_fifth: 3
-    big_substantive_for_sixth: 10
-    big_methods_for_seventh: 50
-    big_substantive_for_seventh: 8
+    methods_for_fourth: 80          # war 30
+    substantive_for_fifth: 8        # war 3
+    big_substantive_for_sixth: 18   # war 10
+    big_methods_for_seventh: 130    # war 50
+    big_substantive_for_seventh: 22 # war 8
+    # CI-Coverage-Schwellen (frueher hartcodiert): >= bonus -> +1 Punkt (max 7),
+    # < penalty -> -1 Punkt (min 2). Nur wirksam, wenn die CI Coverage liefert.
+    coverage_bonus_min: 80
+    coverage_penalty_max: 30
 
   release_executable:
     min_release_notes_chars: 500
 
   sprint_goals:
-    min_closed_ratio: 0.5
+    # 0.65 statt 0.5: leichte Schaerfung. ACHTUNG - hier ist die Heuristik-vs-LLM-
+    # Luecke SEMANTISCH (Issues schliessen != Sprintziel erreicht), nicht nur eine
+    # Schwelle. Im Zweifel der LLM-Spalte (D) mehr Gewicht geben als Spalte C.
+    min_closed_ratio: 0.65
     min_must_closed_ratio: 0.6
 
   work_scope:

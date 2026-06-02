@@ -1455,6 +1455,77 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-06-02"
+    },
+    {
+      "id": "bug-087",
+      "timestamp": "2026-06-02T08:28:03.565Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/config.yaml",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 6→10 lines (2 removed) | Also: files_for_second_point: 15; methods_for_fourth: 30",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "yaml"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-02T08:28:18.961Z"
+    },
+    {
+      "id": "bug-088",
+      "timestamp": "2026-06-02T08:28:34.784Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/evaluate_team.py",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 6→8 lines (4 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T08:28:34.784Z"
+    },
+    {
+      "id": "bug-089",
+      "timestamp": "2026-06-02T08:32:44.070Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/bewertungskriterien.md",
+      "root_cause": "7 lines replaced/restructured",
+      "fix": "Rewrote 13→13 lines (7 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T08:32:44.070Z"
+    },
+    {
+      "id": "bug-087",
+      "timestamp": "2026-06-02",
+      "error_message": "Kalibrierung: 'Tests' (7/7) und 'Code dokumentiert' (5/5) waren bei allen 6 SS26-Teams gesaettigt, das LLM gab dagegen 0-2; commit_messages/sprint_goals filterten faktisch nichts. Gesaettigte Kriterien tragen 0 Information zur Note bei.",
+      "file": "skripte/config.yaml, skripte/evaluate_team.py",
+      "root_cause": "Heuristik-Schwellen zu niedrig kalibriert (obere Test-Stufen 3-5x unter den realen Team-Werten von 107-157 Methoden; wiki_pages_for_two=8 bei 8-42 Seiten; min_avg_length=25 bei 39-48 Schnitt). Coverage-Bonus/Penalty waren mit 80/30 hartcodiert (nicht konfigurierbar).",
+      "fix": "config.yaml: tests obere Stufen ~2-4x angehoben (files_for_second 15->25, methods_for_fourth 30->80, substantive_for_fifth 3->8, big_substantive_for_sixth 10->18, big_methods_for_seventh 50->130, big_substantive_for_seventh 8->22); code_docs wiki_pages_for_two 8->15, min_inline_comment_ratio 0.05->0.10; commit_messages min_avg_length 25->35; sprint_goals min_closed_ratio 0.5->0.65. evaluate_team.analyze_tests: Coverage-Schwellen via _tests_thr('coverage_bonus_min'/'coverage_penalty_max', default 80/30) konfigurierbar. Verifiziert an echten Repos: Tests-Spread jetzt 4-7 statt durchgehend 7. n=6 -> bewusst nicht weiter ueberdreht (Overfitting). Strukturelle Grenze dokumentiert: Heuristik zaehlt nur, Qualitaet via Coverage+LLM-Spalte.",
+      "tags": [
+        "calibration",
+        "thresholds",
+        "tests",
+        "code-docs",
+        "coverage",
+        "config",
+        "saturation"
+      ],
+      "related_bugs": [
+        "bug-086",
+        "bug-076"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-06-02"
     }
   ]
 }

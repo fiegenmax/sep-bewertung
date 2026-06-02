@@ -655,3 +655,23 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 10:03 | Edited skripte/test_evaluate.py | modified _thr() | ~1785 |
 
 | 10:05 | SUMMARY: work_scope normalisiert jetzt auf gemessene Autoren (normalize_by=measured, geklammert 5-8) statt fix 6; staff_domain_committers() flaggt aktive @uni-due.de-Committer zur manuellen Pruefung. +5 Tests, 86 gruen. Validiert an echten Repos: noisy zaehlt GitHub/Gmail-Studis korrekt, juggler flaggt Niermann. | evaluate_team.py, config.yaml, test_evaluate.py | bug-086 | ~3000 |
+| 10:14 | Created .git/COMMIT_EDITMSG_FIX.txt | — | ~238 |
+| 10:15 | Session end: 9 writes across 4 files (evaluate_team.py, config.yaml, test_evaluate.py, COMMIT_EDITMSG_FIX.txt) | 9 reads | ~87393 tok |
+| 10:24 | Session end: 9 writes across 4 files (evaluate_team.py, config.yaml, test_evaluate.py, COMMIT_EDITMSG_FIX.txt) | 9 reads | ~87393 tok |
+| 10:27 | Edited skripte/config.yaml | 4→6 lines | ~70 |
+| 10:28 | Edited skripte/config.yaml | 6→10 lines | ~124 |
+| 10:28 | Edited skripte/config.yaml | modified Schwellen() | ~286 |
+| 10:28 | Edited skripte/config.yaml | 3→6 lines | ~91 |
+| 10:28 | Edited skripte/evaluate_team.py | 6→8 lines | ~163 |
+| 10:28 | Edited skripte/test_evaluate.py | modified setUp() | ~138 |
+| 10:29 | Edited skripte/test_evaluate.py | modified setUp() | ~657 |
+| 10:32 | Edited docs/bewertungskriterien.md | 7→7 lines | ~118 |
+| 10:32 | Edited docs/bewertungskriterien.md | inline fix | ~21 |
+| 10:32 | Edited docs/bewertungskriterien.md | 5 → 10 | ~36 |
+| 10:32 | Edited docs/bewertungskriterien.md | modified test_() | ~271 |
+| 10:33 | Edited docs/bewertungskriterien.md | 2→4 lines | ~85 |
+| 10:33 | Edited docs/Bewertungs-Methodik.md | 25 → 35 | ~48 |
+| 10:34 | Edited docs/Bewertungs-Methodik.md | 3→3 lines | ~31 |
+
+| 10:40 | SUMMARY: Schwellen-Kalibrierung P1+P1b+P2+P3 (bug-087): tests/code_docs/commit/sprint Schwellen angehoben, Coverage-Schwellen konfigurierbar. +3 Tests, 89 grün. Tests-Spread real 4-7 statt 7/7. Doku nachgezogen. | config.yaml, evaluate_team.py, test_evaluate.py, docs/*.md | bug-087 | ~4000 |
+| 10:39 | Created .git/CMSG.txt | — | ~353 |

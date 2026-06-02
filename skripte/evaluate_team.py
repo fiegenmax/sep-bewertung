@@ -1451,11 +1451,13 @@ def analyze_tests(repo, llm=None, coverage_pct=None):
               f"{total_test_methods} Test-Methoden/Faelle). "
               f"Pro Sprache: {lang_summary or 'keine'}.")
     if coverage_pct is not None:
+        cov_bonus_min = _tests_thr("coverage_bonus_min", "coverage_bonus_min", 80)
+        cov_penalty_max = _tests_thr("coverage_penalty_max", "coverage_penalty_max", 30)
         reason += f" Coverage aus CI: {coverage_pct:.1f}%."
-        if coverage_pct >= 80 and score < 7:
-            score = min(7, score + 1); reason += " (+1 wegen >=80% Coverage)"
-        elif coverage_pct < 30 and score > 2:
-            score = max(2, score - 1); reason += " (-1 wegen <30% Coverage)"
+        if coverage_pct >= cov_bonus_min and score < 7:
+            score = min(7, score + 1); reason += f" (+1 wegen >={cov_bonus_min:g}% Coverage)"
+        elif coverage_pct < cov_penalty_max and score > 2:
+            score = max(2, score - 1); reason += f" (-1 wegen <{cov_penalty_max:g}% Coverage)"
 
     llm_eval = None
     if llm and llm.enabled:
