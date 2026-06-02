@@ -1163,6 +1163,61 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-06-01"
+    },
+    {
+      "id": "bug-071",
+      "timestamp": "2026-06-02T06:07:17.562Z",
+      "error_message": "Wrong return value",
+      "file": "skripte/llm.py",
+      "root_cause": "Was returning: None",
+      "fix": "Now returns: self.call(prompt, system=system, max_tokens=max_t,",
+      "tags": [
+        "auto-detected",
+        "return-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T06:07:17.562Z"
+    },
+    {
+      "id": "bug-072",
+      "timestamp": "2026-06-02T06:11:29.699Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/llm.py",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 4→10 lines (4 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T06:11:29.699Z"
+    },
+    {
+      "id": "bug-073",
+      "timestamp": "2026-06-02",
+      "error_message": "LLM HTTPError 400: \"This model does not support assistant message prefill. The conversation must end with a user message.\" (~1 pro Team, also 6x) waehrend des Pipeline-Laufs.",
+      "file": "skripte/llm.py",
+      "root_cause": "Der bug-061-Fix erzwang JSON via Anthropic Assistant-Prefill (prefill=\"{\") fuer ALLE score()-Calls. claude-haiku-4-5 unterstuetzt Prefill, aber claude-sonnet-4-6 (genutzt nur fuer den Issue<->Code-Konsistenz-Check in analyze_sprint_goals via score_with_model) lehnt Prefill mit HTTP 400 ab -> score() gab None zurueck -> das Kriterium \"Sprint-Ziele erreicht\" fiel fuer ALLE 6 Teams still auf Heuristik-only zurueck. bug-061 war nur via Cache-Hits/gemockte Tests \"verifiziert\" worden, nie live gegen Sonnet.",
+      "fix": "(1) call() faengt jetzt den spezifischen 400 (\"prefill\" im Body) ab und wiederholt den Request EINMAL ohne Prefill (self-healing, modellunabhaengig) - _coerce_json holt das JSON dann aus Fence/Prosa. (2) Folgefehler: ohne Prefill schrieb Sonnet lange Prosa vor das JSON, das bei max_tokens=600 abgeschnitten wurde (genau das bug-061-Symptom). Darum score()-max_tokens 600->1500 angehoben (kostet nichts extra: abgerechnet werden erzeugte Tokens, Prefill-Pfade stoppen frueh; aendert zudem den Cache-Key -> bypassed den vergifteten Truncation-Cache). (3) Neuer Test test_prefill_unsupported_model_falls_back_without_prefill (mockt 400->Fallback). Verifiziert: voller Pipeline-Lauf 0 Errors/0 parse-fails, \"Sprint-Ziele erreicht\" hat jetzt LLM-Score in allen Teams; 88 Tests gruen; Live-Call gegen claude-sonnet-4-6 liefert sauberes JSON.",
+      "tags": [
+        "llm",
+        "anthropic-prefill",
+        "sonnet",
+        "http-400",
+        "json-output",
+        "max-tokens-truncation",
+        "self-healing",
+        "resolved"
+      ],
+      "related_bugs": [
+        "bug-061"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-06-02"
     }
   ]
 }

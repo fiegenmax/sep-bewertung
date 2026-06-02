@@ -541,3 +541,30 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 20:02 | Edited docs/bewertungskriterien.md | modified Quellen() | ~302 |
 | 18:10 | Epic-Verlinkung-Bug: analyze_epics sah nur #-Text, native Linked/Child items via GraphQL (fetch_epic_links) ergaenzt | evaluate_team.py, test_evaluate.py, CLAUDE.md, docs/bewertungskriterien.md | alle 6 Teams jetzt 1/1, 87 Tests gruen (bug-070) | ~9k |
 | 20:07 | Session end: 16 writes across 5 files (evaluate_team.py, COMMIT_EDITMSG_TMP, test_evaluate.py, CLAUDE.md, bewertungskriterien.md) | 8 reads | ~49539 tok |
+
+## Session: 2026-06-02 07:54
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 07:54 | Created skripte/teams.txt | — | ~25 |
+| 07:55 | teams.txt auf kombinierten Namen cohort-kurz umgestellt (bit->shannon-bit, poetical lovelace->lovelace-poetical) | skripte/teams.txt | matcht team_mapping.json | ~3k |
+| 07:55 | Session end: 1 writes across 1 files (teams.txt) | 5 reads | ~27 tok |
+
+## Session: 2026-06-02 07:55
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 08:07 | Edited skripte/llm.py | modified lower() | ~249 |
+| 08:07 | Edited skripte/test_evaluate.py | modified test_prefill_unsupported_model_falls_back_without_prefill() | ~638 |
+| 08:07 | Edited skripte/test_evaluate.py | added 1 import(s) | ~13 |
+| 08:10 | Created skripte/_inspect_results.py | — | ~436 |
+| 08:11 | Edited skripte/llm.py | expanded (+6 lines) | ~230 |
+| 08:11 | Session end: 5 writes across 3 files (llm.py, test_evaluate.py, _inspect_results.py) | 7 reads | ~5195 tok |
+
+## Session: 2026-06-02 08:15
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 06:30 | Pipeline-Lauf + Inspektion: 6/6 Teams OK, aber LLM HTTP 400 prefill-Fehler entdeckt (Sonnet) | run_all/llm.py | bug gefunden | ~8k |
+| 06:45 | bug-073 Fix: call() Auto-Fallback ohne Prefill bei 400 + score() max_tokens 600->1500 + Test | skripte/llm.py, test_evaluate.py | 88 Tests gruen, Live-Sonnet OK | ~10k |
+| 07:00 | Re-Run Pipeline: 0 Fehler/0 parse-fails, Issue<->Code-LLM-Score jetzt in allen Teams gefuellt | teams/*.xlsx | verifiziert | ~6k |

@@ -213,6 +213,15 @@ class LLMClient:
                     time.sleep(_retry_after_seconds(e, attempt))
                     continue
                 body_text = e.read().decode("utf-8", errors="ignore")[:500]
+                # Manche Modelle (z.B. claude-sonnet-4-6) lehnen Assistant-Prefill
+                # mit HTTP 400 ab ("does not support assistant message prefill").
+                # Dann einmalig ohne Prefill wiederholen - _coerce_json holt das JSON
+                # auch aus ```-Fences/Prosa heraus, sodass score() weiter funktioniert.
+                if prefill and e.code == 400 and "prefill" in body_text.lower():
+                    log.info("Modell %s unterstuetzt kein Assistant-Prefill - "
+                             "Wiederholung ohne Prefill.", m)
+                    return self.call(prompt, system=system, max_tokens=max_t,
+                                     model=m, prefill=None)
                 log.warning(f"LLM HTTPError {e.code}: {body_text}")
                 return None
             except Exception as e:
@@ -252,10 +261,16 @@ class LLMClient:
             f'"reason": "<kurze Begruendung 1-3 Saetze>"}}. '
             f"Bei mehreren Samples: gib EINE zusammenfassende Bewertung, keine Liste pro Item."
         )
-        # prefill="{" erzwingt, dass das Modell sofort als JSON-Objekt fortsetzt -
-        # kein Prosa-Vorspann, der (a) den Parser bricht und (b) das Token-Budget
-        # frisst, sodass das JSON am Ende abgeschnitten wuerde.
-        out = self.call(prompt, system=full_system, max_tokens=600, model=model, prefill="{")
+        # prefill="{" erzwingt bei Modellen die es koennen (z.B. Haiku 4.5) sofort
+        # reines JSON - kein Prosa-Vorspann, der (a) den Parser bricht und (b) das
+        # Token-Budget frisst. Modelle OHNE Prefill-Support (z.B. claude-sonnet-4-6)
+        # faellt call() automatisch auf den Modus ohne Prefill zurueck; dann schreibt
+        # das Modell evtl. Prosa vor das JSON. Darum max_tokens grosszuegig (1500),
+        # damit das abschliessende JSON nicht abgeschnitten wird - _coerce_json
+        # schneidet es danach aus der Prosa heraus. Hoeheres Limit kostet nichts
+        # extra: abgerechnet werden die tatsaechlich erzeugten Tokens, und die
+        # Prefill-Pfade stoppen ohnehin frueh.
+        out = self.call(prompt, system=full_system, max_tokens=1500, model=model, prefill="{")
         result = _parse_score_response(out, scale_max)
         if result is None and out:
             log.warning(f"LLM score parse failed (got: {out[:200]})")

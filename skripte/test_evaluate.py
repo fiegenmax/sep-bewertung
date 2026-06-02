@@ -16,6 +16,7 @@ Die Tests brauchen kein Netz und keinen GitLab-Token.
 
 import os
 import sys
+import io
 import shutil
 import tempfile
 import unittest
@@ -702,6 +703,60 @@ class TestScorePrefill(unittest.TestCase):
         self.assertEqual(captured["body"]["messages"][-1],
                          {"role": "assistant", "content": "{"})
         # (2) Prefill vorangestellt -> valides JSON -> sauber geparst.
+        self.assertEqual(res, {"score": 2, "reason": "ok"})
+
+    def test_prefill_unsupported_model_falls_back_without_prefill(self):
+        # Modelle wie claude-sonnet-4-6 lehnen Prefill mit HTTP 400 ab. score()
+        # muss dann ohne Prefill erneut anfragen und das JSON trotzdem parsen.
+        import json as _json
+        import urllib.request
+        import urllib.error
+        import llm as llm_mod
+
+        calls = []
+
+        class _Resp:
+            def __init__(self, payload):
+                self._p = payload
+
+            def read(self):
+                return self._p
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *a):
+                return False
+
+        def fake_urlopen(req, timeout=None):
+            body = _json.loads(req.data.decode("utf-8"))
+            has_prefill = body["messages"][-1].get("role") == "assistant"
+            calls.append(has_prefill)
+            if has_prefill:
+                raise urllib.error.HTTPError(
+                    "url", 400,
+                    "Bad Request", {},
+                    io.BytesIO(b'{"error":{"message":"This model does not '
+                               b'support assistant message prefill."}}'))
+            api = {"content": [{"type": "text",
+                               "text": '{"score": 2, "reason": "ok"}'}],
+                   "stop_reason": "end_turn"}
+            return _Resp(_json.dumps(api).encode("utf-8"))
+
+        with tempfile.TemporaryDirectory() as d:
+            orig_cache = llm_mod.CACHE_DIR
+            orig_open = urllib.request.urlopen
+            llm_mod.CACHE_DIR = Path(d)
+            urllib.request.urlopen = fake_urlopen
+            try:
+                client = llm_mod.LLMClient(api_key="sk-ant-test", enabled=True)
+                res = client.score("bewerte X", scale_max=3, system="sys")
+            finally:
+                llm_mod.CACHE_DIR = orig_cache
+                urllib.request.urlopen = orig_open
+
+        # Erst mit Prefill (400), dann Fallback ohne Prefill -> sauberes Ergebnis.
+        self.assertEqual(calls, [True, False])
         self.assertEqual(res, {"score": 2, "reason": "ok"})
 
 
