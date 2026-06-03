@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-03T12:50:07.048Z
-> Files: 7 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-03T12:58:37.831Z
+> Files: 8 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../tmp/
 
@@ -32,7 +32,8 @@
 
 - `config.yaml` — Konfiguration fuer die automatische SEP-Bewertung (~2851 tok)
 - `evaluate_team.py` — load_yaml_config, get_thresholds, thr, get_llm_sampling (~35353 tok)
-- `test_evaluate.py` — TestUserStories: test_full_score, test_no_userstories, test_markdown_bold_story_template, test_full (~22584 tok)
+- `fill_pdf.py` — format_team_name, read_xlsx_scores, fill_pdf, main_for (~3204 tok)
+- `test_evaluate.py` — TestUserStories: test_full_score, test_no_userstories, test_markdown_bold_story_template, test_full  (~22780 tok)
 
 ## team-bit/
 

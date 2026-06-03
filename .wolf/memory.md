@@ -784,3 +784,25 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 14:49 | Edited CLAUDE.md | 11 → 12 | ~11 |
 | 14:49 | Edited CLAUDE.md | 1→3 lines | ~108 |
 | 14:50 | Edited CLAUDE.md | inline fix | ~43 |
+
+## Session: 2026-06-03 14:52
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:54 | Edited skripte/fill_pdf.py | modified format_team_name() | ~168 |
+| 14:54 | Edited skripte/fill_pdf.py | 2→2 lines | ~32 |
+| 14:55 | Edited skripte/test_evaluate.py | modified test_strips_prefix_capitalizes_each_word() | ~209 |
+| 14:58 | Edited skripte/fill_pdf.py | modified format_team_name() | ~154 |
+| 14:58 | Edited skripte/test_evaluate.py | modified test_strips_prefix_capitalizes_each_word() | ~177 |
+
+## Session: 2026-06-03 15:00
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-03 15:01
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:55 | format_team_name() in fill_pdf hinzugefuegt: Teamname fuers PDF-Feld 'Geprüftes Team' (team-lovelace-poetical -> 'Lovelace Poetical', ohne 'team'-Praefix), main_for nutzt es; 3 Tests | fill_pdf.py, test_evaluate.py | 3 Tests gruen, alle 6 PDFs neu generiert | ~3k |
+| 14:56 | Hinweis an Nutzer: erneutes Generieren ueberschrieb direkt im PDF gesetzte Kreuze (fill_pdf legt kein .pdf.bak an); Recovery nur via Shadow-Copy (E:, nicht in OneDrive) | (Analyse) | bug-108 geloggt, cerebrum Do-Not-Repeat ergaenzt | ~2k |

@@ -99,6 +99,22 @@ FIELD_TOTAL = "Textfeld2"     # "Gesamtpunktzahl" (Gesamtsumme)
 PRUEFER_NAME = "Maximilian Fiegen"
 
 
+def format_team_name(raw):
+    """Folder-/Mapping-Name -> Anzeige fuer 'Geprüftes Team'.
+
+    'team-lovelace-poetical' -> 'Lovelace Poetical':
+    strippt das 'team-'/'team '-Praefix, ersetzt Bindestriche durch
+    Leerzeichen und macht jedes Wort gross. Nur der reine Teamname,
+    ohne das Wort 'team' davor.
+    """
+    s = str(raw).strip()
+    low = s.lower()
+    if low.startswith("team-") or low.startswith("team "):
+        s = s[5:]
+    words = [w.capitalize() for w in s.replace("-", " ").split() if w]
+    return " ".join(words)
+
+
 def _section_crits(section_name):
     """Kriterien-Liste einer CATEGORIES-Sektion (oder [] + Warnung bei Drift)."""
     for name, crits in ev.CATEGORIES:
@@ -228,7 +244,7 @@ def main_for(local_folder):
         raise RuntimeError(f"PDF-Template nicht gefunden: {template}")
     output = ev.TEAMS / local_folder / f"Bewertung_{local_folder}.pdf"
 
-    team_name = entry.get("name") or local_folder
+    team_name = format_team_name(entry.get("name") or local_folder)
     scores, total = read_xlsx_scores(xlsx)
     fill_pdf(template, scores, total, output, team_name=team_name)
     print(f"   PDF: {output.name}")

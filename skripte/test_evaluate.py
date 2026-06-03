@@ -390,6 +390,27 @@ class TestExcelRoundTrip(unittest.TestCase):
 # 3. Verbesserungspaket 2026-05-30
 # ============================================================
 
+class TestFormatTeamName(unittest.TestCase):
+    def test_strips_prefix_capitalizes_each_word(self):
+        import fill_pdf
+        self.assertEqual(
+            fill_pdf.format_team_name("team-lovelace-poetical"),
+            "Lovelace Poetical",
+        )
+        self.assertEqual(
+            fill_pdf.format_team_name("team-shannon-bit"),
+            "Shannon Bit",
+        )
+
+    def test_without_prefix(self):
+        import fill_pdf
+        self.assertEqual(fill_pdf.format_team_name("alpha-beta"), "Alpha Beta")
+
+    def test_already_spaced_prefix(self):
+        import fill_pdf
+        self.assertEqual(fill_pdf.format_team_name("team alpha"), "Alpha")
+
+
 class TestConfigAccessors(unittest.TestCase):
     def setUp(self):
         ev._THRESHOLDS_CACHE = None
