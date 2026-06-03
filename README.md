@@ -40,7 +40,13 @@ uv run sep-bewertung                       # alle Teams
 uv run sep-bewertung team-shannon-alpha    # nur ein Team (voller Ordnername)
 uv run sep-bewertung --pdf --overview      # + PDF-Formular + Übersichts-Excel
 uv run sep-bewertung --fresh               # Cache leeren (frische API-Daten)
+uv run sep-bewertung --pdf-only            # nur PDFs aus vorhandenen Excels (kein API/LLM)
 ```
+
+> `--pdf-only` ist der Schnellpfad: keine GitLab-API, kein LLM, keine Analyse —
+> es füllt nur die PDF-Formulare aus den schon vorhandenen `Bewertung_<team>.xlsx`.
+> Voraussetzung: die Excel und die Vorlagen-PDF müssen im Team-Ordner liegen.
+> Funktioniert ebenso für ein einzelnes Team (`uv run sep-bewertung --pdf-only team-shannon-alpha`).
 
 Beim allerersten Lauf legt uv automatisch das venv an und installiert die
 Dependencies — danach starten die Läufe sofort. Pro Team entsteht eine
