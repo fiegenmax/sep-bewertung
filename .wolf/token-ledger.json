@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-05-28T15:43:16.046Z",
   "lifetime": {
-    "total_tokens_estimated": 1541848,
-    "total_reads": 492,
-    "total_writes": 594,
-    "total_sessions": 55,
-    "anatomy_hits": 108,
-    "anatomy_misses": 378,
+    "total_tokens_estimated": 1577566,
+    "total_reads": 494,
+    "total_writes": 597,
+    "total_sessions": 56,
+    "anatomy_hits": 109,
+    "anatomy_misses": 379,
     "repeated_reads_blocked": 309,
-    "estimated_savings_vs_bare_cli": 3314684
+    "estimated_savings_vs_bare_cli": 3314884
   },
   "sessions": [
     {
@@ -7144,6 +7144,50 @@
         "output_tokens_estimated": 37,
         "reads_count": 2,
         "writes_count": 2,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-06-03-1525",
+      "started": "2026-06-03T13:25:10.301Z",
+      "ended": "2026-06-03T13:33:43.910Z",
+      "reads": [
+        {
+          "file": "e:/Code/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 35353,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/run_all.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "e:/Code/sep-bewertung/skripte/build_xlsx.py",
+          "tokens_estimated": 14,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 23,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/.git/COMMIT_EDITMSG_TMP.txt",
+          "tokens_estimated": 328,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 35353,
+        "output_tokens_estimated": 365,
+        "reads_count": 2,
+        "writes_count": 3,
         "repeated_reads_blocked": 0,
         "anatomy_lookups": 1
       }

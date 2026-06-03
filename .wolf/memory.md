@@ -852,3 +852,14 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 15:26 | Session end: 2 writes across 2 files (build_xlsx.py, test_evaluate.py) | 2 reads | ~35390 tok |
 | 15:30 | Bugfix bug-114: nach LLM-Vorbelegung waren beim Re-Lauf ueber alte Boegen alle F-Zahlen rot; merge wertete alt-heuristische F-Werte als manuell. Fix: alten F-Wert nur uebernehmen wenn != neuer Vorbelegung UND != Heuristik (C). Regressionstest ergaenzt. | build_xlsx.py, test_evaluate.py, .wolf/buglog.json | 132 Tests gruen | ~6k |
 | 15:33 | Created .git/COMMIT_EDITMSG_TMP.txt | — | ~306 |
+| 15:33 | Session end: 3 writes across 3 files (build_xlsx.py, test_evaluate.py, COMMIT_EDITMSG_TMP.txt) | 2 reads | ~35718 tok |
+
+## Session: 2026-06-03 15:36
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:37 | Edited skripte/fill_pdf.py | modified pdf_output_name() | ~127 |
+| 15:37 | Edited skripte/fill_pdf.py | modified exists() | ~105 |
+| 15:38 | Edited docs/funktionsweise.md | inline fix | ~21 |
+| 15:38 | Edited docs/nutzung.md | inline fix | ~53 |
+| 15:39 | PDFs auf Bewertung_Teamname (Unterstrich) umbenannt + pdf_output_name() | fill_pdf.py, docs | tests gruen, 6 PDFs umbenannt | ~3k |

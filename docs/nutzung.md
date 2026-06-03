@@ -146,7 +146,7 @@ Bei Folgeläufen werden GitLab-API-Antworten aus `<temp>/sep_gitlab_api_cache/` 
 uv run sep-bewertung --pdf --overview
 ```
 
-- `--pdf` befüllt zusätzlich das offizielle PDF-Formular (`Bewertung_<team>.pdf`): Teamname, angekreuzte Punkte (Checkboxes nach der "Deine Bewertung"-Spalte F), Gesamtpunktzahl und Abschnitts-Zwischensummen. Kommentare/Anmerkungen werden bewusst **nicht** ins PDF geschrieben.
+- `--pdf` befüllt zusätzlich das offizielle PDF-Formular (`Bewertung_<Teamname>.pdf`, z. B. `Bewertung_Shannon_Juggler.pdf` — reiner Teamname, jedes Wort groß, mit Unterstrich getrennt): Teamname, angekreuzte Punkte (Checkboxes nach der "Deine Bewertung"-Spalte F), Gesamtpunktzahl und Abschnitts-Zwischensummen. Kommentare/Anmerkungen werden bewusst **nicht** ins PDF geschrieben.
 - `--overview` baut am Ende `Uebersicht_alle_Teams.xlsx` im `teams/`-Ordner: alle Teams nebeneinander, mit Farbskala. Gut zum Sortieren oder als Sanity-Check.
 
 ### Nur die PDFs aus den vorhandenen Excels erzeugen (ohne Analyse)

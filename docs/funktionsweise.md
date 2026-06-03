@@ -23,7 +23,7 @@ Wie die Pipeline intern aufgebaut ist. Für Entwickler-Sicht.
    │     (sprachunabhaengig: Java/TS/Py/Go/Kt)│  + Info: Konventionen, Provenienz
    │  4. evaluate_team.analyze_sanity_check()│  → LLM Konsistenz-Check
    │  5. build_xlsx.build_xlsx()             │  → team-X/Bewertung_X.xlsx
-   │  (optional) fill_pdf.main_for()         │  → team-X/Bewertung_X.pdf
+   │  (optional) fill_pdf.main_for()         │  → team-X/Bewertung_Team_X.pdf
    └─────────────────────────────────────────┘
              │
              ▼

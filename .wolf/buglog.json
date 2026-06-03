@@ -1950,6 +1950,38 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-06-03T15:30:00"
+    },
+    {
+      "id": "bug-116",
+      "timestamp": "2026-06-03T13:38:23.297Z",
+      "error_message": "Wrong reference: Bewertung_X should be Bewertung_Team_X",
+      "file": "docs/funktionsweise.md",
+      "root_cause": "Used \"Bewertung_X\" instead of \"Bewertung_Team_X\"",
+      "fix": "Changed Bewertung_X → Bewertung_Team_X",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-03T13:38:23.297Z"
+    },
+    {
+      "id": "bug-117",
+      "timestamp": "2026-06-03T13:38:36.437Z",
+      "error_message": "Incorrect value in code",
+      "file": "docs/nutzung.md",
+      "root_cause": "Had `Bewertung_<team>.pdf`",
+      "fix": "Changed to `Bewertung_<Teamname>.pdf`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-03T13:38:36.437Z"
     }
   ]
 }

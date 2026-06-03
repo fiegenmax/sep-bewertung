@@ -115,6 +115,16 @@ def format_team_name(raw):
     return " ".join(words)
 
 
+def pdf_output_name(raw):
+    """Dateiname (ohne Endung) fuer das ausgefuellte PDF.
+
+    'team-shannon-juggler' -> 'Bewertung_Shannon_Juggler'. Basiert auf
+    format_team_name (reiner Teamname, jedes Wort gross), nur mit
+    Unterstrichen statt Leerzeichen als Trenner.
+    """
+    return "Bewertung_" + format_team_name(raw).replace(" ", "_")
+
+
 def _section_crits(section_name):
     """Kriterien-Liste einer CATEGORIES-Sektion (oder [] + Warnung bei Drift)."""
     for name, crits in ev.CATEGORIES:
@@ -242,9 +252,11 @@ def main_for(local_folder):
     template = ev.BASE / "assets" / "Templates" / "Template Artifacts Exam Checklist Fillable.pdf"
     if not template.exists():
         raise RuntimeError(f"PDF-Template nicht gefunden: {template}")
-    output = ev.TEAMS / local_folder / f"Bewertung_{local_folder}.pdf"
 
-    team_name = format_team_name(entry.get("name") or local_folder)
+    raw_name = entry.get("name") or local_folder
+    output = ev.TEAMS / local_folder / f"{pdf_output_name(raw_name)}.pdf"
+
+    team_name = format_team_name(raw_name)
     scores, total = read_xlsx_scores(xlsx)
     fill_pdf(template, scores, total, output, team_name=team_name)
     print(f"   PDF: {output.name}")

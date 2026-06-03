@@ -1,46 +1,67 @@
 {
-  "session_id": "session-2026-06-03-1525",
-  "started": "2026-06-03T13:25:10.301Z",
+  "session_id": "session-2026-06-03-1536",
+  "started": "2026-06-03T13:36:01.015Z",
   "files_read": {
-    "e:/Code/sep-bewertung/skripte/evaluate_team.py": {
-      "count": 1,
-      "tokens": 35353,
-      "first_read": "2026-06-03T13:25:44.731Z"
+    "e:/Code/sep-bewertung/.wolf/anatomy.md": {
+      "count": 2,
+      "tokens": 0,
+      "first_read": "2026-06-03T13:36:45.637Z"
     },
-    "e:/Code/sep-bewertung/skripte/run_all.py": {
+    "e:/Code/sep-bewertung/skripte/fill_pdf.py": {
+      "count": 1,
+      "tokens": 3204,
+      "first_read": "2026-06-03T13:36:50.989Z"
+    },
+    "e:/Code/sep-bewertung/skripte/test_evaluate.py": {
+      "count": 1,
+      "tokens": 23325,
+      "first_read": "2026-06-03T13:37:16.831Z"
+    },
+    "e:/Code/sep-bewertung/docs/funktionsweise.md": {
       "count": 1,
       "tokens": 0,
-      "first_read": "2026-06-03T13:25:48.661Z"
+      "first_read": "2026-06-03T13:38:19.368Z"
+    },
+    "e:/Code/sep-bewertung/docs/nutzung.md": {
+      "count": 1,
+      "tokens": 2848,
+      "first_read": "2026-06-03T13:38:31.254Z"
     }
   },
   "files_written": [
     {
-      "file": "e:/Code/sep-bewertung/skripte/build_xlsx.py",
+      "file": "e:/Code/sep-bewertung/skripte/fill_pdf.py",
       "action": "edit",
-      "tokens": 14,
-      "at": "2026-06-03T13:25:43.396Z"
+      "tokens": 127,
+      "at": "2026-06-03T13:37:30.809Z"
     },
     {
-      "file": "e:/Code/sep-bewertung/skripte/test_evaluate.py",
+      "file": "e:/Code/sep-bewertung/skripte/fill_pdf.py",
       "action": "edit",
-      "tokens": 23,
-      "at": "2026-06-03T13:25:48.365Z"
+      "tokens": 105,
+      "at": "2026-06-03T13:37:37.592Z"
     },
     {
-      "file": "e:/Code/sep-bewertung/.git/COMMIT_EDITMSG_TMP.txt",
-      "action": "create",
-      "tokens": 328,
-      "at": "2026-06-03T13:33:17.054Z"
+      "file": "e:/Code/sep-bewertung/docs/funktionsweise.md",
+      "action": "edit",
+      "tokens": 22,
+      "at": "2026-06-03T13:38:23.295Z"
+    },
+    {
+      "file": "e:/Code/sep-bewertung/docs/nutzung.md",
+      "action": "edit",
+      "tokens": 56,
+      "at": "2026-06-03T13:38:36.435Z"
     }
   ],
   "edit_counts": {
-    "skripte/build_xlsx.py": 1,
-    "skripte/test_evaluate.py": 1,
-    ".git/COMMIT_EDITMSG_TMP.txt": 1
+    "skripte/fill_pdf.py": 2,
+    "docs/funktionsweise.md": 1,
+    "docs/nutzung.md": 1
   },
-  "anatomy_hits": 1,
-  "anatomy_misses": 1,
-  "repeated_reads_warned": 0,
+  "anatomy_hits": 3,
+  "anatomy_misses": 2,
+  "repeated_reads_warned": 1,
   "cerebrum_warnings": 0,
-  "stop_count": 1
+  "stop_count": 0
 }
