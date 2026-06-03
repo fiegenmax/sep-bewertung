@@ -1833,6 +1833,123 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-06-03T14:55:00.000Z"
+    },
+    {
+      "id": "bug-109",
+      "timestamp": "2026-06-03T13:13:47.232Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/build_xlsx.py",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 4→7 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-03T13:13:47.232Z"
+    },
+    {
+      "id": "bug-110",
+      "timestamp": "2026-06-03T13:13:57.445Z",
+      "error_message": "Incorrect value in code",
+      "file": "skripte/build_xlsx.py",
+      "root_cause": "Had ' bedeutet: noch manuell auszufüllen. Rote/fette Z",
+      "fix": "Changed to ' bedeutet: noch manuell auszufüllen. Rote/fette Z",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-03T13:13:57.445Z"
+    },
+    {
+      "id": "bug-111",
+      "timestamp": "2026-06-03T13:15:33.803Z",
+      "error_message": "Incorrect value in code",
+      "file": "docs/llm-integration.md",
+      "root_cause": "Had `) ist deterministisch — gleicher Input ergibt gle",
+      "fix": "Changed to `) ist deterministisch — gleicher Input ergibt gle",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-03T13:15:33.803Z"
+    },
+    {
+      "id": "bug-112",
+      "timestamp": "2026-06-03T13:15:57.941Z",
+      "error_message": "Incorrect value in code",
+      "file": "docs/troubleshooting.md",
+      "root_cause": "Had ` (Heur-Score) leer ist (kommt vor bei den manuell",
+      "fix": "Changed to `AND(IF(D<>\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-03T13:15:57.941Z"
+    },
+    {
+      "id": "bug-113",
+      "timestamp": "2026-06-03T13:22:38.809Z",
+      "error_message": "Significant refactor of ",
+      "file": "skripte/build_xlsx.py",
+      "root_cause": "7 lines replaced/restructured",
+      "fix": "Rewrote 13→18 lines (7 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-03T13:22:38.809Z"
+    },
+    {
+      "id": "bug-115",
+      "timestamp": "2026-06-03T13:25:48.367Z",
+      "error_message": "Wrong reference: 076 should be 114",
+      "file": "skripte/test_evaluate.py",
+      "root_cause": "Used \"076\" instead of \"114\"",
+      "fix": "Changed 076 → 114",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-03T13:25:48.367Z"
+    },
+    {
+      "id": "bug-114",
+      "timestamp": "2026-06-03T15:30:00",
+      "error_message": "Nach Umstellung der F-Vorbelegung auf LLM-Score sind im Excel alle Zahlen rot, obwohl der Nutzer nichts manuell geaendert hat.",
+      "file": "skripte/build_xlsx.py",
+      "root_cause": "Beim Re-Generieren ueber einen vor der Aenderung erzeugten Bogen war Spalte F noch mit dem Heuristik-Score (C) vorbefuellt. merge_manual_values_into_workbook verglich den alten F-Wert nur gegen die NEUE Vorbelegung (LLM-or-Heur) und wertete den alten Heuristikwert daher als manuelle Aenderung -> er verdraengte den neuen LLM-Vorschlag, F wich von D ab und das Conditional Formatting (F<>effektiver Vorschlag) faerbte praktisch jede LLM-Zeile rot.",
+      "fix": "In merge_manual_values_into_workbook einen alten F-Wert nur dann als manuelle Aenderung uebernehmen, wenn er weder der neuen Vorbelegung (Spalte F: LLM-or-Heur) noch dem reinen Heuristik-Score (Spalte C) entspricht. Damit gilt ein alt-vorbefuellter Heuristikwert nicht als Edit und faellt sauber auf den LLM-Vorschlag zurueck. Regressionstest test_old_heuristik_prefill_not_treated_as_manual.",
+      "tags": [
+        "excel",
+        "conditional-formatting",
+        "merge",
+        "llm-prefill",
+        "migration",
+        "build_xlsx"
+      ],
+      "related_bugs": [
+        "bug-074"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-06-03T15:30:00"
     }
   ]
 }

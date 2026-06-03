@@ -838,3 +838,17 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
 | 15:16 | Spalte F vorbefuellen mit LLM-Score statt Heuristik (wo LLM-Review existiert); CF auf effektiven Vorschlag (LLM-or-Heur) umgestellt, Merge-Basiswert auf neue F-Vorbelegung, Hinweistext + Tests + Docs angepasst | build_xlsx.py, test_evaluate.py, docs/nutzung.md, docs/llm-integration.md, docs/troubleshooting.md, CLAUDE.md | 131 Tests gruen | ~8k |
+| 15:17 | Created .git/COMMIT_EDITMSG_TMP.txt | — | ~204 |
+| 15:17 | Session end: 11 writes across 7 files (build_xlsx.py, test_evaluate.py, nutzung.md, llm-integration.md, CLAUDE.md) | 7 reads | ~30195 tok |
+| 15:22 | Edited skripte/build_xlsx.py | 13→18 lines | ~372 |
+| 15:23 | Edited skripte/test_evaluate.py | modified test_old_heuristik_prefill_not_treated_as_manual() | ~536 |
+
+## Session: 2026-06-03 15:25
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:25 | Edited skripte/build_xlsx.py | 076 → 114 | ~14 |
+| 15:25 | Edited skripte/test_evaluate.py | 076 → 114 | ~23 |
+| 15:26 | Session end: 2 writes across 2 files (build_xlsx.py, test_evaluate.py) | 2 reads | ~35390 tok |
+| 15:30 | Bugfix bug-114: nach LLM-Vorbelegung waren beim Re-Lauf ueber alte Boegen alle F-Zahlen rot; merge wertete alt-heuristische F-Werte als manuell. Fix: alten F-Wert nur uebernehmen wenn != neuer Vorbelegung UND != Heuristik (C). Regressionstest ergaenzt. | build_xlsx.py, test_evaluate.py, .wolf/buglog.json | 132 Tests gruen | ~6k |
+| 15:33 | Created .git/COMMIT_EDITMSG_TMP.txt | — | ~306 |

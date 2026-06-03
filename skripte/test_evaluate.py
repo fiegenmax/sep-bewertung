@@ -387,6 +387,34 @@ class TestExcelRoundTrip(unittest.TestCase):
             self.assertEqual(
                 scores["User Stories / Issues ordentlich erstellt"]["manual"], 0)
 
+    def test_old_heuristik_prefill_not_treated_as_manual(self):
+        # bug-114: Alte Boegen hatten F mit dem Heuristik-Score (C) vorbefuellt.
+        # Beim Re-Lauf mit LLM-Vorbelegung darf so ein Wert NICHT als manuelle
+        # Aenderung gelten (sonst verdraengt er den LLM-Vorschlag und das
+        # Conditional Formatting faerbt alles rot).
+        from openpyxl import load_workbook
+        with tempfile.TemporaryDirectory() as d:
+            out = Path(d) / "Bewertung_team-test.xlsx"
+            build_xlsx.build_xlsx("team-test", "grp/team-test", "https://example.org",
+                                  self._results(), out, do_backup=False)
+            # Alten Bogen simulieren: F := C (Heuristik) fuer das LLM-Kriterium.
+            wb = load_workbook(out, data_only=False)
+            ws = wb["Bewertung"]
+            for row in range(6, 60):
+                if ws.cell(row=row, column=ev.COL_CRITERION).value == \
+                        "User Stories / Issues ordentlich erstellt":
+                    c = ws.cell(row=row, column=ev.COL_HEUR).value  # = 2 (Heuristik)
+                    ws.cell(row=row, column=ev.COL_SCORE).value = c
+                    break
+            wb.save(out)
+            # Neu generieren -> F muss auf den LLM-Vorschlag (1) zurueckfallen,
+            # NICHT auf der alten Heuristik-Vorbelegung (2) eingefroren bleiben.
+            build_xlsx.build_xlsx("team-test", "grp/team-test", "https://example.org",
+                                  self._results(), out, do_backup=False)
+            scores = build_overview.read_team_xlsx(out)
+            self.assertEqual(
+                scores["User Stories / Issues ordentlich erstellt"]["manual"], 1)
+
 
 # ============================================================
 # 3. Verbesserungspaket 2026-05-30

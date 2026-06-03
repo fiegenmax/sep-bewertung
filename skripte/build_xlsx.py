@@ -140,14 +140,19 @@ def merge_manual_values_into_workbook(wb, old_values):
         if key not in old_values:
             continue
         old = old_values[key]
-        # Score nur uebernehmen wenn er sich vom aktuellen Auto-Vorschlag unterscheidet
-        # oder ein "x" ist (= manueller Eintrag noch ausstehend / war schon manuell).
-        # Basiswert ist der frisch vorbefuellte F-Wert (LLM wo vorhanden, sonst
-        # Heuristik) — NICHT mehr stur Spalte C, sonst gaelte jede unveraenderte
-        # LLM-Zelle faelschlich als manuell.
-        auto = ws.cell(row=row, column=ev.COL_SCORE).value
+        # Einen alten F-Wert nur als manuelle Aenderung uebernehmen, wenn er WEDER
+        # dem neuen Auto-Vorschlag (frisch vorbefuelltes F: LLM wo vorhanden, sonst
+        # Heuristik) NOCH dem reinen Heuristik-Score (Spalte C) entspricht.
+        # Den Heuristik-Score muessen wir mitpruefen, weil alte Boegen noch
+        # heuristisch vorbefuellt waren: ohne diese Pruefung gaelten beim ersten
+        # Re-Lauf alle alt-vorbefuellten Heuristikwerte faelschlich als manuell und
+        # wuerden den neuen LLM-Vorschlag verdraengen -> Conditional Formatting
+        # faerbt dann alles rot. Siehe bug-114.
+        auto = ws.cell(row=row, column=ev.COL_SCORE).value   # neue Vorbelegung (LLM-or-Heur)
+        heur = ws.cell(row=row, column=ev.COL_HEUR).value    # reiner Heuristik-Score (C)
         old_score = old.get("score")
-        if old_score is not None and old_score != "" and old_score != auto:
+        is_auto_prefill = old_score == auto or old_score == heur
+        if old_score is not None and old_score != "" and not is_auto_prefill:
             # Aber: wenn der alte Wert eine Formel ist (Zwischensumme), nicht uebernehmen
             if not (isinstance(old_score, str) and old_score.startswith("=")):
                 ws.cell(row=row, column=ev.COL_SCORE).value = old_score   # F = Deine Bewertung

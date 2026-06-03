@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-05-28T15:43:16.046Z",
   "lifetime": {
-    "total_tokens_estimated": 1476263,
-    "total_reads": 483,
-    "total_writes": 581,
-    "total_sessions": 54,
-    "anatomy_hits": 104,
-    "anatomy_misses": 373,
-    "repeated_reads_blocked": 308,
-    "estimated_savings_vs_bare_cli": 3291104
+    "total_tokens_estimated": 1541848,
+    "total_reads": 492,
+    "total_writes": 594,
+    "total_sessions": 55,
+    "anatomy_hits": 108,
+    "anatomy_misses": 378,
+    "repeated_reads_blocked": 309,
+    "estimated_savings_vs_bare_cli": 3314684
   },
   "sessions": [
     {
@@ -6993,6 +6993,159 @@
         "writes_count": 3,
         "repeated_reads_blocked": 0,
         "anatomy_lookups": 4
+      }
+    },
+    {
+      "id": "session-2026-06-03-1511",
+      "started": "2026-06-03T13:11:58.489Z",
+      "ended": "2026-06-03T13:17:31.989Z",
+      "reads": [
+        {
+          "file": "e:/Code/sep-bewertung/skripte/build_xlsx.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 22780,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/docs/nutzung.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/docs/llm-integration.md",
+          "tokens_estimated": 2391,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/CLAUDE.md",
+          "tokens_estimated": 3716,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/docs/troubleshooting.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/.wolf/memory.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "e:/Code/sep-bewertung/skripte/build_xlsx.py",
+          "tokens_estimated": 95,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/build_xlsx.py",
+          "tokens_estimated": 121,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/build_xlsx.py",
+          "tokens_estimated": 134,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/build_xlsx.py",
+          "tokens_estimated": 110,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 223,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/docs/nutzung.md",
+          "tokens_estimated": 42,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/docs/nutzung.md",
+          "tokens_estimated": 123,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/docs/llm-integration.md",
+          "tokens_estimated": 73,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/CLAUDE.md",
+          "tokens_estimated": 29,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/docs/troubleshooting.md",
+          "tokens_estimated": 140,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/.git/COMMIT_EDITMSG_TMP.txt",
+          "tokens_estimated": 218,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 28887,
+        "output_tokens_estimated": 1308,
+        "reads_count": 7,
+        "writes_count": 11,
+        "repeated_reads_blocked": 1,
+        "anatomy_lookups": 3
+      }
+    },
+    {
+      "id": "session-2026-06-03-1525",
+      "started": "2026-06-03T13:25:10.301Z",
+      "ended": "2026-06-03T13:26:06.903Z",
+      "reads": [
+        {
+          "file": "e:/Code/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 35353,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/run_all.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "e:/Code/sep-bewertung/skripte/build_xlsx.py",
+          "tokens_estimated": 14,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 23,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 35353,
+        "output_tokens_estimated": 37,
+        "reads_count": 2,
+        "writes_count": 2,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
       }
     }
   ],
