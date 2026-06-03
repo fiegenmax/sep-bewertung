@@ -9,6 +9,10 @@ llm:
   # API-Key in .env: ANTHROPIC_API_KEY=sk-ant-...
   # (Hier nichts eintragen - kommt aus .env)
   model: claude-haiku-4-5-20251001
+  # Modell fuer den Code-Qualitaets-Review (analyze_code_quality_llm). Sonnet,
+  # weil Code-Verstaendnis wichtig ist (wie der Issue<->Code-Check). Auf das
+  # Haiku-Modell oben setzen, um Kosten zu sparen.
+  code_quality_model: claude-sonnet-4-6
   max_tokens: 400
   # Cache-TTL in Tagen - LLM-Antworten werden gecached, um Kosten zu sparen
   cache_ttl_days: 7
@@ -40,6 +44,11 @@ llm_sampling:
   # Code-Kommentare (Haiku)
   code_docs_files: 3
   code_docs_chars: 1200
+  # Code-Qualitaet ('Code sauber/ohne groessere Maengel', Sonnet, groesste
+  # Source-Files zuerst) - teurer -> sparsam halten. Modell: llm.code_quality_model.
+  code_quality_files: 6
+  code_quality_file_chars: 2500
+  code_quality_total_chars: 12000
   # Test-Dateien (Haiku) - groessen-/sprachgewichtete Stichprobe
   tests_files: 6
   tests_chars: 4000

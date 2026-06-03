@@ -760,3 +760,27 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 |------|--------|---------|---------|--------|
 | 14:20 | Edited README.md | expanded (+6 lines) | ~159 |
 | 14:20 | README: --pdf-only dokumentiert | README.md | done | ~800 |
+| 14:20 | Session end: 1 writes across 1 files (README.md) | 4 reads | ~171 tok |
+
+## Session: 2026-06-03 14:31
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-03 14:35
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:43 | Edited skripte/test_evaluate.py | modified setUp() | ~1084 |
+| 14:44 | Edited skripte/evaluate_team.py | modified _select_source_sample_files() | ~1330 |
+| 14:44 | Edited skripte/evaluate_team.py | 13→15 lines | ~286 |
+| 14:44 | Edited skripte/evaluate_team.py | inline fix | ~14 |
+| 14:44 | Edited skripte/config.yaml | 3→8 lines | ~92 |
+| 14:44 | Edited skripte/config.yaml | 2→6 lines | ~86 |
+| 14:48 | Edited docs/llm-integration.md | modified Lauf() | ~633 |
+| 14:49 | Edited docs/llm-integration.md | expanded (+7 lines) | ~197 |
+| 14:49 | Edited docs/llm-integration.md | inline fix | ~65 |
+| 14:49 | Edited docs/bewertungskriterien.md | modified nzt() | ~464 |
+| 14:49 | Edited CLAUDE.md | 11 → 12 | ~11 |
+| 14:49 | Edited CLAUDE.md | 1→3 lines | ~108 |
+| 14:50 | Edited CLAUDE.md | inline fix | ~43 |

@@ -11,7 +11,7 @@ Dieses Repo enthält eine automatische Bewertungspipeline für studentische SEP-
 
 ## Was das Tool macht in einem Satz
 
-Es zieht für jede Studi-Team-Gruppe das GitLab-Repo + Issues/MRs/Wiki/Releases, wendet gut 20 heuristische Analysen (sprachunabhängig über eine Registry: Java/TS/Python/Go/Kotlin) plus 11 LLM-Inhaltsprüfungen darauf an, und schreibt pro Team einen Excel-Bewertungsbogen mit Auto-Vorschlag, LLM-Zweitmeinung und Platz für die manuelle Bewertung des Prüfers. Dazu kommen Info-Kriterien (u. a. Konventions-Report und Provenienz-Stempel), die keinen Score haben, aber die manuelle Bewertung absichern.
+Es zieht für jede Studi-Team-Gruppe das GitLab-Repo + Issues/MRs/Wiki/Releases, wendet gut 20 heuristische Analysen (sprachunabhängig über eine Registry: Java/TS/Python/Go/Kotlin) plus 12 LLM-Inhaltsprüfungen darauf an, und schreibt pro Team einen Excel-Bewertungsbogen mit Auto-Vorschlag, LLM-Zweitmeinung und Platz für die manuelle Bewertung des Prüfers. Dazu kommen Info-Kriterien (u. a. Konventions-Report und Provenienz-Stempel), die keinen Score haben, aber die manuelle Bewertung absichern.
 
 ## Repo-Struktur
 
@@ -147,9 +147,11 @@ Zwei Caches, plattformneutral im OS-Temp-Verzeichnis (Linux meist `/tmp`, Window
 
 Default: **Claude Haiku 4.5** (`claude-haiku-4-5-20251001`) für alle Inhaltsprüfungen — billig und schnell.
 
-Ausnahme: **Issue ↔ Code Konsistenz** in `analyze_sprint_goals` nutzt **Claude Sonnet 4.6** über `score_with_model()`, weil Code-Verständnis bei Diffs wichtig ist.
+Ausnahme: **Sonnet 4.6** (`score_with_model()`) für die zwei Calls mit Code-Verständnis:
+- **Issue ↔ Code Konsistenz** in `analyze_sprint_goals` (Story vs. MR-Diff).
+- **Code-Qualität** in `analyze_code_quality_llm` (von `analyze_code_clean` aufgerufen): liest die größten Produktions-Source-Files und prüft sie auf größere Mängel. Modell konfigurierbar über `llm.code_quality_model` (auf Haiku setzbar).
 
-Kosten pro Team-Lauf (mit allen LLM-Features): **~0,18 USD** (genaue Aufschlüsselung in `docs/llm-integration.md` — die maßgebliche Quelle). Mit Cache-Hit ~0.
+Kosten pro Team-Lauf (mit allen LLM-Features): **~0,22 USD** (genaue Aufschlüsselung in `docs/llm-integration.md` — die maßgebliche Quelle). Mit Cache-Hit ~0.
 
 ### 6. Geheimnisse
 

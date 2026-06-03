@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-02T14:54:36.060Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-03T12:50:07.048Z
 > Files: 7 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../tmp/
@@ -11,8 +11,8 @@
 
 ## ./
 
-- `CLAUDE.md` — OpenWolf (~3655 tok)
-- `README.md` — Project documentation (~925 tok)
+- `CLAUDE.md` — OpenWolf (~3716 tok)
+- `README.md` — Project documentation (~1036 tok)
 
 ## .claude/
 
@@ -25,14 +25,14 @@
 
 ## docs/
 
-- `bewertungskriterien.md` — Bewertungskriterien — was wird gemessen und warum (~4941 tok)
-- `funktionsweise.md` — Interner Aufbau / Datenfluss (~3320 tok)
-- `llm-integration.md` — LLM-Calls, Prompts, Kosten (~2100 tok)
-- `nutzung.md` — Praktische Bedienanleitung der Pipeline (~2900 tok)
-- `troubleshooting.md` — Häufige Probleme + Workarounds (~1900 tok)
+- `bewertungskriterien.md` — Bewertungskriterien — was wird gemessen und warum (~5212 tok)
+- `llm-integration.md` — LLM-Integration (~2392 tok)
 
 ## skripte/
 
+- `config.yaml` — Konfiguration fuer die automatische SEP-Bewertung (~2851 tok)
+- `evaluate_team.py` — load_yaml_config, get_thresholds, thr, get_llm_sampling (~35353 tok)
+- `test_evaluate.py` — TestUserStories: test_full_score, test_no_userstories, test_markdown_bold_story_template, test_full (~22584 tok)
 
 ## team-bit/
 

@@ -680,6 +680,85 @@ class TestTestSampleSelection(unittest.TestCase):
         self.assertNotEqual(names[0], "AStubTest.java")       # Stub fuehrt NICHT
 
 
+class TestCodeQualityLLM(unittest.TestCase):
+    """LLM-Zweitmeinung zur Code-Qualitaet ('Code sauber/ohne groessere
+    Maengel'): liest die GROESSTEN echten Source-Files (Substanz-Proxy),
+    schliesst Test- und Vendor-Dateien aus, bewertet auf Skala 0-3 mit dem
+    konfigurierten (Sonnet-)Modell. Alles ueber config.yaml steuerbar."""
+
+    def setUp(self):
+        ev._LANG_CACHE = None
+        ev._VENDOR_CACHE = None
+        ev._THRESHOLDS_CACHE = None
+        ev._LLM_SAMPLING_CACHE = None
+        self.tmp = Path(tempfile.mkdtemp())
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def _stub(self):
+        class _Stub:
+            enabled = True
+            model = "fake-haiku"
+
+            def __init__(s):
+                s.calls = []
+
+            def score_with_model(s, prompt, scale_max, model, system=None):
+                s.calls.append({"prompt": prompt, "scale_max": scale_max,
+                                "model": model, "system": system})
+                return {"score": 2, "reason": "stub", "scale_max": scale_max}
+
+        return _Stub()
+
+    def test_returns_none_without_llm(self):
+        (self.tmp / "App.java").write_text("class App {}\n", encoding="utf-8")
+        self.assertIsNone(ev.analyze_code_quality_llm(self.tmp, llm=None))
+
+    def test_selects_biggest_source_excludes_tests_and_vendor(self):
+        (self.tmp / "Small.java").write_text("class S {}\n", encoding="utf-8")
+        (self.tmp / "Big.java").write_text("// big\n" + "int x;\n" * 2000, encoding="utf-8")
+        (self.tmp / "BigTest.java").write_text("@Test\n" + "y;\n" * 5000, encoding="utf-8")
+        nm = self.tmp / "node_modules"
+        nm.mkdir()
+        (nm / "Lib.java").write_text("z;\n" * 9000, encoding="utf-8")
+        picked = ev._select_source_sample_files(self.tmp, max_files=5)
+        names = [p.name for p in picked]
+        self.assertIn("Big.java", names)
+        self.assertNotIn("BigTest.java", names)   # Testdatei raus
+        self.assertNotIn("Lib.java", names)       # vendor raus
+        self.assertEqual(names[0], "Big.java")    # groesste zuerst
+
+    def test_scores_on_scale_3_with_configured_sonnet_model(self):
+        (self.tmp / "Big.java").write_text("// big\n" + "int x;\n" * 2000, encoding="utf-8")
+        stub = self._stub()
+        res = ev.analyze_code_quality_llm(self.tmp, llm=stub)
+        self.assertEqual(res["scale_max"], 3)
+        self.assertEqual(len(stub.calls), 1)
+        self.assertEqual(stub.calls[0]["model"], "claude-sonnet-4-6")
+        self.assertIn("Big.java", stub.calls[0]["prompt"])
+        self.assertIn("<student_content>", stub.calls[0]["prompt"])
+
+    def test_returns_none_when_no_source_files(self):
+        (self.tmp / "README.md").write_text("nur doku\n", encoding="utf-8")
+        self.assertIsNone(ev.analyze_code_quality_llm(self.tmp, llm=self._stub()))
+
+    def test_code_clean_embeds_llm_review(self):
+        # analyze_code_clean liest git ls-files -> echtes Mini-Repo noetig.
+        (self.tmp / "Big.java").write_text("// big\n" + "int x;\n" * 2000, encoding="utf-8")
+        ev.run(["git", "init"], self.tmp)
+        ev.run(["git", "add", "-A"], self.tmp)
+        res = ev.analyze_code_clean(self.tmp, llm=self._stub())
+        self.assertEqual(res["details"]["llm_review"]["scale_max"], 3)
+
+    def test_code_clean_without_llm_has_no_review(self):
+        (self.tmp / "Big.java").write_text("// big\n" + "int x;\n" * 2000, encoding="utf-8")
+        ev.run(["git", "init"], self.tmp)
+        ev.run(["git", "add", "-A"], self.tmp)
+        res = ev.analyze_code_clean(self.tmp, llm=None)
+        self.assertIsNone(res["details"].get("llm_review"))
+
+
 class TestWorkScopePerDev(unittest.TestCase):
     """Arbeitsumfang wird auf eine ANGENOMMENE Teamgroesse (5-6 aktive Autoren)
     normalisiert, NICHT auf die gemessene Autorenzahl. Hoehere angenommene

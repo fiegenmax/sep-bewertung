@@ -1267,10 +1267,102 @@ def analyze_code_docs(repo, wikis, llm=None, wiki_contents=None):
                         "llm_review": llm_eval}}
 
 
-def analyze_code_clean(repo):
+def _select_source_sample_files(repo, max_files=6):
+    """Waehlt bis zu max_files echte Quelldateien fuer den Code-Qualitaets-Review.
+
+    Anders als der Test-Sampler (_select_test_sample_files, Round-Robin ueber
+    Sprachen) waehlt dieser GLOBAL die GROESSTEN Dateien zuerst: grosse Dateien
+    tragen die meiste Logik und damit die wahrscheinlichsten 'groesseren Maengel'
+    (God-Classes, Duplikation). Test- und Vendor-Dateien werden ausgeschlossen,
+    damit das LLM den Produktionscode beurteilt (nicht den Testcode -> dafuer gibt
+    es bereits analyze_tests). Substanz-basierte Auswahl gemaess bug-076/bug-080:
+    nie 'irgendwas[:N]' in Pfad-Reihenfolge."""
+    vendor = get_vendor_dirs()
+    langs = get_languages()
+    src_exts = {e for spec in langs.values() for e in spec.get("source_ext", [])}
+    if not src_exts:
+        return []
+    # Alle Test-Dateien sammeln, um sie aus der Source-Stichprobe auszuschliessen.
+    test_files = set()
+    for spec in langs.values():
+        for glob in spec.get("test_globs", []):
+            for f in repo.rglob(glob.replace("**/", "")):
+                test_files.add(f)
+    sized = []
+    for f in repo.rglob("*"):
+        if f.suffix not in src_exts or not f.is_file():
+            continue
+        if any(part in vendor for part in f.parts):
+            continue
+        if f in test_files:
+            continue
+        try:
+            sized.append((f.stat().st_size, f))
+        except OSError:
+            pass
+    # Groesse absteigend, bei Gleichstand stabil nach Name (deterministisch).
+    sized.sort(key=lambda t: (-t[0], str(t[1])))
+    return [f for _, f in sized[:max_files]]
+
+
+def _code_quality_model():
+    """Modell fuer den Code-Qualitaets-Review (config.yaml llm.code_quality_model).
+    Default Sonnet, weil Code-Verstaendnis wichtig ist (wie issue_vs_code)."""
+    cfg = (load_yaml_config() or {}).get("llm", {}) or {}
+    return cfg.get("code_quality_model") or "claude-sonnet-4-6"
+
+
+def analyze_code_quality_llm(repo, llm=None):
+    """LLM-Zweitmeinung zur Code-QUALITAET (Skala 0-3) oder None.
+
+    Komplementaer zur Heuristik analyze_code_clean: die zaehlt nur Repo-Hygiene
+    auf Datei-Ebene (committeter Muell, Lint-Config, TODOs), liest aber NIE den
+    Quellcode. Dieser Call sampelt die groessten Produktions-Source-Files und
+    laesst sie auf groessere Maengel pruefen (God-Classes, Duplikation, toter/
+    auskommentierter Code, verschluckte Exceptions, irrefuehrende Namen). Nutzt
+    das konfigurierte Modell (Default Sonnet). Alle Stichproben-Limits in
+    config.yaml llm_sampling: code_quality_*."""
+    if not (llm and llm.enabled):
+        return None
+    n_files = llm_sample("code_quality_files", 6)
+    per_chars = llm_sample("code_quality_file_chars", 2500)
+    total_chars = llm_sample("code_quality_total_chars", 12000)
+    files = _select_source_sample_files(repo, max_files=n_files)
+    if not files:
+        return None
+    parts, used = [], 0
+    for f in files:
+        try:
+            body = f.read_text(encoding="utf-8", errors="ignore")[:per_chars]
+        except OSError:
+            continue
+        chunk = "=== " + f.relative_to(repo).as_posix() + " ===\n" + body + "\n"
+        if used + len(chunk) > total_chars and parts:
+            break
+        parts.append(chunk)
+        used += len(chunk)
+    if not parts:
+        return None
+    prompt = ("Hier sind repraesentative Quellcode-Ausschnitte (groesste Dateien "
+              "zuerst) eines Studi-Projekts:\n\n" + wrap_student_content("\n".join(parts)))
+    system = ("Du beurteilst die Code-QUALITAET, nicht die Repo-Hygiene. "
+              "Achte NUR auf GROESSERE Maengel: God-Classes/ueberlange Funktionen, "
+              "Copy-Paste-Duplikation, auskommentierter/toter Code, verschluckte "
+              "Exceptions oder fehlende Fehlerbehandlung, irrefuehrende Namen, "
+              "fehlende Trennung von Verantwortlichkeiten. Stil-Nitpicks "
+              "(Einrueckung, Quotes, Zeilenlaenge) IGNORIEREN. "
+              "Score 0=gravierende Maengel, 1=mehrere Maengel, 2=ueberwiegend "
+              "sauber, 3=durchgehend sauber.")
+    return llm.score_with_model(prompt, scale_max=3, model=_code_quality_model(),
+                                system=system)
+
+
+def analyze_code_clean(repo, llm=None):
     """Code sauber/ohne groessere Maengel (0-1).
-    Checks: Debug-Dateien, Linter-Config, TODOs, node_modules/build-Artefakte,
-    IDE-Configs, grosse Binaries, OS-Cruft (.DS_Store).
+    Heuristik-Checks (Repo-Hygiene): Debug-Dateien, Linter-Config, TODOs,
+    node_modules/build-Artefakte, IDE-Configs, grosse Binaries, OS-Cruft.
+    Optionale LLM-Zweitmeinung (analyze_code_quality_llm) beurteilt zusaetzlich
+    die tatsaechliche Code-Qualitaet und landet in details.llm_review (Spalte D).
     """
     todos = 0
     has_lint = False
@@ -1357,6 +1449,7 @@ def analyze_code_clean(repo):
     label = "Durchgefuehrt" if score else "Nicht durchgefuehrt"
     reason = (" ".join(issues_found) if issues_found
               else f"Keine Repo-Hygiene-Probleme gefunden, Lint-/Editor-Config vorhanden, {todos} TODOs.")
+    llm_eval = analyze_code_quality_llm(repo, llm)
     return {"criterion": "Code sauber/ohne größere Mängel", "max": 1, "score": score,
             "label": label, "reason": reason,
             "details": {"has_lint_config": has_lint, "has_editor_config": has_editor_config,
@@ -1365,7 +1458,8 @@ def analyze_code_clean(repo):
                         "build_artifacts_count": len(build_artifacts),
                         "ide_configs_count": len(ide_configs),
                         "ds_store_files": ds_stores[:5],
-                        "large_binaries": large_binaries[:5]}}
+                        "large_binaries": large_binaries[:5],
+                        "llm_review": llm_eval}}
 
 
 def fetch_coverage_from_ci(token, project_id):
@@ -2417,7 +2511,7 @@ def collect_results(entry, token, llm_client=None, yaml_cfg=None):
         analyze_epics(issues, epic_links=epic_links),
         analyze_code_structure(repo),
         analyze_code_docs(repo, wikis, llm=llm_client, wiki_contents=wiki_contents),
-        analyze_code_clean(repo),
+        analyze_code_clean(repo, llm=llm_client),
         analyze_tests(repo, llm=llm_client, coverage_pct=coverage_pct),
         analyze_release_executable(repo, releases),
         analyze_sprint_goals(issues, milestones, releases, mrs, token, pid, llm_client),
