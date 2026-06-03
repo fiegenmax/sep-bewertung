@@ -454,7 +454,7 @@ class TestLlmSampling(unittest.TestCase):
         # config.yaml liefert den Block (nicht leer) und Default-Werte
         ev._LLM_SAMPLING_CACHE = None
         self.assertEqual(ev.llm_sample("tests_files", 99), 6)
-        self.assertEqual(ev.llm_sample("meeting_pages_count", 99), 3)
+        self.assertEqual(ev.llm_sample("meeting_pages_count", 99), 5)
 
 
 class TestMultiLangLoc(unittest.TestCase):

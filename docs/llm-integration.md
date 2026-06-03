@@ -18,7 +18,7 @@ Konfigurierbar in `skripte/config.yaml` → `llm.model` (Default-Modell) bzw. `l
 | # | Call | Wo eingebunden | Modell | Score-Skala | Input ca. | Output ca. |
 |---|---|---|---|---|---|---|
 | 1 | User-Story-Inhalt | `analyze_user_stories` | Haiku | 0–3 | 4k | 0.6k |
-| 2 | Meeting-Substanz | `analyze_meeting_docs` | Haiku | 0–1 | 4.5k | 0.6k |
+| 2 | Meeting-Substanz | `analyze_meeting_docs` | Haiku | 0–1 | 6k | 0.6k |
 | 3 | Release-Notes-Substanz | `analyze_release_changelog` | Haiku | 0–3 | 3k | 0.6k |
 | 4 | Release vs. Commits | `analyze_release_changelog` (zweite Phase, gemittelt) | Haiku | 0–3 | 5k | 0.6k |
 | 5 | Code-Kommentar-Qualität | `analyze_code_docs` | Haiku | 0–2 | 4k | 0.6k |

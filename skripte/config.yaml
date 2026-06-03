@@ -36,7 +36,7 @@ llm_sampling:
   # Commit-Messages (Substanz-Check, Haiku)
   commit_messages_count: 20
   # Wiki-/Meeting-Protokolle (Haiku)
-  meeting_pages_count: 3
+  meeting_pages_count: 5
   meeting_pages_chars: 1500
   # Release-Notes (Substanz + Notes-vs-Commits, Haiku)
   release_notes_chars: 3000

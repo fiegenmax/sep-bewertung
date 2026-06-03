@@ -806,3 +806,13 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 |------|--------|---------|---------|--------|
 | 14:55 | format_team_name() in fill_pdf hinzugefuegt: Teamname fuers PDF-Feld 'Geprüftes Team' (team-lovelace-poetical -> 'Lovelace Poetical', ohne 'team'-Praefix), main_for nutzt es; 3 Tests | fill_pdf.py, test_evaluate.py | 3 Tests gruen, alle 6 PDFs neu generiert | ~3k |
 | 14:56 | Hinweis an Nutzer: erneutes Generieren ueberschrieb direkt im PDF gesetzte Kreuze (fill_pdf legt kein .pdf.bak an); Recovery nur via Shadow-Copy (E:, nicht in OneDrive) | (Analyse) | bug-108 geloggt, cerebrum Do-Not-Repeat ergaenzt | ~2k |
+
+## Session: 2026-06-03 15:07
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:10 | Edited skripte/config.yaml | 2→2 lines | ~18 |
+| 15:10 | Edited skripte/test_evaluate.py | inline fix | ~20 |
+| 15:10 | Edited docs/llm-integration.md | inline fix | ~20 |
+
+| 15:11 | wiki meeting_pages_count 3->5, doc/test angepasst; commit-sample war schon geseedet | config.yaml, test_evaluate.py, llm-integration.md | 131 tests pass | ~8k |
