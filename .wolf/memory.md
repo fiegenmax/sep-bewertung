@@ -863,3 +863,4 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 15:38 | Edited docs/funktionsweise.md | inline fix | ~21 |
 | 15:38 | Edited docs/nutzung.md | inline fix | ~53 |
 | 15:39 | PDFs auf Bewertung_Teamname (Unterstrich) umbenannt + pdf_output_name() | fill_pdf.py, docs | tests gruen, 6 PDFs umbenannt | ~3k |
+| 15:39 | Session end: 4 writes across 3 files (fill_pdf.py, funktionsweise.md, nutzung.md) | 5 reads | ~29687 tok |
