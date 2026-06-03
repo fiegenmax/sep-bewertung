@@ -171,15 +171,15 @@ Wenn du eine `Bewertung_team-X.xlsx` öffnest, siehst du Sheet "Bewertung" mit 9
 | C: Heur-Score | Was die Heuristik vorschlägt (Zähl-Algorithmus) |
 | D: LLM-Score | Was das LLM vorschlägt (qualitative Bewertung) — kann leer sein wenn keine LLM-Analyse für das Kriterium existiert |
 | E: Max | Maximalpunktzahl laut PDF |
-| F: Deine Bewertung | **Hier trägst du die finale Punktzahl ein**, vorausgefüllt mit C |
+| F: Deine Bewertung | **Hier trägst du die finale Punktzahl ein**, vorausgefüllt mit dem LLM-Score (D) wo vorhanden, sonst mit der Heuristik (C) |
 | G: Anmerkungen | **Hier schreibst du Anmerkungen** für den mündlichen Teil oder das offizielle Protokoll |
 | H: Begründung Heuristik | Genau **wie** die Heuristik zu C kommt (Zahlen, Verhältnisse) |
 | I: Begründung LLM | **Warum** das LLM zu D kommt (qualitative Einschätzung) |
 
 ### Spalte F: "Deine Bewertung"
 
-- Bei jedem Kriterium ist F mit dem Heuristik-Score (C) vorausgefüllt.
-- Wenn du einen anderen Wert eintippst, **wird die Zelle rot/fett markiert** (Conditional Formatting). So siehst du beim Drüberscrollen welche Werte du selbst angepasst hast.
+- Bei jedem Kriterium ist F mit dem **LLM-Score (D) vorausgefüllt, wo einer vorliegt**, sonst mit dem Heuristik-Score (C). Damit folgt die Default-Bewertung pro Zeile derselben Logik wie die "GESAMT (LLM-Hybrid)"-Summe.
+- Wenn du einen anderen Wert als den vorausgefüllten Vorschlag eintippst, **wird die Zelle rot/fett markiert** (Conditional Formatting). So siehst du beim Drüberscrollen welche Werte du selbst angepasst hast.
 - Bei den zwei manuellen Kriterien (Team-Organisation, Selbstständigkeit) steht ein `x` als Vorgabe — das musst du durch eine Zahl ersetzen. Solange das `x` steht, weißt du dass die Zeile noch nicht erledigt ist. `x` wird in den Summen ignoriert (Excel `SUM` zählt Text-Zellen als 0).
 
 ### Summenzeilen unten

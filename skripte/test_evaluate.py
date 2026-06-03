@@ -309,14 +309,16 @@ class TestExcelRoundTrip(unittest.TestCase):
             ov = build_overview.read_team_xlsx(out)
             us = ov["User Stories / Issues ordentlich erstellt"]
             self.assertEqual(us["max"], 3)     # haette bei Bug 0.3 == 1 (LLM) ergeben
-            self.assertEqual(us["manual"], 2)  # F = Deine Bewertung (mit Heur vorbefuellt)
-            self.assertEqual(us["auto"], 2)    # C = Heur-Score
+            self.assertEqual(us["manual"], 1)  # F = Deine Bewertung (mit LLM-Score vorbefuellt)
+            self.assertEqual(us["auto"], 2)    # C = Heur-Score (unveraendert)
 
             # read_xlsx_scores (fill_pdf): score aus Spalte F (6), note aus G (7).
+            # F ist mit dem LLM-Score (1) vorbefuellt; das Tests-Kriterium hat keinen
+            # LLM-Review, daher faellt es auf die Heuristik (5) zurueck.
             scores, total = fill_pdf.read_xlsx_scores(out)
-            self.assertEqual(scores["User Stories / Issues ordentlich erstellt"]["score"], 2)
+            self.assertEqual(scores["User Stories / Issues ordentlich erstellt"]["score"], 1)
             self.assertEqual(scores["Tests vorhanden und sinnvoll"]["score"], 5)
-            self.assertEqual(total, 7)
+            self.assertEqual(total, 6)
 
     def test_gesamt_heuristik_column_sums_heur_not_score(self):
         # Befund Phase 3: GESAMT-Spalte C muss die Heuristik-Scores (C) summieren,

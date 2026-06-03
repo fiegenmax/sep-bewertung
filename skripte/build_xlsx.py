@@ -140,9 +140,12 @@ def merge_manual_values_into_workbook(wb, old_values):
         if key not in old_values:
             continue
         old = old_values[key]
-        # Score nur uebernehmen wenn er sich vom aktuellen Auto-Vorschlag (Spalte C) unterscheidet
-        # oder ein "x" ist (= manueller Eintrag noch ausstehend / war schon manuell)
-        auto = ws.cell(row=row, column=ev.COL_HEUR).value
+        # Score nur uebernehmen wenn er sich vom aktuellen Auto-Vorschlag unterscheidet
+        # oder ein "x" ist (= manueller Eintrag noch ausstehend / war schon manuell).
+        # Basiswert ist der frisch vorbefuellte F-Wert (LLM wo vorhanden, sonst
+        # Heuristik) — NICHT mehr stur Spalte C, sonst gaelte jede unveraenderte
+        # LLM-Zelle faelschlich als manuell.
+        auto = ws.cell(row=row, column=ev.COL_SCORE).value
         old_score = old.get("score")
         if old_score is not None and old_score != "" and old_score != auto:
             # Aber: wenn der alte Wert eine Formel ist (Zwischensumme), nicht uebernehmen
@@ -210,8 +213,8 @@ def build_xlsx(team_name, gitlab_path, web_url, results, output_path,
     ws["A3"] = "Hinweis:"
     ws["A3"].font = Font(name=FONT, bold=True)
     ws["B3"] = ("Spalte C zeigt den heuristischen Auto-Vorschlag, Spalte D den LLM-Score (Zweitmeinung). "
-                "'Deine Bewertung' (gelb, F) ist mit dem heuristischen Vorschlag vorausgefüllt und überschreibbar. "
-                "'x' bedeutet: noch manuell auszufüllen. Rote/fette Zellen in F: Wert vom Heuristik-Vorschlag geändert. "
+                "'Deine Bewertung' (gelb, F) ist mit dem LLM-Score vorausgefüllt, wo einer vorliegt, sonst mit der Heuristik – und überschreibbar. "
+                "'x' bedeutet: noch manuell auszufüllen. Rote/fette Zellen in F: Wert vom vorausgefüllten Vorschlag geändert. "
                 "Orange in Spalte D: Heuristik und LLM weichen >1 Punkt ab – manuell prüfen. "
                 "Summen aktualisieren sich automatisch. Begründungen separat: Heuristik (H) und LLM (I).")
     ws["B3"].alignment = Alignment(wrap_text=True, vertical="top")
@@ -277,7 +280,10 @@ def build_xlsx(team_name, gitlab_path, web_url, results, output_path,
             ws.cell(row=row, column=5, value=r["max"]).font = NORMAL
             ws.cell(row=row, column=5).alignment = Alignment(horizontal="center")
             # F: Deine Bewertung
-            input_cell = ws.cell(row=row, column=6, value=r["score"])
+            # Vorbelegung: LLM-Score nehmen wo vorhanden, sonst Heuristik
+            # (gleiche Logik wie die LLM-Hybrid-Summe, aber pro Zelle).
+            prefill_score = llm_score if llm_score is not None else r["score"]
+            input_cell = ws.cell(row=row, column=6, value=prefill_score)
             input_cell.fill = INPUT_FILL
             input_cell.font = Font(name=FONT, bold=True, size=11)
             input_cell.alignment = Alignment(horizontal="center")
@@ -434,8 +440,11 @@ def build_xlsx(team_name, gitlab_path, web_url, results, output_path,
         anchor = criterion_rows[0]  # Bezugszelle fuer die relativen Formel-Refs
         range_str = " ".join(f"{L_SCORE}{a}:{L_SCORE}{b}"
                              for a, b in _contiguous_runs(criterion_rows))
+        # Effektiver Vorschlag = LLM (D) wo vorhanden, sonst Heuristik (C) — exakt
+        # die Vorbelegung von F. Rot/fett nur wenn F davon abweicht (= manuell geaendert).
+        eff = f'IF({L_LLM}{anchor}<>"",{L_LLM}{anchor},{L_HEUR}{anchor})'
         rule = FormulaRule(
-            formula=[f'AND({L_HEUR}{anchor}<>"",{L_SCORE}{anchor}<>{L_HEUR}{anchor})'],
+            formula=[f'AND({eff}<>"",{L_SCORE}{anchor}<>{eff})'],
             font=Font(name=FONT, bold=True, color="C00000", size=12),
         )
         ws.conditional_formatting.add(range_str, rule)

@@ -53,7 +53,7 @@ Generell vor jedem Re-Lauf: prüfe ob die `.bak` noch sichern was du brauchst.
 
 ## Conditional Formatting in F-Spalte zeigt nichts an
 
-Wenn alle "Deine Bewertung"-Zellen rot/fett sind obwohl du sie nicht geändert hast: das passiert wenn `C` (Heur-Score) leer ist (kommt vor bei den manuellen Kriterien Team-Org/Selbstständigkeit). Die Bedingung ist `AND(C<>"",F<>C)` — leere C-Zellen werden eigentlich ignoriert.
+Wenn alle "Deine Bewertung"-Zellen rot/fett sind obwohl du sie nicht geändert hast: die Bedingung vergleicht F gegen den **effektiven Vorschlag** = LLM-Score (D) wo vorhanden, sonst Heuristik (C), also `AND(IF(D<>"",D,C)<>"", F<>IF(D<>"",D,C))`. Genau dieser effektive Vorschlag ist auch die Vorbelegung von F — eine unveränderte Zelle leuchtet daher nicht. Ist der effektive Vorschlag leer (kommt bei den manuellen Kriterien Team-Org/Selbstständigkeit vor), wird die Bedingung ignoriert.
 
 Wenn das Verhalten trotzdem komisch ist: Excel-Conditional-Formatting hat Eigenheiten bei verschiedenen Versionen. Die Logik hat keinen Bug, aber das Rendering kann abweichen.
 

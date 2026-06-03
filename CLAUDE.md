@@ -117,7 +117,7 @@ Jede Analyse-Funktion in `evaluate_team.py` liefert ein Dict:
 | C      | Heur-Score           | `result["score"]`                           |
 | D      | LLM-Score            | `result["details"]["llm_review"]["score"]`  |
 | E      | Max                  | `result["max"]`                             |
-| F      | Deine Bewertung      | **User-Eingabe**, vorausgefüllt mit C       |
+| F      | Deine Bewertung      | **User-Eingabe**, vorausgefüllt mit D (LLM) wo vorhanden, sonst C |
 | G      | Anmerkungen          | **User-Eingabe**, leer                      |
 | H      | Begründung Heuristik | `result["reason"]`                          |
 | I      | Begründung LLM       | `result["details"]["llm_review"]["reason"]` |

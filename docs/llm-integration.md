@@ -118,7 +118,7 @@ llm:
 
 Die zwei Scores sind **bewusst getrennt**:
 
-- **Heuristik-Score** (`result["score"]`) ist deterministisch — gleicher Input ergibt gleichen Output. Wird im Excel in Spalte C angezeigt und ist die Default-Vorbelegung von Spalte F ("Deine Bewertung").
+- **Heuristik-Score** (`result["score"]`) ist deterministisch — gleicher Input ergibt gleichen Output. Wird im Excel in Spalte C angezeigt. Spalte F ("Deine Bewertung") wird mit dem LLM-Score (D) vorbelegt, wo einer vorliegt, sonst mit der Heuristik (C).
 - **LLM-Score** (`result["details"]["llm_review"]["score"]`) ist die qualitative Zweitmeinung. Steht im Excel in Spalte D.
 - Du als Prüfer entscheidest in Spalte F welcher Wert (oder ein dritter) der finale ist.
 

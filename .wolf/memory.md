@@ -816,3 +816,25 @@ MD-Report (4b) bewusst aus dem Scope (Nutzer-Entscheidung).
 | 15:10 | Edited docs/llm-integration.md | inline fix | ~20 |
 
 | 15:11 | wiki meeting_pages_count 3->5, doc/test angepasst; commit-sample war schon geseedet | config.yaml, test_evaluate.py, llm-integration.md | 131 tests pass | ~8k |
+| 15:11 | Session end: 3 writes across 3 files (config.yaml, test_evaluate.py, llm-integration.md) | 6 reads | ~63436 tok |
+
+## Session: 2026-06-03 15:11
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:13 | Edited skripte/build_xlsx.py | 2→5 lines | ~95 |
+| 15:13 | Edited skripte/build_xlsx.py | 4→7 lines | ~121 |
+| 15:13 | Edited skripte/build_xlsx.py | Vorschlag() → Wert() | ~134 |
+| 15:13 | Edited skripte/build_xlsx.py | 3→3 lines | ~110 |
+| 15:14 | Edited skripte/test_evaluate.py | modified read_xlsx_scores() | ~223 |
+| 15:15 | Edited docs/nutzung.md | inline fix | ~40 |
+| 15:15 | Edited docs/nutzung.md | 2→2 lines | ~115 |
+| 15:15 | Edited docs/llm-integration.md | inline fix | ~68 |
+| 15:15 | Edited CLAUDE.md | inline fix | ~27 |
+| 15:15 | Edited docs/troubleshooting.md | inline fix | ~131 |
+
+## Session: 2026-06-03 15:16
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:16 | Spalte F vorbefuellen mit LLM-Score statt Heuristik (wo LLM-Review existiert); CF auf effektiven Vorschlag (LLM-or-Heur) umgestellt, Merge-Basiswert auf neue F-Vorbelegung, Hinweistext + Tests + Docs angepasst | build_xlsx.py, test_evaluate.py, docs/nutzung.md, docs/llm-integration.md, docs/troubleshooting.md, CLAUDE.md | 131 Tests gruen | ~8k |

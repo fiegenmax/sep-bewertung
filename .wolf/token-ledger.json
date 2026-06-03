@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-05-28T15:43:16.046Z",
   "lifetime": {
-    "total_tokens_estimated": 1410435,
-    "total_reads": 473,
-    "total_writes": 578,
-    "total_sessions": 52,
-    "anatomy_hits": 99,
-    "anatomy_misses": 368,
+    "total_tokens_estimated": 1476263,
+    "total_reads": 483,
+    "total_writes": 581,
+    "total_sessions": 54,
+    "anatomy_hits": 104,
+    "anatomy_misses": 373,
     "repeated_reads_blocked": 308,
-    "estimated_savings_vs_bare_cli": 3290104
+    "estimated_savings_vs_bare_cli": 3291104
   },
   "sessions": [
     {
@@ -6853,6 +6853,146 @@
         "writes_count": 0,
         "repeated_reads_blocked": 0,
         "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-06-03-1501",
+      "started": "2026-06-03T13:01:26.077Z",
+      "ended": "2026-06-03T13:01:55.253Z",
+      "reads": [
+        {
+          "file": "e:/Code/sep-bewertung/skripte/run_all.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 0,
+        "reads_count": 1,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-06-03-1501",
+      "started": "2026-06-03T13:01:26.077Z",
+      "ended": "2026-06-03T13:01:58.623Z",
+      "reads": [
+        {
+          "file": "e:/Code/sep-bewertung/skripte/run_all.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 0,
+        "reads_count": 1,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-06-03-1507",
+      "started": "2026-06-03T13:07:05.089Z",
+      "ended": "2026-06-03T13:08:15.444Z",
+      "reads": [
+        {
+          "file": "e:/Code/sep-bewertung/.wolf/anatomy.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/docs/llm-integration.md",
+          "tokens_estimated": 2392,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 2392,
+        "output_tokens_estimated": 0,
+        "reads_count": 2,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-06-03-1507",
+      "started": "2026-06-03T13:07:05.089Z",
+      "ended": "2026-06-03T13:11:55.551Z",
+      "reads": [
+        {
+          "file": "e:/Code/sep-bewertung/.wolf/anatomy.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/docs/llm-integration.md",
+          "tokens_estimated": 2392,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/evaluate_team.py",
+          "tokens_estimated": 35353,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 2851,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 22780,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "e:/Code/sep-bewertung/.wolf/cerebrum.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "e:/Code/sep-bewertung/skripte/config.yaml",
+          "tokens_estimated": 18,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/skripte/test_evaluate.py",
+          "tokens_estimated": 20,
+          "action": "edit"
+        },
+        {
+          "file": "e:/Code/sep-bewertung/docs/llm-integration.md",
+          "tokens_estimated": 22,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 63376,
+        "output_tokens_estimated": 60,
+        "reads_count": 6,
+        "writes_count": 3,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 4
       }
     }
   ],
